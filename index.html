@@ -1034,7 +1034,7 @@
 
     .tutorial-six-cards {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 0.7rem;
       align-items: stretch;
     }
@@ -3368,7 +3368,7 @@
 
       <!-- PROGRESS BREAKDOWN -->
       <div class="progress-section-card" style="margin-top:1.5rem;">
-        <div class="progress-section-title">🍩 Progress Breakdown</div>
+        <div class="progress-section-title">📈 Progress Breakdown</div>
         <div class="donut-wrapper">
           <svg class="donut-chart" id="donutChart" viewBox="0 0 200 200"></svg>
           <div class="donut-center">
@@ -4039,7 +4039,7 @@
             </div>
           </div>
           <div class="tutorial-card slide-home">
-            <div class="tutorial-card-img">🍩</div>
+            <div class="tutorial-card-img">📈</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Progress Breakdown</div>
               <div class="tutorial-slide-text">A chart showing how many shloks are <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span>, <span style="color:#92400e;font-weight:600;">revise</span> or not started.</div>
@@ -4049,7 +4049,7 @@
             <div class="tutorial-card-img">✏️</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Edit Profile</div>
-              <div class="tutorial-slide-text">Tap 'My Profile' on the right edge to set your name, start date and favourite shlok.</div>
+              <div class="tutorial-slide-text">Tap 'My Profile' on the right edge to set your name, centre, start date and favourite shlok.</div>
             </div>
           </div>
           <div class="tutorial-card slide-profile">
@@ -4063,7 +4063,7 @@
             <div class="tutorial-card-img">🔒</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Keep Your Progress Safe</div>
-              <div class="tutorial-slide-text">Sign in with Google on the home page to back up your progress. If you ever clear your browser or switch devices, simply sign in again to restore everything. You can sign out anytime from 'My Profile'.</div>
+              <div class="tutorial-slide-text">Sign in with Google on the home page to back up your progress. Sign in again anytime to restore everything. Sign out from 'My Profile'.</div>
             </div>
           </div>
         </div>
@@ -4258,7 +4258,8 @@
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
           Sign in with Google
         </button>
-        <div id="googleUserInfo" class="google-user-info">
+        <div id="googleUserInfo" class="google-user-info" style="flex-direction:column; gap:0.4rem;">
+          <div id="googleUserName" style="font-size:0.75rem; color:rgba(255,255,255,0.6); text-align:center;"></div>
           <button onclick="signOutGoogle()" class="signout-btn" style="width:100%; padding:0.45rem 1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.3); background:transparent; color:white; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer; transition:0.2s ease;">Sign out</button>
         </div>
       </div>
@@ -6853,6 +6854,8 @@
       const slides = document.querySelectorAll(".tutorial-slide");
       slides.forEach((s, i) => s.classList.toggle("active", i === n));
       tutorialCurrentSlide = n;
+      const box = document.getElementById("tutorialBox");
+      if (box) box.style.width = n === 0 ? "1100px" : "920px";
     }
 
     function openTutorial() {
@@ -7561,9 +7564,11 @@
       const btn    = document.getElementById("googleSignInBtn");
       const info   = document.getElementById("googleUserInfo");
       const banner = document.getElementById("homeSignInBanner");
+      const name   = document.getElementById("googleUserName");
       if (btn)    btn.style.display    = user ? "none" : "flex";
       if (info)   info.style.display   = user ? "flex" : "none";
       if (banner) banner.style.display = user ? "none" : "flex";
+      if (name)   name.textContent     = user ? `Signed in as ${user.email || user.displayName}` : "";
     }
 
     // Sync all important data to Firestore under users/{uid}
