@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <style>
@@ -2520,6 +2521,60 @@
     }
     .panel-paris-days { font-size: 1.4rem; font-weight: 700; color: var(--gold); line-height: 1; display: block; margin-bottom: 0.2rem; }
 
+    .google-signin-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: white;
+      border: 1.5px solid #dadce0;
+      border-radius: 999px;
+      padding: 0.45rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      color: #3c4043;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+    .google-signin-btn:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
+    .google-signin-btn img { width: 18px; height: 18px; }
+    .google-user-info {
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .google-user-photo {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .google-signout-link {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-left: auto;
+    }
+    .google-signout-link:hover { color: #dc2626; }
+    .auth-section {
+      border-top: 1px solid var(--border);
+      padding-top: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .auth-section-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
     .panel-edit-btn {
       display: inline-block;
       padding: 0.45rem 2rem;
@@ -3220,6 +3275,15 @@
 
       <!-- WELCOME TEXT -->
       <div id="welcomeText" style="max-width:1400px; margin: 2rem auto 0; padding: 0; text-align: center;"></div>
+
+      <!-- GOOGLE SIGN-IN BANNER (only shows when not signed in) -->
+      <div id="homeSignInBanner" style="display:none; align-items:center; justify-content:center; gap:0.6rem; background:rgba(10,42,102,0.06); border:1.5px solid rgba(10,42,102,0.15); border-radius:12px; padding:0.7rem 1.2rem; margin-top:1rem; margin-bottom:1rem; font-size:0.85rem; color:var(--text-muted); flex-wrap:wrap;">
+        <span>🔒 Sign in with Google to keep your progress safe across devices.</span>
+        <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.3rem 0.9rem; font-size:0.8rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:flex; align-items:center; gap:0.4rem; white-space:nowrap;">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:14px; height:14px;" alt="">
+          Sign in
+        </button>
+      </div>
 
       <!-- JOURNEY TO RAJIPO + CARDS CONTAINER -->
       <div class="home-content-wrap">
@@ -3994,6 +4058,13 @@
               <div class="tutorial-slide-text">Open 'My Profile' on the right edge to see your next milestone and how many shloks away you are - plus your learnt, memorised and revise counts.</div>
             </div>
           </div>
+          <div class="tutorial-card slide-home">
+            <div class="tutorial-card-img">🔒</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Keep Your Progress Safe</div>
+              <div class="tutorial-slide-text">Sign in with Google on the home page to back up your progress. If you ever clear your browser or switch devices, simply sign in again to restore everything. You can sign out anytime from 'My Profile'.</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4181,7 +4252,16 @@
         <div class="daily-shlok-empty">Add some shloks to see your next milestone!</div>
       </div>
 
-      <div class="panel-paris-countdown" id="panelParisCountdown"></div>
+      <div class="auth-section">
+        <button id="googleSignInBtn" class="google-signin-btn" onclick="signInWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+          Sign in with Google
+        </button>
+        <div id="googleUserInfo" class="google-user-info">
+          <span class="google-signout-link" onclick="signOutGoogle()">Sign out</span>
+        </div>
+      </div>
+
       <div style="text-align:center; padding-bottom:0.5rem;">
         <button class="panel-edit-btn" onclick="openProfileEditor()">Edit Profile</button>
       </div>
@@ -4235,6 +4315,8 @@
   <script>
     /* ── FIREBASE ── */
     let db = null;
+    let auth = null;
+    let currentUser = null;
     try {
       const firebaseConfig = {
         apiKey: "AIzaSyDAwGz0AI6b6NfHaHC_R3USX2pOOSDubDQ",
@@ -4245,7 +4327,8 @@
         appId: "1:168802093290:web:8dedd3f2a20682a48b6f93"
       };
       firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
+      db   = firebase.firestore();
+      auth = firebase.auth();
     } catch(e) {
       console.warn("Firebase failed to initialise:", e);
     }
@@ -6162,6 +6245,7 @@
     function save() {
       localStorage.setItem("myShloks", JSON.stringify(myShloks));
       scheduleMandalSync();
+      scheduleUserSync();
     }
 
     /* ------------------------------
@@ -7451,6 +7535,7 @@
        ------------------------------ */
     /* ── MUKHPATH MANDAL — FIRESTORE ── */
     function getMandalUserId() {
+      if (currentUser) return currentUser.uid;
       let uid = localStorage.getItem("mandalUserId");
       if (!uid) {
         uid = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
@@ -7458,6 +7543,94 @@
       }
       return uid;
     }
+
+    // ── GOOGLE SIGN-IN ──
+    function signInWithGoogle() {
+      if (!auth) return;
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => console.warn("Sign-in error:", err));
+    }
+
+    function signOutGoogle() {
+      if (!auth) return;
+      auth.signOut().then(() => { updateAuthUI(null); showToast("Signed out."); });
+    }
+
+    function updateAuthUI(user) {
+      const btn    = document.getElementById("googleSignInBtn");
+      const info   = document.getElementById("googleUserInfo");
+      const banner = document.getElementById("homeSignInBanner");
+      if (btn)    btn.style.display    = user ? "none" : "flex";
+      if (info)   info.style.display   = user ? "flex" : "none";
+      if (banner) banner.style.display = user ? "none" : "flex";
+    }
+
+    // Sync all important data to Firestore under users/{uid}
+    let userSyncTimer = null;
+    function scheduleUserSync() {
+      clearTimeout(userSyncTimer);
+      userSyncTimer = setTimeout(syncUserData, 3000);
+    }
+
+    async function syncUserData() {
+      if (!db || !currentUser) return;
+      try {
+        await db.collection("users").doc(currentUser.uid).set({
+          myShloks:        JSON.parse(localStorage.getItem("myShloks") || "[]"),
+          profile:         JSON.parse(localStorage.getItem("profile") || "null"),
+          lastMilestone:   localStorage.getItem("lastMilestone") || "0",
+          lastMilestoneDate: localStorage.getItem("lastMilestoneDate") || "0",
+          dailyChallenge:  localStorage.getItem("dailyChallenge") || null,
+          dcHistory:       localStorage.getItem("dcHistory") || null,
+          motivFavourites: localStorage.getItem("motivFavourites") || null,
+          mandalOptOut:    localStorage.getItem("mandalOptOut") || null,
+          lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { console.warn("User data sync failed:", e); }
+    }
+
+    // On sign-in: restore from Firestore if localStorage is empty
+    async function restoreOrSyncUserData(user) {
+      if (!db) return;
+      const localShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+      if (localShloks.length === 0) {
+        try {
+          const doc = await db.collection("users").doc(user.uid).get();
+          if (doc.exists) {
+            const d = doc.data();
+            if (d.myShloks)         localStorage.setItem("myShloks", JSON.stringify(d.myShloks));
+            if (d.profile)          localStorage.setItem("profile", JSON.stringify(d.profile));
+            if (d.lastMilestone)    localStorage.setItem("lastMilestone", d.lastMilestone);
+            if (d.lastMilestoneDate) localStorage.setItem("lastMilestoneDate", d.lastMilestoneDate);
+            if (d.dailyChallenge)   localStorage.setItem("dailyChallenge", d.dailyChallenge);
+            if (d.dcHistory)        localStorage.setItem("dcHistory", d.dcHistory);
+            if (d.motivFavourites)  localStorage.setItem("motivFavourites", d.motivFavourites);
+            if (d.mandalOptOut)     localStorage.setItem("mandalOptOut", d.mandalOptOut);
+            myShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+            loadProfile();
+            render();
+            renderProgressPage();
+            showToast("Your progress has been restored! 🎉");
+          }
+        } catch(e) { console.warn("Data restore failed:", e); }
+      } else {
+        syncUserData();
+      }
+    }
+
+    // Listen for auth state changes
+    function initAuth() {
+      if (!auth) return;
+      auth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+        updateAuthUI(user);
+        if (user) {
+          await restoreOrSyncUserData(user);
+          syncToMandal();
+        }
+      });
+    }
+
 
     function getNextShlokId() {
       const addedIds = new Set(myShloks.map(s => s.number));
@@ -8696,6 +8869,7 @@
       initLearnPage();
       renderProgressPage();
       showPage("home");
+      initAuth();
     });
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -8865,6 +9039,7 @@
 
       saveProfile(name, mandalName, start, fav);
       syncToMandal();
+      scheduleUserSync();
       closeEditPanel();
       showToast("Profile saved!");
     }
