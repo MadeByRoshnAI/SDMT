@@ -2521,6 +2521,7 @@
     }
     .panel-paris-days { font-size: 1.4rem; font-weight: 700; color: var(--gold); line-height: 1; display: block; margin-bottom: 0.2rem; }
 
+    .signout-btn:hover { background: rgba(255,255,255,0.15) !important; border-color: white !important; }
     .google-signin-btn {
       display: flex;
       align-items: center;
@@ -4258,7 +4259,7 @@
           Sign in with Google
         </button>
         <div id="googleUserInfo" class="google-user-info">
-          <span class="google-signout-link" onclick="signOutGoogle()">Sign out</span>
+          <button onclick="signOutGoogle()" class="signout-btn" style="width:100%; padding:0.45rem 1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.3); background:transparent; color:white; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer; transition:0.2s ease;">Sign out</button>
         </div>
       </div>
 
