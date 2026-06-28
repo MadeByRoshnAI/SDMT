@@ -7,6 +7,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -167,6 +169,7 @@
     /* Welcome greeting */
     body.dark-mode #welcomeText div:first-child { color: #ffffff !important; }
     body.dark-mode #welcomeText div:last-child  { color: var(--text-muted) !important; }
+    body.dark-mode #mandal .mandal-page-title { color: #ffffff !important; }
 
     /* sm-word in spot the mistake */
     body.dark-mode .sm-word { background: #1e2130; border-color: var(--border); color: #ffffff; }
@@ -348,7 +351,7 @@
     .nav-right {
       position: relative;
       display: flex;
-      gap: 0.6rem;
+      gap: 0.3rem;
       align-items: center;
       border-radius: 999px;
       padding: 0.4rem;
@@ -357,7 +360,7 @@
     .nav-indicator {
       position: absolute;
       top: 0.4rem;
-      left: 0.4rem;
+      left: 0;
       height: calc(100% - 0.8rem);
       background: rgba(250, 248, 243, 0.78);
       backdrop-filter: blur(10px) saturate(180%);
@@ -365,7 +368,7 @@
       border: 1px solid rgba(255,255,255,0.6);
       border-radius: 999px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 1px rgba(255,255,255,0.8), inset 0 -1px 2px rgba(0,0,0,0.06);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1);
+      transition: left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1);
       z-index: 0;
     }
 
@@ -374,15 +377,18 @@
       z-index: 1;
       background: transparent;
       border: none;
-      padding: 0.55rem 1.15rem;
+      outline: none;
+      padding: 0.55rem 0.9rem;
       border-radius: 999px;
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: rgba(255,255,255,0.85);
       cursor: pointer;
       transition: color 0.25s ease, background 0.2s ease;
       margin-top: 0;
+      white-space: nowrap;
     }
+    .nav-item:focus { outline: none; }
 
     .nav-item:hover {
       background: rgba(255,255,255,0.12);
@@ -1064,6 +1070,7 @@
     .tutorial-card.slide-myshloks .tutorial-card-img { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
     .tutorial-card.slide-motiv    .tutorial-card-img { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
     .tutorial-card.slide-games    .tutorial-card-img { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+    .tutorial-card.slide-mandal   .tutorial-card-img { background: linear-gradient(135deg, #e8eaf6, #c5cae9); }
     .tutorial-card.slide-profile  .tutorial-card-img { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
     .tutorial-card.slide-learn    .tutorial-card-img { background: linear-gradient(135deg, #e0f2f1, #b2dfdb); }
 
@@ -1140,7 +1147,7 @@
 
     .help-icon {
       position: fixed;
-      bottom: 15px;
+      bottom: 80px;
       left: 15px;
       width: 36px;
       height: 36px;
@@ -1167,23 +1174,27 @@
 
     #scrollTopBtn {
       position: fixed;
-      bottom: 15px;
+      bottom: 80px;
       right: 15px;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: var(--blue);
       color: white;
-      border: none;
-      font-size: 1.2rem;
+      border: 2px solid #ccc;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       z-index: 902;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s, transform 0.3s;
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
     #scrollTopBtn.visible {
       opacity: 1;
@@ -1374,7 +1385,7 @@
       #welcomeText div { font-size: 1.5rem !important; }
 
       /* Scroll to top button - keep away from mobile nav */
-      #scrollTopBtn { bottom: 60px; }
+      #scrollTopBtn { bottom: 110px; }
     }
 
     @media (max-width: 900px) and (min-width: 701px) {
@@ -2965,6 +2976,205 @@
     .sr-option.wrong   { background: #fee2e2; border-color: #dc2626; color: #dc2626; }
     .sr-option:disabled { cursor: default; }
 
+    .mandal-optout-btn {
+      display: inline-block;
+      width: auto;
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      border: 2px solid #d9534f;
+      background: white;
+      color: #d9534f;
+      font-weight: 600;
+      font-size: 0.8rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .mandal-optout-btn:hover { background: #d9534f; color: white; }
+    body.dark-mode .mandal-optout-btn { background: transparent; }
+    .mandal-optin-btn {
+      display: inline-block;
+      width: auto;
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      border: 2px solid var(--blue);
+      background: white;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 0.8rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .mandal-optin-btn:hover { background: var(--blue); color: white; }
+    body.dark-mode .mandal-optin-btn { background: transparent; color: var(--gold); border-color: var(--gold); }
+    body.dark-mode .mandal-optin-btn:hover { background: var(--gold); color: var(--blue-dark); }
+    .mandal-show-link {
+      font-size: 0.7rem; color: #15803d; cursor: pointer; display: inline-block;
+      font-weight: 600; border: 1.5px solid #15803d; border-radius: 999px;
+      padding: 0.15rem 0.6rem; transition: background 0.2s, color 0.2s;
+    }
+    .mandal-show-link:hover { background: #15803d; color: white; }
+    .mandal-remove-link {
+      font-size: 0.7rem; color: #dc2626; cursor: pointer; display: inline-block;
+      font-weight: 600; border: 1.5px solid #dc2626; border-radius: 999px;
+      padding: 0.15rem 0.6rem; transition: background 0.2s, color 0.2s;
+    }
+    .mandal-remove-link:hover { background: #dc2626; color: white; }
+
+    .mandal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.2rem;
+      align-items: stretch;
+    }
+
+    .mandal-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.3rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mandal-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-height: 64px;
+      margin-bottom: 1.2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mandal-avatar {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-mid), var(--blue-dark));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      border: 2.5px solid var(--gold);
+      box-shadow: 0 0 0 1px rgba(244,201,93,0.3);
+    }
+
+    .mandal-name-block { flex: 1; min-width: 0; }
+    .mandal-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.3rem;
+    }
+
+    .mandal-prog-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .mandal-prog-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-muted);
+    }
+    .mandal-prog-fraction { font-weight: 700; color: var(--blue); }
+    body.dark-mode .mandal-prog-fraction { color: white; }
+
+    .mandal-prog-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .mandal-prog-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue-mid), var(--gold));
+    }
+
+    .mandal-prog-block { margin-bottom: 0.9rem; }
+    .mandal-stats-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .mandal-stat-chip {
+      flex: 1;
+      text-align: center;
+      border-radius: 8px;
+      padding: 0.35rem 0.2rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+    .mandal-stat-chip .num { display: block; font-size: 0.95rem; font-weight: 700; }
+    .mandal-stat-chip.learnt    { background: rgba(59,130,246,0.12); color: #3b82f6; }
+    .mandal-stat-chip.memorised { background: rgba(22,101,52,0.12); color: var(--green-text); }
+    .mandal-stat-chip.revise    { background: rgba(146,64,14,0.12); color: var(--orange-text); }
+    body.dark-mode .mandal-stat-chip.learnt    { background: #3b82f6; color: white; }
+    body.dark-mode .mandal-stat-chip.memorised { background: #15803d; color: white; }
+    body.dark-mode .mandal-stat-chip.revise    { background: var(--orange-text); color: white; }
+
+    .mandal-milestone-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: linear-gradient(135deg, #F4C95D, #e6b830);
+      color: var(--blue-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 0.45rem 1.1rem;
+      border-bottom-left-radius: 12px;
+      box-shadow: -2px 2px 12px rgba(244,201,93,0.6), 0 0 20px rgba(244,201,93,0.3);
+      letter-spacing: 0.01em;
+    }
+
+    .mandal-extra {
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: auto;
+    }
+    .mandal-extra-row {
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+    .mandal-extra-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .mandal-extra-text {
+      color: var(--text-main);
+      font-size: 0.72rem;
+    }
+    body.dark-mode .mandal-extra-text { color: #d8dfee; }
+
+    @media (max-width: 700px) {
+      .mandal-grid { grid-template-columns: 1fr; }
+    }
+
   </style>
 </head>
 
@@ -2982,6 +3192,7 @@
       <button class="nav-item" data-page="learn" onclick="switchTab(this, 'learn')">Learn</button>
       <button class="nav-item" data-page="motivation" onclick="switchTab(this, 'motivation')">Motivation</button>
       <button class="nav-item" data-page="games" onclick="switchTab(this, 'games')">Games</button>
+      <button class="nav-item" data-page="mandal" onclick="switchTab(this, 'mandal')">Mukhpath Mandal</button>
       <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
@@ -2996,6 +3207,7 @@
     <button class="mobile-nav-item" data-page="learn" onclick="switchTabMobile(this, 'learn')">📚 Learn</button>
     <button class="mobile-nav-item" data-page="motivation" onclick="switchTabMobile(this, 'motivation')">✨ Motivation</button>
     <button class="mobile-nav-item" data-page="games" onclick="switchTabMobile(this, 'games')">🎮 Games</button>
+    <button class="mobile-nav-item" data-page="mandal" onclick="switchTabMobile(this, 'mandal')">Mukhpath Mandal</button>
     <button class="mobile-nav-item" id="mobileDarkToggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </div>
 
@@ -3702,6 +3914,28 @@
 
     </section>
 
+    <section id="mandal" class="page-section">
+      <div class="card" style="margin-bottom:1.5rem; padding:2rem;">
+        <div style="display:flex; gap:0; align-items:stretch; flex-wrap:wrap;">
+          <div style="flex:0 0 auto; padding-right:2rem; display:flex; flex-direction:column; gap:0.8rem;">
+            <h2 style="margin:0; white-space:nowrap;">My Mukhpath Mandal</h2>
+            <input id="mandalSearchInput" type="text" placeholder="Search by name or centre..."
+              style="width:100%; margin:0;"
+              oninput="mandalFilterQuery=this.value; mandalApplyFilter();">
+            <div id="mandalOptOutRow"></div>
+          </div>
+          <div style="width:2px; background:var(--border); flex-shrink:0;"></div>
+          <div style="flex:1; min-width:200px; padding-left:2rem; display:flex; align-items:center;">
+            <div>
+              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0 0 0.8rem 0;">See how fellow haribhaktas are progressing on their mukhpath journey. If you want your name to appear on this page for your friends/karyakars to see make sure your name is set in 'My Profile' and add in your favourite shlok that you've learnt so far!</p>
+              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0;">Remember we're all doing this mukhpath together with the same goal so lets use this page as a way to encourage and motivate each other to keep learning our shloks!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mandal-grid" id="mandalGrid"></div>
+    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -3875,6 +4109,34 @@
         </div>
       </div>
 
+      <!-- SECTION 6: MUKHPATH MANDAL -->
+      <div class="tutorial-slide">
+        <div class="tutorial-section-label">🕌 Mukhpath Mandal</div>
+        <div class="tutorial-three-cards">
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">👥</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Maru Mukhpath Mandal</div>
+              <div class="tutorial-slide-text">See how fellow haribhaktas across different centres are progressing on their mukhpath journey.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">🙏🏽</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Set Up Your Profile</div>
+              <div class="tutorial-slide-text">Fill in your name, centre, mukhpath start date and favourite shlok in 'My Profile' section in order to appear on this page.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">🎯</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Stay Inspired</div>
+              <div class="tutorial-slide-text">We're all doing this mukhpath together with the same goal so lets use this page as a way to encourage and motivate each other to keep learning our shloks!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -3882,7 +4144,7 @@
   <div id="milestoneToast" class="milestone-toast"></div>
 
   <div id="helpIcon" class="help-icon" onclick="openTutorial()" title="Click here for a quick tutorial">ⓘ</div>
-  <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top" style="display:none;">↑</button>
+  <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 
   <!-- Slideout profile panel -->
   <div class="slideout-panel" id="slideoutPanel">
@@ -3936,18 +4198,26 @@
           <div class="edit-avatar-ring" id="editAvatarInitials">YN</div>
         </div>
 
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.5rem; text-align:center;">The information below will be shown on the Friends page.</div>
+        <div style="font-size:0.72rem; color:#dc2626; margin-bottom:1rem; text-align:center;">* Required fields</div>
+
         <div class="edit-field">
-          <div class="edit-label">Full Name</div>
+          <div class="edit-label">Full Name <span style="color:#dc2626;">*</span></div>
           <input id="editName" class="edit-input" type="text" placeholder="Enter your full name">
         </div>
 
         <div class="edit-field">
-          <div class="edit-label">Started Mukhpath</div>
+          <div class="edit-label">Your Centre <span style="color:#dc2626;">*</span></div>
+          <input id="editMandal" class="edit-input" type="text" placeholder="e.g. Harrow, Wellingborough, South London">
+        </div>
+
+        <div class="edit-field">
+          <div class="edit-label">Started Mukhpath <span style="color:#dc2626;">*</span></div>
           <input id="editStart" class="edit-input" type="date">
         </div>
 
         <div class="edit-field">
-          <div class="edit-label">Favourite Shlok</div>
+          <div class="edit-label">Favourite Shlok <span style="color:#dc2626;">*</span></div>
           <select id="editFav" class="edit-input">
             <option value="">Select</option>
           </select>
@@ -3963,6 +4233,22 @@
   <div id="toast" class="toast">Saved!</div>
 
   <script>
+    /* ── FIREBASE ── */
+    let db = null;
+    try {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDAwGz0AI6b6NfHaHC_R3USX2pOOSDubDQ",
+        authDomain: "satsang-diksh-mukhpath-tracker.firebaseapp.com",
+        projectId: "satsang-diksh-mukhpath-tracker",
+        storageBucket: "satsang-diksh-mukhpath-tracker.firebasestorage.app",
+        messagingSenderId: "168802093290",
+        appId: "1:168802093290:web:8dedd3f2a20682a48b6f93"
+      };
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+    } catch(e) {
+      console.warn("Firebase failed to initialise:", e);
+    }
     /* Local date helper — avoids UTC timezone shift */
     function localDateStr(date) {
       const d = date || new Date();
@@ -5875,6 +6161,7 @@
 
     function save() {
       localStorage.setItem("myShloks", JSON.stringify(myShloks));
+      scheduleMandalSync();
     }
 
     /* ------------------------------
@@ -6475,7 +6762,7 @@
        ------------------------------ */
     let tutorialCurrentSlide = 0;
     const TOTAL_TUTORIAL = 5;
-    const PAGE_TO_SLIDE = { home: 0, myshloks: 1, learn: 2, motivation: 3, games: 4 };
+    const PAGE_TO_SLIDE = { home: 0, myshloks: 1, learn: 2, motivation: 3, games: 4, mandal: 5 };
 
     function showOnlySlide(n) {
       const slides = document.querySelectorAll(".tutorial-slide");
@@ -6723,6 +7010,14 @@
       if (id === "myshloks") { render(); }
       if (id === "learn")    initLearnPage();
       if (id === "home")     renderProgressPage();
+      if (id === "mandal")   renderMandal();
+
+      // If Quick Guide is open, update it to show the relevant section
+      const tutorialBox = document.getElementById("tutorialBox");
+      if (tutorialBox && tutorialBox.classList.contains("visible")) {
+        const slideIndex = PAGE_TO_SLIDE[id] ?? 0;
+        showOnlySlide(slideIndex);
+      }
     }
 
     function switchTab(button, page) {
@@ -6730,7 +7025,7 @@
         .forEach(btn => btn.classList.remove("active-nav"));
       button.classList.add("active-nav");
       showPage(page);
-      positionNavIndicator(button);
+      requestAnimationFrame(() => positionNavIndicator(button));
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -6763,24 +7058,25 @@
       const wrap = document.getElementById("navRight");
       if (!indicator || !wrap || !activeBtn) return;
       const wrapRect = wrap.getBoundingClientRect();
-      const btnRect = activeBtn.getBoundingClientRect();
+      const btnRect  = activeBtn.getBoundingClientRect();
       indicator.style.width = btnRect.width + "px";
-      indicator.style.transform = `translateX(${btnRect.left - wrapRect.left - 6.4}px)`;
+      indicator.style.left  = (btnRect.left - wrapRect.left) + "px";
+      indicator.style.transform = "none";
     }
 
     window.addEventListener("scroll", () => {
       const btn = document.getElementById("scrollTopBtn");
-      if (btn) btn.classList.toggle("visible", window.scrollY > 300);
+      if (btn) btn.classList.toggle("visible", window.scrollY > 150);
     });
 
     window.addEventListener("resize", () => {
       const activeTab = document.querySelector(".nav-item.active-nav");
-      if (activeTab) positionNavIndicator(activeTab);
+      if (activeTab) requestAnimationFrame(() => positionNavIndicator(activeTab));
     });
 
     window.addEventListener("load", () => {
       const activeTab = document.querySelector(".nav-item.active-nav");
-      if (activeTab) positionNavIndicator(activeTab);
+      if (activeTab) requestAnimationFrame(() => positionNavIndicator(activeTab));
     });
 
     function updatePanelParisCountdown() {
@@ -7151,6 +7447,264 @@
     }
 
     /* ------------------------------
+       MUKHPATH MANDAL (demo preview)
+       ------------------------------ */
+    /* ── MUKHPATH MANDAL — FIRESTORE ── */
+    function getMandalUserId() {
+      let uid = localStorage.getItem("mandalUserId");
+      if (!uid) {
+        uid = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("mandalUserId", uid);
+      }
+      return uid;
+    }
+
+    function getNextShlokId() {
+      const addedIds = new Set(myShloks.map(s => s.number));
+      const next = allShloks.find(s => !addedIds.has(s.id));
+      return next ? next.id : null;
+    }
+
+    let mandalSyncTimer = null;
+    function scheduleMandalSync() {
+      clearTimeout(mandalSyncTimer);
+      mandalSyncTimer = setTimeout(syncToMandal, 2000);
+    }
+
+    async function syncToMandal() {
+      if (localStorage.getItem("mandalOptOut") === "true") return;
+      const profile = JSON.parse(localStorage.getItem("profile") || "null");
+      if (!profile || !profile.name) return;
+      const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
+      const memorised = myShloks.filter(s => s.mastery === "memorised").length;
+      const revise    = myShloks.filter(s => s.mastery === "revise").length;
+      const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
+      const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
+      const isRecent = (Date.now() - lastMilestoneDate) < 3 * 24 * 60 * 60 * 1000;
+      try {
+        await db.collection("mandal").doc(getMandalUserId()).set({
+          name:            profile.name,
+          mandalName:      profile.mandalName || "",
+          startDate:       profile.startDate || "",
+          learnt,
+          memorised,
+          revise,
+          totalKnown:      learnt + memorised,
+          favShlokId:      profile.favShlok || null,
+          learningNowId:   getNextShlokId(),
+          recentMilestone: (isRecent && lastMilestone > 0) ? lastMilestone : null,
+          lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        console.warn("Mandal sync failed:", e);
+      }
+    }
+
+    function mandalEscapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function mandalInitials(name) {
+      return name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
+    }
+
+    function mandalBuildCard(person) {
+      const known = person.learnt + person.memorised;
+      const pct = Math.min(100, Math.round((known / 315) * 100));
+      const favShlok   = allShloks.find(s => s.id === person.favShlokId);
+      const learningNow = allShloks.find(s => s.id === person.learningNowId);
+      const formattedDate = person.startDate
+        ? new Date(person.startDate).toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" })
+        : null;
+      const colour = mandalCentreColour(person.mandalName);
+      const card = document.createElement("div");
+      card.className = "mandal-card";
+      card.innerHTML = `
+        ${person.recentMilestone ? `<div class="mandal-milestone-badge">🎉 Just hit ${person.recentMilestone}!</div>` : ""}
+
+        <!-- Mini profile -->
+        <div class="mandal-card-header">
+          <div class="mandal-avatar" style="background:${colour.bg}; color:${colour.text};">${mandalInitials(person.name)}</div>
+          <div class="mandal-name-block">
+            <div class="mandal-name" title="${mandalEscapeHtml(person.name)}">${mandalEscapeHtml(person.name)}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.4;">
+              ${[person.mandalName, formattedDate ? `Started ${formattedDate}` : null].filter(Boolean).join(" · ")}
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="mandal-prog-block">
+          <div class="mandal-prog-row">
+            <span>My Mukhpath Journey</span>
+            <span class="mandal-prog-fraction">${known} / 315</span>
+          </div>
+          <div class="mandal-prog-track">
+            <div class="mandal-prog-fill" style="width:${pct}%;"></div>
+          </div>
+        </div>
+        <div class="mandal-stats-row">
+          <div class="mandal-stat-chip learnt"><span class="num">${person.learnt}</span>learnt</div>
+          <div class="mandal-stat-chip memorised"><span class="num">${person.memorised}</span>memorised</div>
+          <div class="mandal-stat-chip revise"><span class="num">${person.revise}</span>revise</div>
+        </div>
+
+        <!-- Shloks -->
+        <div class="mandal-extra">
+          ${favShlok ? `
+          <div class="mandal-extra-row">
+            <div class="mandal-extra-label">❤️ Favourite shlok - Shlok ${favShlok.id}</div>
+            <div class="mandal-extra-text">
+              <div>${mandalEscapeHtml(favShlok.line1)}</div>
+              <div>${mandalEscapeHtml(favShlok.line2)}</div>
+            </div>
+          </div>` : ""}
+          ${learningNow ? `
+          <div class="mandal-extra-row">
+            <div class="mandal-extra-label">📖 Currently learning - Shlok ${learningNow.id}</div>
+            <div class="mandal-extra-text">
+              <div>${mandalEscapeHtml(learningNow.line1)}</div>
+              <div>${mandalEscapeHtml(learningNow.line2)}</div>
+            </div>
+          </div>` : ""}
+        </div>
+      `;
+      return card;
+    }
+
+    async function mandalOptOut() {
+      localStorage.setItem("mandalOptOut", "true");
+      try {
+        await db.collection("mandal").doc(getMandalUserId()).delete();
+      } catch(e) { console.warn("Opt-out error:", e); }
+      renderMandal();
+    }
+
+    async function mandalOptIn() {
+      localStorage.removeItem("mandalOptOut");
+      await syncToMandal();
+      renderMandal();
+    }
+
+    function renderMandalOptOutRow() {
+      const row = document.getElementById("mandalOptOutRow");
+      if (!row) return;
+      const optedOut = localStorage.getItem("mandalOptOut") === "true";
+      const profile = JSON.parse(localStorage.getItem("profile") || "null");
+      if (!profile || !profile.name) { row.innerHTML = ""; return; }
+      if (optedOut) {
+        row.innerHTML = `<div style="text-align:center;"><span class="mandal-show-link" onclick="mandalOptIn()">+ Show my profile</span></div>`;
+      } else {
+        row.innerHTML = `<div style="text-align:center;"><span class="mandal-remove-link" onclick="mandalOptOut()">✕ Remove my profile</span></div>`;
+      }
+    }
+
+    // 40 curated beautiful gradient colours for centres
+    const MANDAL_COLOURS = [
+      "linear-gradient(135deg,#c0392b,#7b241c)",  // crimson
+      "linear-gradient(135deg,#e91e8c,#ad1567)",  // hot pink
+      "linear-gradient(135deg,#8e44ad,#6c3483)",  // purple
+      "linear-gradient(135deg,#6c3483,#4a235a)",  // deep purple
+      "linear-gradient(135deg,#5b2c6f,#3b1a45)",  // dark violet
+      "linear-gradient(135deg,#1a5276,#0d3349)",  // dark blue
+      "linear-gradient(135deg,#2980b9,#1a5276)",  // blue
+      "linear-gradient(135deg,#1f618d,#154360)",  // navy blue
+      "linear-gradient(135deg,#0d47a1,#072270)",  // royal blue
+      "linear-gradient(135deg,#4f46e5,#312e81)",  // indigo
+      "linear-gradient(135deg,#3730a3,#1e1b4b)",  // deep indigo
+      "linear-gradient(135deg,#7c3aed,#4c1d95)",  // violet
+      "linear-gradient(135deg,#9333ea,#6b21a8)",  // bright purple
+      "linear-gradient(135deg,#0e6655,#09453b)",  // dark teal
+      "linear-gradient(135deg,#148f77,#0b5e4f)",  // teal
+      "linear-gradient(135deg,#117a8b,#0a5162)",  // dark cyan
+      "linear-gradient(135deg,#0891b2,#056880)",  // sky teal
+      "linear-gradient(135deg,#0369a1,#0c4a6e)",  // sky blue
+      "linear-gradient(135deg,#1d4ed8,#1e3a8a)",  // cobalt
+      "linear-gradient(135deg,#1e8449,#145a32)",  // green
+      "linear-gradient(135deg,#27ae60,#1e8449)",  // bright green
+      "linear-gradient(135deg,#196f3d,#0d3d1f)",  // dark green
+      "linear-gradient(135deg,#0f766e,#134e4a)",  // dark teal 2
+      "linear-gradient(135deg,#ca6f1e,#9a5313)",  // amber
+      "linear-gradient(135deg,#e67e22,#ca6f1e)",  // orange
+      "linear-gradient(135deg,#d35400,#a04000)",  // burnt orange
+      "linear-gradient(135deg,#b45309,#92400e)",  // sienna
+      "linear-gradient(135deg,#ba4a00,#873600)",  // rust
+      "linear-gradient(135deg,#922b21,#5b1a11)",  // dark red
+      "linear-gradient(135deg,#9f1239,#881337)",  // dark rose
+      "linear-gradient(135deg,#be123c,#881337)",  // rose
+      "linear-gradient(135deg,#db2777,#831843)",  // pink
+      "linear-gradient(135deg,#6366f1,#4338ca)",  // periwinkle
+      "linear-gradient(135deg,#2c3e50,#1a252f)",  // dark navy
+      "linear-gradient(135deg,#1abc9c,#0e8a71)",  // cyan
+      "linear-gradient(135deg,#0f7c51,#084d33)",  // forest green
+      "linear-gradient(135deg,#b7770d,#7d5008)",  // gold
+      "linear-gradient(135deg,#7d3c98,#5b2c6f)",  // grape
+      "linear-gradient(135deg,#1a7a4a,#0f5231)",  // emerald
+      "linear-gradient(135deg,#0d6e5a,#063d33)",  // deep teal
+    ];
+
+    function mandalCentreColour(centre) {
+      if (!centre) return { bg: MANDAL_COLOURS[0], text: "white" };
+      let hash = 5381;
+      for (let i = 0; i < centre.length; i++) {
+        hash = ((hash << 5) + hash) + centre.toLowerCase().charCodeAt(i);
+        hash = hash & 0x7fffffff;
+      }
+      return { bg: MANDAL_COLOURS[hash % MANDAL_COLOURS.length], text: "white" };
+    }
+
+    let mandalAllData = [];
+    let mandalFilterQuery = "";
+
+    function mandalApplyFilter() {
+      const grid = document.getElementById("mandalGrid");
+      if (!grid) return;
+      const q = mandalFilterQuery.toLowerCase().trim();
+      const filtered = q
+        ? mandalAllData.filter(p =>
+            (p.name || "").toLowerCase().includes(q) ||
+            (p.mandalName || "").toLowerCase().includes(q)
+          )
+        : mandalAllData;
+      grid.innerHTML = "";
+      filtered.forEach(person => grid.appendChild(mandalBuildCard(person)));
+    }
+
+    let mandalUnsubscribe = null;
+    function renderMandal() {
+      renderMandalOptOutRow();
+      const grid = document.getElementById("mandalGrid");
+      if (!grid) return;
+
+      syncToMandal();
+
+      grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">Loading...</div>`;
+
+      if (mandalUnsubscribe) { mandalUnsubscribe(); mandalUnsubscribe = null; }
+
+      // Show helpful message if Firebase doesn't respond in 5 seconds
+      const loadingTimeout = setTimeout(() => {
+        if (grid.innerHTML.includes("Loading...")) {
+          grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">Unable to connect - the Mukhpath Mandal requires an internet connection. Please upload to GitHub Pages to see live profiles.</div>`;
+        }
+      }, 5000);
+
+      mandalUnsubscribe = db.collection("mandal")
+        .orderBy("totalKnown", "desc")
+        .onSnapshot(snapshot => {
+          clearTimeout(loadingTimeout);
+          mandalAllData = [];
+          snapshot.forEach(docSnap => mandalAllData.push(docSnap.data()));
+          mandalApplyFilter();
+        }, err => {
+          console.error("Mandal error:", err);
+          grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#dc2626;">Couldn't load the mandal - check your connection and try again.</div>`;
+        });
+    }
+
+    /* ------------------------------
        CONFETTI & MILESTONES
        ------------------------------ */
     const MILESTONES = [50, 100, 150, 200, 250, 300, 315];
@@ -7178,6 +7732,7 @@
         const stored = parseInt(localStorage.getItem("lastMilestone") || "0");
         if (highest > stored) {
           localStorage.setItem("lastMilestone", highest);
+          localStorage.setItem("lastMilestoneDate", Date.now().toString());
           triggerMilestoneAnimation(highest);
           showMilestoneToast(MILESTONE_MSGS[highest]);
         }
@@ -8186,25 +8741,14 @@
     /* ------------------------------
        PROFILE STORAGE
        ------------------------------ */
-    function saveProfile(name, startDate, favShlokId) {
+    function saveProfile(name, mandalName, startDate, favShlokId) {
       const firstName = name.split(" ")[0];
       let favText = "";
-
       if (favShlokId) {
         const shlok = allShloks.find(s => s.id === favShlokId);
-        if (shlok) {
-          favText = `${shlok.line1}`;
-        }
+        if (shlok) favText = `${shlok.line1}`;
       }
-
-      const profile = {
-        name,
-        firstName,
-        startDate,
-        favShlok: favShlokId || "",
-        favText
-      };
-
+      const profile = { name, firstName, mandalName: mandalName || "", startDate, favShlok: favShlokId || "", favText };
       localStorage.setItem("profile", JSON.stringify(profile));
       loadProfile();
     }
@@ -8297,6 +8841,7 @@
     function openProfileEditor() {
       const profile = JSON.parse(localStorage.getItem("profile")) || {};
       document.getElementById("editName").value = profile.name || "";
+      document.getElementById("editMandal").value = profile.mandalName || "";
       document.getElementById("editStart").value = profile.startDate || "";
       document.getElementById("editFav").value = profile.favShlok || "";
       document.getElementById("editPanel").classList.add("open");
@@ -8308,23 +8853,18 @@
 
     function saveProfileFromEditPanel() {
       const name = document.getElementById("editName").value.trim();
+      const mandalName = document.getElementById("editMandal").value.trim();
       const start = document.getElementById("editStart").value;
       const fav = document.getElementById("editFav").value;
 
-      if (!name) {
-        alert("Please enter your full name.");
-        return;
-      }
+      if (!name)      { alert("Please enter your full name."); return; }
+      if (!mandalName){ alert("Please enter your centre (e.g. Harrow, South London)."); return; }
+      if (!start)     { alert("Please enter the date you started your mukhpath."); return; }
+      if (!fav)       { alert("Please select your favourite shlok - this is shown on the Friends page!"); return; }
+      if (fav && !allShloks.some(s => s.id === fav)) { alert("Favourite shlok not found in list."); return; }
 
-      if (fav) {
-        const exists = allShloks.some(s => s.id === fav);
-        if (!exists) {
-          alert("Favourite shlok not found in list.");
-          return;
-        }
-      }
-
-      saveProfile(name, start, fav);
+      saveProfile(name, mandalName, start, fav);
+      syncToMandal();
       closeEditPanel();
       showToast("Profile saved!");
     }
