@@ -4060,6 +4060,7 @@
           <div id="rmDoneMsg"></div>
           <button class="game-next-btn" onclick="loadRevisionMode()" style="margin-top:1.2rem;">🔄 Try Again</button>
         </div>
+        </div>
       </div>
 
       <div id="gameFullReview" class="game-screen" style="display:none;">
@@ -7463,32 +7464,44 @@
     }
 
     function wsReset() {
+      wsSelected.forEach(s => { s.btn.disabled = false; s.btn.style.opacity = "1"; });
       wsSelected = [];
       document.getElementById("wsBuilt").innerHTML = "";
       document.getElementById("wsFeedback").textContent = "";
       document.getElementById("wsFeedback").className = "game-feedback";
       document.getElementById("wsResetBtn").style.display = "none";
-      document.querySelectorAll(".ws-word-btn").forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-      });
     }
 
     function wsSelectWord(btn, word) {
-      if (btn.disabled) return;
       if (btn.dataset.real !== "true") {
         btn.classList.add("ws-distractor-flash");
         setTimeout(() => btn.classList.remove("ws-distractor-flash"), 400);
         return;
       }
+      // If already selected, deselect it from wherever it is
+      if (btn.disabled) {
+        const idx = wsSelected.findIndex(s => s.btn === btn);
+        if (idx !== -1) {
+          wsSelected.splice(idx, 1);
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          document.getElementById("wsBuilt").innerHTML = wsSelected.length
+            ? wsJoinDisplay(wsSelected.map(s => s.word), wsSeps) : "";
+          document.getElementById("wsFeedback").textContent = "";
+          document.getElementById("wsFeedback").className = "game-feedback";
+          if (wsSelected.length === 0) document.getElementById("wsResetBtn").style.display = "none";
+        }
+        return;
+      }
+      // Select the word
       btn.disabled = true;
       btn.style.opacity = "0.3";
-      wsSelected.push(word);
-      document.getElementById("wsBuilt").innerHTML = wsJoinDisplay(wsSelected, wsSeps);
+      wsSelected.push({ word, btn });
+      document.getElementById("wsBuilt").innerHTML = wsJoinDisplay(wsSelected.map(s => s.word), wsSeps);
       document.getElementById("wsResetBtn").style.display = "block";
       if (wsSelected.length === wsWords.length) {
         document.getElementById("wsResetBtn").style.display = "none";
-        const correct = wsSelected.join(" ") === wsWords.join(" ");
+        const correct = wsSelected.map(s => s.word).join(" ") === wsWords.join(" ");
         const fb = document.getElementById("wsFeedback");
         if (correct) {
           fb.textContent = "✅ Correct!";
@@ -7816,7 +7829,7 @@
 
         <!-- Mini profile -->
         <div class="mandal-card-header">
-          <div class="mandal-avatar" style="background:${colour.bg}; color:${colour.text};">${mandalInitials(person.name)}</div>
+          <div class="mandal-avatar" style="background:linear-gradient(135deg,#0A2A66,#1a3f80); color:#F4C95D;">${mandalInitials(person.name)}</div>
           <div class="mandal-name-block">
             <div class="mandal-name" title="${mandalEscapeHtml(person.name)}">${mandalEscapeHtml(person.name)}</div>
             <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.4;">
@@ -7893,46 +7906,26 @@
 
     // 40 curated beautiful gradient colours for centres
     const MANDAL_COLOURS = [
-      "linear-gradient(135deg,#c0392b,#7b241c)",  // crimson
-      "linear-gradient(135deg,#e91e8c,#ad1567)",  // hot pink
-      "linear-gradient(135deg,#8e44ad,#6c3483)",  // purple
-      "linear-gradient(135deg,#6c3483,#4a235a)",  // deep purple
-      "linear-gradient(135deg,#5b2c6f,#3b1a45)",  // dark violet
-      "linear-gradient(135deg,#1a5276,#0d3349)",  // dark blue
-      "linear-gradient(135deg,#2980b9,#1a5276)",  // blue
-      "linear-gradient(135deg,#1f618d,#154360)",  // navy blue
-      "linear-gradient(135deg,#0d47a1,#072270)",  // royal blue
-      "linear-gradient(135deg,#4f46e5,#312e81)",  // indigo
-      "linear-gradient(135deg,#3730a3,#1e1b4b)",  // deep indigo
-      "linear-gradient(135deg,#7c3aed,#4c1d95)",  // violet
-      "linear-gradient(135deg,#9333ea,#6b21a8)",  // bright purple
-      "linear-gradient(135deg,#0e6655,#09453b)",  // dark teal
-      "linear-gradient(135deg,#148f77,#0b5e4f)",  // teal
-      "linear-gradient(135deg,#117a8b,#0a5162)",  // dark cyan
-      "linear-gradient(135deg,#0891b2,#056880)",  // sky teal
-      "linear-gradient(135deg,#0369a1,#0c4a6e)",  // sky blue
-      "linear-gradient(135deg,#1d4ed8,#1e3a8a)",  // cobalt
-      "linear-gradient(135deg,#1e8449,#145a32)",  // green
-      "linear-gradient(135deg,#27ae60,#1e8449)",  // bright green
-      "linear-gradient(135deg,#196f3d,#0d3d1f)",  // dark green
-      "linear-gradient(135deg,#0f766e,#134e4a)",  // dark teal 2
-      "linear-gradient(135deg,#ca6f1e,#9a5313)",  // amber
-      "linear-gradient(135deg,#e67e22,#ca6f1e)",  // orange
-      "linear-gradient(135deg,#d35400,#a04000)",  // burnt orange
-      "linear-gradient(135deg,#b45309,#92400e)",  // sienna
-      "linear-gradient(135deg,#ba4a00,#873600)",  // rust
-      "linear-gradient(135deg,#922b21,#5b1a11)",  // dark red
-      "linear-gradient(135deg,#9f1239,#881337)",  // dark rose
-      "linear-gradient(135deg,#be123c,#881337)",  // rose
-      "linear-gradient(135deg,#db2777,#831843)",  // pink
-      "linear-gradient(135deg,#6366f1,#4338ca)",  // periwinkle
-      "linear-gradient(135deg,#2c3e50,#1a252f)",  // dark navy
-      "linear-gradient(135deg,#1abc9c,#0e8a71)",  // cyan
-      "linear-gradient(135deg,#0f7c51,#084d33)",  // forest green
-      "linear-gradient(135deg,#b7770d,#7d5008)",  // gold
-      "linear-gradient(135deg,#7d3c98,#5b2c6f)",  // grape
-      "linear-gradient(135deg,#1a7a4a,#0f5231)",  // emerald
-      "linear-gradient(135deg,#0d6e5a,#063d33)",  // deep teal
+      "linear-gradient(135deg,#dc2626,#991b1b)",  // 1. crimson red
+      "linear-gradient(135deg,#ea580c,#9a3412)",  // 2. vivid orange
+      "linear-gradient(135deg,#d97706,#92400e)",  // 3. amber
+      "linear-gradient(135deg,#65a30d,#3f6212)",  // 4. lime green
+      "linear-gradient(135deg,#16a34a,#14532d)",  // 5. emerald green
+      "linear-gradient(135deg,#0d9488,#134e4a)",  // 6. teal
+      "linear-gradient(135deg,#0891b2,#0e7490)",  // 7. cyan
+      "linear-gradient(135deg,#0284c7,#0c4a6e)",  // 8. sky blue
+      "linear-gradient(135deg,#2563eb,#1d4ed8)",  // 9. royal blue
+      "linear-gradient(135deg,#4338ca,#312e81)",  // 10. indigo
+      "linear-gradient(135deg,#7c3aed,#4c1d95)",  // 11. violet
+      "linear-gradient(135deg,#9333ea,#6b21a8)",  // 12. purple
+      "linear-gradient(135deg,#c026d3,#701a75)",  // 13. fuchsia
+      "linear-gradient(135deg,#db2777,#831843)",  // 14. hot pink
+      "linear-gradient(135deg,#f43f5e,#be123c)",  // 15. coral rose
+      "linear-gradient(135deg,#9f1239,#4c0519)",  // 16. wine/dark rose
+      "linear-gradient(135deg,#334155,#0f172a)",  // 17. dark slate
+      "linear-gradient(135deg,#92400e,#451a03)",  // 18. chocolate brown
+      "linear-gradient(135deg,#1e3a8a,#172554)",  // 19. dark navy
+      "linear-gradient(135deg,#166534,#052e16)",  // 20. forest green
     ];
 
     function mandalCentreColour(centre) {
@@ -9432,4 +9425,6 @@
   </script>
 </body>
 </html>
+
+
 
