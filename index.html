@@ -631,7 +631,7 @@
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
-    /* 100 — Starburst: symbols flying outward from center */
+    /* 100 - Starburst: symbols flying outward from center */
     .starburst-piece {
       position: fixed;
       top: -8vh;
@@ -645,7 +645,7 @@
       100% { transform: translateY(115vh) rotate(360deg); opacity: 0; }
     }
 
-    /* 150 — Petal shower, gentle drifting petals */
+    /* 150 - Petal shower, gentle drifting petals */
     .petal-piece {
       position: fixed;
       top: -8vh;
@@ -659,7 +659,7 @@
       100% { transform: translateY(115vh) translateX(-30px) rotate(280deg); opacity: 0; }
     }
 
-    /* 200 — Sparkle twinkle, particles popping in place */
+    /* 200 - Sparkle twinkle, particles popping in place */
     .sparkle-piece {
       position: fixed;
       font-size: 1.3rem;
@@ -674,7 +674,7 @@
       100% { transform: scale(0) rotate(270deg); opacity: 0; }
     }
 
-    /* 250 — Firework burst dots */
+    /* 250 - Firework burst dots */
     .firework-dot {
       position: fixed;
       width: 14px;
@@ -689,7 +689,7 @@
       100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); opacity: 0; }
     }
 
-    /* 300 — Emoji rain */
+    /* 300 - Emoji rain */
     .emoji-rain-piece {
       position: fixed;
       top: -10vh;
@@ -1030,6 +1030,20 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 0.9rem;
       align-items: stretch;
+    }
+
+    .tutorial-four-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+      align-items: stretch;
+    }
+    .tutorial-four-cards .tutorial-card-img { height: 75px; font-size: 1.9rem; }
+    .tutorial-four-cards .tutorial-card-body { padding: 0.75rem 0.7rem 0.85rem; }
+    .tutorial-four-cards .tutorial-slide-title { font-size: 0.82rem; }
+    .tutorial-four-cards .tutorial-slide-text { font-size: 0.72rem; }
+    @media (max-width: 700px) {
+      .tutorial-four-cards { grid-template-columns: repeat(2, 1fr); }
     }
 
     .tutorial-six-cards {
@@ -1855,7 +1869,7 @@
     .milestone-target {
       font-family: 'Poppins', sans-serif;
       font-size: 3.6rem;
-      font-weight: 900;
+      font-weight: 800;
       color: var(--blue);
       line-height: 1;
       margin-bottom: 0.3rem;
@@ -2508,19 +2522,6 @@
       gap: 0.8rem;
     }
 
-    .panel-paris-countdown {
-      margin-top: 0;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 0.65rem 1rem;
-      text-align: center;
-      font-size: 0.72rem;
-      line-height: 1.5;
-      color: rgba(255,255,255,0.8);
-    }
-    .panel-paris-days { font-size: 1.4rem; font-weight: 700; color: var(--gold); line-height: 1; display: block; margin-bottom: 0.2rem; }
-
     .signout-btn:hover { background: rgba(255,255,255,0.15) !important; border-color: white !important; }
     .google-signin-btn {
       display: flex;
@@ -2834,17 +2835,17 @@
     }
     .game-back-btn {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--blue);
+      border: 1.5px solid var(--text-muted);
+      color: var(--text-main);
       border-radius: 999px;
       padding: 0.35rem 0.9rem;
       font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       margin-top: 0;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
-    .game-back-btn:hover { background: var(--cream); }
+    .game-back-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--text-main); }
     .game-score-label { font-size: 0.88rem; font-weight: 600; color: var(--blue); }
 
     .game-play-card { padding: 2rem; }
@@ -2864,6 +2865,95 @@
       margin-bottom: 0.8rem;
     }
     .game-instruction { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.4rem; }
+
+    .rm-hint-panel {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(244,201,93,0.08);
+      border: 1.5px solid rgba(244,201,93,0.35);
+      border-radius: 12px;
+      display: none;
+    }
+    .rm-hint-question {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.7rem;
+    }
+    .rm-hint-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .rm-hint-btn {
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .rm-hint-btn:hover { border-color: var(--gold); color: var(--blue); }
+    .rm-hint-word-row {
+      display: none;
+      margin-top: 0.7rem;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .rm-hint-word-input {
+      flex: 1;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-size: 0.85rem;
+      font-family: 'Poppins', sans-serif;
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+    .rm-hint-save-btn {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+    }
+    .rm-current-hint {
+      font-size: 0.78rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .rm-word-pick-btn {
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .rm-word-pick-btn:hover { border-color: var(--gold); background: rgba(244,201,93,0.1); }
+
+    .revise-blur {
+      filter: blur(5px);
+      cursor: pointer;
+      transition: filter 0.3s;
+      user-select: none;
+      border-radius: 4px;
+    }
+    .revise-blur:hover { filter: blur(3px); }
 
     .game-feedback {
       margin-top: 1rem;
@@ -3342,7 +3432,7 @@
               <div class="streak-combined-divider"></div>
               <div class="streak-combined-item">
                 <div class="streak-number" id="statTodayNum">0</div>
-                <div class="streak-label">reviewed today</div>
+                <div class="streak-label">memorised today</div>
               </div>
             </div>
             <div class="streak-bar-track" style="margin-top:0.8rem;">
@@ -3383,10 +3473,51 @@
 
     <!-- LEARN -->
     <section id="learn" class="page-section">
-      <h2 style="margin-bottom:0.3rem;">Learn</h2>
-      <p id="learnSubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Choose a shlok to learn - we'll suggest the next one in order, or you can search for any other.</p>
-      <div id="learnPickerCard" class="learn-next-card"></div>
-      <div id="learnNextCard" class="learn-next-card" style="display:none;"></div>
+      <h2 style="margin-bottom:0.8rem;">Learn</h2>
+
+      <!-- TOGGLE -->
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+        <button id="learnToggleLearn" onclick="learnSetMode('learn')"
+          style="padding:0.4rem 1.2rem; border-radius:999px; border:1.5px solid var(--blue); background:var(--blue); color:white; font-size:0.85rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer; transition:0.2s;">
+          📚 Learn
+        </button>
+        <button id="learnToggleRevise" onclick="learnSetMode('revise')"
+          style="padding:0.4rem 1.2rem; border-radius:999px; border:1.5px solid var(--border); background:transparent; color:var(--text-muted); font-size:0.85rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer; transition:0.2s;">
+          📖 Revise
+        </button>
+      </div>
+
+      <!-- LEARN MODE -->
+      <div id="learnModeSection">
+        <p id="learnSubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Choose a shlok to learn - we'll suggest the next one in order, or you can search for any other.</p>
+        <div id="learnPickerCard" class="learn-next-card"></div>
+        <div id="learnNextCard" class="learn-next-card" style="display:none;"></div>
+      </div>
+
+      <!-- REVISE MODE -->
+      <div id="learnReviseSection" style="display:none;">
+        <p id="learnReviseSubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Go through your revise shloks, study them carefully, then head to Revision Mode to test yourself.</p>
+        <div id="learnReviseEmpty" style="display:none; color:var(--text-muted); font-size:0.88rem; padding:1rem 0;">No shloks marked as Revise yet!</div>
+        <div id="learnReviseMain">
+          <div class="learn-next-card">
+            <div class="learn-next-header">
+              <div class="learn-next-title">📖 Revise a Shlok</div>
+            </div>
+            <div id="learnReviseCard"></div>
+            <div style="display:flex; align-items:center; gap:0.8rem; margin-top:1rem;">
+              <button onclick="learnReviseNav(-1)" class="learn-btn-ghost" style="margin-left:0;">← Previous</button>
+              <span id="learnReviseCounter" style="font-size:0.85rem; color:var(--text-muted);"></span>
+              <button onclick="learnReviseNav(1)" class="learn-btn-ghost" style="margin-left:0;">Next →</button>
+            </div>
+            <div style="margin-top:0.8rem;">
+              <button onclick="switchTab(document.querySelectorAll('.nav-item')[4], 'games'); startGame('revisionMode');"
+                class="learn-btn-ghost" style="margin-left:0;">
+                🎯 Ready to test yourself? Go to Revision Mode →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="myshloks" class="page-section">
@@ -3423,8 +3554,8 @@
             <span>🔄 Update Status</span>
           </label>
           <label class="add-mode-radio">
-            <input type="radio" name="addMode" value="date" onclick="handleAddModeClick(this)">
-            <span>📅 Bulk Update Date</span>
+            <input type="radio" name="addMode" value="remove" onclick="handleAddModeClick(this)">
+            <span style="color:#dc2626;">❌ Remove Shlok</span>
           </label>
         </div>
 
@@ -3461,18 +3592,16 @@
           </div>
         </div>
 
-        <div id="addDateBox" class="add-box" style="display:none;">
-          <label class="add-label">Bulk update review date for shloks</label>
-          <div class="add-row" style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-            <input id="bulkDateStart" type="number" placeholder="Start" style="max-width:90px;">
-            <span>to</span>
-            <input id="bulkDateEnd" type="number" placeholder="End" style="max-width:90px;">
-            <input id="bulkDateVal" type="date" style="padding:0.4rem 0.5rem; border-radius:8px; border:1px solid var(--border); font-size:0.8rem; background:var(--card-bg); color:var(--text-main); max-width:135px;">
-            <button onclick="bulkUpdateDate()">Update</button>
-          </div>
-        </div>
         </div>
         <!-- end addShloksBody -->
+
+        <div id="addRemoveBox" class="add-box" style="display:none;">
+          <label class="add-label">Enter the shlok number you want to remove</label>
+          <div class="add-row" style="display:flex; gap:0.5rem; align-items:center;">
+            <input id="removeStart" type="number" placeholder="Shlok number" style="max-width:140px;">
+            <button onclick="removeShlokRange()" style="background:#dc2626; border-color:#dc2626; color:white;">Remove</button>
+          </div>
+        </div>
 
         <h3 class="collapsible-header" style="margin-top:1.5rem;" onclick="toggleSection('browseFilterBody', this)">
           <span class="collapse-arrow">▸</span> Browse &amp; Filter
@@ -3894,13 +4023,15 @@
 
       <!-- REVISION MODE -->
       <div id="gameRevisionMode" class="game-screen" style="display:none;">
-        <div class="game-topbar">
-          <button class="game-back-btn" onclick="backToHub()">← Games</button>
-          <div class="game-score-label">📋 <span id="rmCurrent">1</span> / <span id="rmTotal">0</span> &nbsp; ✅ <span id="rmKnownCount">0</span></div>
-        </div>
-        <div class="card game-play-card">
+        <div id="rmGameArea">
+          <div class="game-topbar">
+            <button class="game-back-btn" onclick="backToHub()">← Games</button>
+            <div class="game-score-label">📋 <span id="rmCurrent">1</span> / <span id="rmTotal">0</span> &nbsp; ✅ <span id="rmKnownCount">0</span></div>
+          </div>
+        <div class="card game-play-card" id="rmPlayCard">
           <div class="game-title-row">📋 Revision Mode</div>
           <div class="game-instruction">Say the full shlok aloud, then reveal to check. ✅ moves it to Memorised, ✗ keeps it in Revise.</div>
+          <div id="rmCurrentHint" class="rm-current-hint"></div>
           <div id="rmPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
           <div id="rmRevealSection" style="display:none;">
             <div id="rmFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
@@ -3911,9 +4042,22 @@
           </div>
           <button id="rmRevealBtn" class="game-submit-btn" onclick="rmReveal()" style="margin-top:1.5rem;">👁️ Reveal Shlok</button>
           <div id="rmFeedback" class="game-feedback"></div>
-          <div id="rmDone" style="display:none; text-align:center; margin-top:1.5rem;">
-            <div style="font-size:1.4rem; font-weight:700; color:var(--blue);" id="rmDoneMsg"></div>
-            <button class="game-next-btn" onclick="loadRevisionMode()" style="margin-top:1rem;">🔄 Go Again</button>
+          <div id="rmHintPanel" class="rm-hint-panel">
+            <div class="rm-hint-question">Which part of the shlok couldn't you remember?</div>
+            <div class="rm-hint-options">
+              <button class="rm-hint-btn" onclick="rmSetHint('line1')">Line 1</button>
+              <button class="rm-hint-btn" onclick="rmSetHint('line2')">Line 2</button>
+              <button class="rm-hint-btn" onclick="rmSetHint('word')">A specific word/part</button>
+              <button class="rm-hint-btn" onclick="rmSetHint('whole')">The whole thing</button>
+              <button class="rm-hint-btn" onclick="rmSetHint('skip')" style="color:var(--text-muted);">Skip</button>
+            </div>
+            <div id="rmWordRow" style="display:none; margin-top:0.7rem;">
+              <div id="rmWordPicker"></div>
+            </div>
+          </div>
+          <div id="rmDone" style="display:none; text-align:center; padding:2rem;">
+            <div id="rmDoneMsg"></div>
+            <button class="game-next-btn" onclick="loadRevisionMode()" style="margin-top:1.2rem;">🔄 Try Again</button>
           </div>
         </div>
       </div>
@@ -3923,7 +4067,7 @@
           <button class="game-back-btn" onclick="backToHub()">← Games</button>
           <div class="game-score-label">📖 <span id="frCurrent">1</span> / <span id="frTotal">0</span> &nbsp; ✅ <span id="frKnownCount">0</span></div>
         </div>
-        <div class="card game-play-card">
+        <div class="card game-play-card" id="frPlayCard">
           <div class="game-title-row">📖 Full Review</div>
           <div class="game-instruction">Every shlok you've added, one by one. Recall it fully, reveal to check, then mark how it went.</div>
           <div id="frPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
@@ -3940,11 +4084,11 @@
             <button id="frRevealBtn" class="game-submit-btn" onclick="frReveal()">👁️ Reveal Shlok</button>
           </div>
           <div id="frFeedback" class="game-feedback"></div>
-          <div id="frDone" style="display:none; text-align:center; margin-top:1.5rem;">
-            <div style="font-size:1.4rem; font-weight:700; color:var(--blue);" id="frDoneMsg"></div>
-            <button class="game-next-btn" onclick="loadFullReview()" style="margin-top:1rem;">🔄 Go Again</button>
-          </div>
         </div>
+      </div>
+      <div id="frDone" style="display:none; text-align:center; padding:2rem;">
+        <div id="frDoneMsg"></div>
+        <button class="game-next-btn" onclick="loadFullReview()" style="margin-top:1.2rem;">🔄 Try Again</button>
       </div>
 
       <div id="gameSpotMistake" class="game-screen" style="display:none;">
@@ -3992,7 +4136,7 @@
           <div style="width:2px; background:var(--border); flex-shrink:0;"></div>
           <div style="flex:1; min-width:200px; padding-left:2rem; display:flex; align-items:center;">
             <div>
-              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0 0 0.8rem 0;">See how fellow haribhaktas are progressing on their mukhpath journey. If you want your name to appear on this page for your friends/karyakars to see make sure you've added the relevant details name in the 'My Profile' tab! For more information, click on the 'i' icon at the bottom of the page.</p>
+              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0 0 0.8rem 0;">See how fellow haribhaktas are progressing on their mukhpath journey. If you want your name to appear on this page for your friends/karyakars to see make sure your name is set in 'My Profile' and add in your favourite shlok that you've learnt so far!</p>
               <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0;">Remember we're all doing this mukhpath together with the same goal so lets use this page as a way to encourage and motivate each other to keep learning our shloks!</p>
             </div>
           </div>
@@ -4045,14 +4189,14 @@
               <div class="tutorial-slide-text">A chart showing how many shloks are <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span>, <span style="color:#92400e;font-weight:600;">revise</span> or not started.</div>
             </div>
           </div>
-          <div class="tutorial-card slide-profile">
+          <div class="tutorial-card slide-home">
             <div class="tutorial-card-img">✏️</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Edit Profile</div>
               <div class="tutorial-slide-text">Tap 'My Profile' on the right edge to set your name, centre, start date and favourite shlok.</div>
             </div>
           </div>
-          <div class="tutorial-card slide-profile">
+          <div class="tutorial-card slide-home">
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Next Milestone</div>
@@ -4091,7 +4235,7 @@
             <div class="tutorial-card-img">🏆</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Track Status</div>
-              <div class="tutorial-slide-text">Mark each shlok as <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span> or <span style="color:#92400e;font-weight:600;">revise</span>, and log review dates. Use 'Update Status' to bulk change a range.</div>
+              <div class="tutorial-slide-text">Mark each shlok as <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span> or <span style="color:#92400e;font-weight:600;">revise</span>. Use 'Update Status' to bulk change a range, or 'Remove Shlok' if you accidentally added one.</div>
             </div>
           </div>
         </div>
@@ -4100,7 +4244,7 @@
       <!-- SECTION 3: LEARN -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">📚 Learn</div>
-        <div class="tutorial-three-cards">
+        <div class="tutorial-four-cards">
           <div class="tutorial-card slide-learn">
             <div class="tutorial-card-img">📖</div>
             <div class="tutorial-card-body">
@@ -4120,6 +4264,13 @@
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Recall & Add</div>
               <div class="tutorial-slide-text">Recall the whole shlok from just a two-word clue. Once you can do it, add it as learnt and move on to the next shlok.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-learn">
+            <div class="tutorial-card-img">📝</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Revise Tab</div>
+              <div class="tutorial-slide-text">Switch to the Revise tab to study shloks marked as revise. Tricky parts are blurred so you can try to recall them first - tap to reveal. Head to Revision Mode when you're ready to test yourself.</div>
             </div>
           </div>
         </div>
@@ -4147,7 +4298,7 @@
             <div class="tutorial-card-img">⏳</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Paris Countdown</div>
-              <div class="tutorial-slide-text">The live countdown to Paris Mandir Mahotsav - if you learn one shlok a day you can learn <span id="tutorialDaysLeft"></span> shloks in that time!</div>
+              <div class="tutorial-slide-text">A live countdown to Paris Mandir Mahotsav - see how many days you have left and use it as motivation to keep learning!</div>
             </div>
           </div>
         </div>
@@ -4156,7 +4307,7 @@
       <!-- SECTION 5: GAMES -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🎮 Games</div>
-        <div class="tutorial-three-cards">
+        <div class="tutorial-four-cards">
           <div class="tutorial-card slide-games">
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
@@ -4178,6 +4329,13 @@
               <div class="tutorial-slide-text">One shared shlok each day - get it right to build your 'Daily Challenge' streak!</div>
             </div>
           </div>
+          <div class="tutorial-card slide-games">
+            <div class="tutorial-card-img">📋</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Revision Mode</div>
+              <div class="tutorial-slide-text">Test your revise shloks one by one. If you get one wrong, tag which part you couldn't remember - line 1, line 2, a specific word or the whole shlok. Next time it appears, a hint will remind you where to focus.</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4196,7 +4354,7 @@
             <div class="tutorial-card-img">🙏🏽</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Set Up Your Profile</div>
-              <div class="tutorial-slide-text">In the 'My Profile' section, tap 'Edit Profile' and fill in the required fields in order to appear on this page.</div>
+              <div class="tutorial-slide-text">Fill in your name, centre, mukhpath start date and favourite shlok in 'My Profile' section in order to appear on this page.</div>
             </div>
           </div>
           <div class="tutorial-card slide-mandal">
@@ -4334,7 +4492,7 @@
     } catch(e) {
       console.warn("Firebase failed to initialise:", e);
     }
-    /* Local date helper — avoids UTC timezone shift */
+    /* Local date helper - avoids UTC timezone shift */
     function localDateStr(date) {
       const d = date || new Date();
       return d.getFullYear() + '-' +
@@ -6268,7 +6426,7 @@
         line1: master.line1,
         line2: master.line2,
         mastery: "learnt",
-        reviewed: localDateStr()
+        addedDate: localDateStr()
       });
 
       save();
@@ -6301,7 +6459,7 @@
           line1: master.line1,
           line2: master.line2,
           mastery: "learnt",
-          reviewed: localDateStr()
+          addedDate: localDateStr()
         });
       }
 
@@ -6316,20 +6474,34 @@
     /* ------------------------------
        STATUS CYCLING
        ------------------------------ */
+    function removeShlok(num) {
+      if (!confirm(`Remove Shlok ${num} from your list?`)) return;
+      myShloks = myShloks.filter(s => s.number !== num);
+      save(); render(); updateDashboard(); updateHomePage();
+      showToast(`Shlok ${num} removed.`);
+    }
+
+    function removeShlokRange() {
+      const num = document.getElementById("removeStart").value.trim();
+      if (!num) { alert("Please enter a shlok number."); return; }
+      const exists = myShloks.find(s => s.number === num);
+      if (!exists) { alert(`Shlok ${num} isn't in your list.`); return; }
+      if (!confirm(`Remove Shlok ${num} from your list?`)) return;
+      myShloks = myShloks.filter(s => s.number !== num);
+      save(); render(); updateDashboard(); updateHomePage();
+      document.getElementById("removeStart").value = "";
+      showToast(`Shlok ${num} removed.`);
+    }
+
     function changeMastery(num) {
       const s = myShloks.find(x => x.number === num);
       if (!s) return;
-
       const states = ["learnt", "memorised", "revise"];
       let current = states.indexOf(s.mastery);
       if (current === -1) current = 0;
       const next = (current + 1) % states.length;
       s.mastery = states[next];
-
-      // Auto-log today as reviewed
-      const today = localDateStr();
-      s.reviewed = today;
-
+      if (s.mastery === "memorised") s.memorisedDate = localDateStr();
       save();
       render();
       updateDashboard();
@@ -6361,17 +6533,6 @@
         if (line1) { line1.style.webkitLineClamp = "unset"; line1.style.overflow = "visible"; }
         if (line2) { line2.style.webkitLineClamp = "unset"; line2.style.overflow = "visible"; }
       }
-    }
-
-    function updateReviewDate(num, date) {
-      const s = myShloks.find(x => x.number === num);
-      if (!s) return;
-
-      s.reviewed = date;
-      save();
-      render();
-      updateDashboard();
-      updateHomePage();
     }
 
     /* ------------------------------
@@ -6415,7 +6576,8 @@
               || s.line2.toLowerCase().includes(search)
               || meaning.includes(search);
         })
-        .filter(s => currentFilter === "all" ? true : s.mastery === currentFilter);
+        .filter(s => currentFilter === "all" ? true : s.mastery === currentFilter)
+        .sort((a, b) => parseInt(a.number) - parseInt(b.number));
     }
 
     function render() {
@@ -6480,10 +6642,6 @@
               <div class="shlok-meaning-text" style="display:none;">${meaning}</div>
             </div>` : ""}
             <div class="shlok-controls" style="margin-top:0.6rem;">
-              <div class="review-wrapper">
-                <label style="font-size:0.7rem; margin-bottom:2px; color:var(--text-muted);">Last reviewed</label>
-                <input type="date" value="${s.reviewed || ""}" onchange="updateReviewDate('${s.number}', this.value)">
-              </div>
               <button class="mastery-pill"
                 style="border-color:${getBorder(s.mastery)}; color:${getBorder(s.mastery)};"
                 onclick="changeMastery('${s.number}')">
@@ -6581,7 +6739,14 @@
       if (game === "fullReview")    { document.getElementById("gameFullReview").style.display = "block";    loadFullReview(); }
     }
 
-    function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
     function pick(arr, n) { return shuffle(arr).slice(0, n); }
 
     // Splits a line into individual word tokens, treating hyphenated compounds
@@ -6866,13 +7031,6 @@
       box.classList.add("visible");
       localStorage.setItem("tutorialSeen", "true");
 
-      // Populate dynamic days count in countdown slide
-      const daysEl = document.getElementById("tutorialDaysLeft");
-      if (daysEl) {
-        const diff = new Date("September 2, 2026 00:00:00") - new Date();
-        daysEl.textContent = Math.max(0, Math.floor(diff / 86400000));
-      }
-
       // Show only the slide matching the currently active page
       const activePage = document.querySelector(".page-section.active");
       const pageId = activePage ? activePage.id : "home";
@@ -6900,15 +7058,15 @@
       { main: "Satsang Diksha granth je vanchshe, mukhpath karshe teni moksha marge gati thashe", lipi: "Satsang Diksha granth je vanchshe, mukhpath karshe teni moksha marge gati thashe", sub: "Brahmavidyano Path | December 16 2020", category: "whyMukhpath" },
       { main: "Gain the rājipo [of the Satpurush] by memorising the Satsang Diksha.", english: "Gain the rājipo [of the Satpurush] by memorising the Satsang Diksha.", sub: "Letter by Mahant Swami Maharaj | Melbourne | 02.03.2025", category: "rajipo" },
       { main: "Mukhpath helps to build Akshardham within", english: "Mukhpath helps to build Akshardham within", sub: "Brahmavidyano Path | 4 January 2025", category: "whyMukhpath" },
-      { main: "Satsang Diksha shastra sarva shastrono sar chhe — The Satsang Diksha contains the essence of all the scriptures", lipi: "Satsang Diksha shastra sarva shastrono sar chhe", english: "The Satsang Diksha contains the essence of all the scriptures", sub: "Brahmavidyano Path | January 13 2021", category: "whyMukhpath" },
+      { main: "Satsang Diksha shastra sarva shastrono sar chhe - The Satsang Diksha contains the essence of all the scriptures", lipi: "Satsang Diksha shastra sarva shastrono sar chhe", english: "The Satsang Diksha contains the essence of all the scriptures", sub: "Brahmavidyano Path | January 13 2021", category: "whyMukhpath" },
       { main: "Je gayu te bhuline have rajipo leva mandi pado. A rajipani kharekhari tak chhe.", lipi: "Je gayu te bhuline have rajipo leva mandi pado. A rajipani kharekhari tak chhe.", sub: "Letter by Mahant Swami Maharaj | 05.06.2025", category: "rajipo" },
       { main: "Question: How does mukhpath help us develop a connection with the Satpurush? Answer: Agna! If we understand that mukhpath is the Satpurush's agna, then [that mindset] will be useful", line1: "Question: How does mukhpath help us develop a connection with the Satpurush?", line2: "Answer: Agna! If we understand that mukhpath is the Satpurush's agna, then [that mindset] will be useful", sub: "Importance of Mukhpath | Guruhari Ashirwad | January 31 2021", category: "whyMukhpath" },
-      { main: "Shriji Maharaj ane guru paramparana manma je hathu ej Satsang Dikshama lakhyu chhe — What was in the mind of Shriji Maharaj and our gurus, only that has been written in the Satsang Diksha", lipi: "Shriji Maharaj ane guru paramparana manma je hathu ej Satsang Dikshama lakhyu chhe", english: "What was in the mind of Shriji Maharaj and our gurus, only that has been written in the Satsang Diksha", sub: "Brahmavidyano Path | December 17 2020", category: "whyMukhpath" },
-      { main: "Satsang Diksha shastra e Maharajnu swarup chhe — The Satsang Diksha scripture is the form of Shriji Maharaj", lipi: "Satsang Diksha shastra e Maharajnu swarup chhe", english: "The Satsang Diksha scripture is the form of Shriji Maharaj", sub: "Brahmavidyano Path | December 29 2020", category: "whyMukhpath" },
-      { main: "Satsang Diksha shastrani hajaro tula kariye to pan ochhi chhe — Even if we do one thousand tulas of the Satsang Diksha, it is not enough", lipi: "Satsang Diksha shastrani hajaro tula kariye to pan ochhi chhe", english: "Even if we do one thousand tulas of the Satsang Diksha, it is not enough", sub: "Brahmavidyano Path | January 8 2021", category: "whyMukhpath" },
+      { main: "Shriji Maharaj ane guru paramparana manma je hathu ej Satsang Dikshama lakhyu chhe - What was in the mind of Shriji Maharaj and our gurus, only that has been written in the Satsang Diksha", lipi: "Shriji Maharaj ane guru paramparana manma je hathu ej Satsang Dikshama lakhyu chhe", english: "What was in the mind of Shriji Maharaj and our gurus, only that has been written in the Satsang Diksha", sub: "Brahmavidyano Path | December 17 2020", category: "whyMukhpath" },
+      { main: "Satsang Diksha shastra e Maharajnu swarup chhe - The Satsang Diksha scripture is the form of Shriji Maharaj", lipi: "Satsang Diksha shastra e Maharajnu swarup chhe", english: "The Satsang Diksha scripture is the form of Shriji Maharaj", sub: "Brahmavidyano Path | December 29 2020", category: "whyMukhpath" },
+      { main: "Satsang Diksha shastrani hajaro tula kariye to pan ochhi chhe - Even if we do one thousand tulas of the Satsang Diksha, it is not enough", lipi: "Satsang Diksha shastrani hajaro tula kariye to pan ochhi chhe", english: "Even if we do one thousand tulas of the Satsang Diksha, it is not enough", sub: "Brahmavidyano Path | January 8 2021", category: "whyMukhpath" },
       { main: "Mukhpath brings us closer to God", english: "Mukhpath brings us closer to God", sub: "Brahmavidyano Path | December 23 2024", category: "whyMukhpath" },
       { main: "The mission of our life: Rajipo!", english: "The mission of our life: Rajipo!", sub: "Brahmavidyano Path | December 27 2024", category: "rajipo" },
-      { main: "Mukhpaththi satsang ane abhyas, bannema khub pragati thashe — Through memorisation, one will experience great progress in satsang and studies", lipi: "Mukhpaththi satsang ane abhyas, bannema khub pragati thashe", english: "Through memorisation, one will experience great progress in satsang and studies", sub: "Brahmavidyano Path | January 8 2025", category: "encouragement" },
+      { main: "Mukhpaththi satsang ane abhyas, bannema khub pragati thashe - Through memorisation, one will experience great progress in satsang and studies", lipi: "Mukhpaththi satsang ane abhyas, bannema khub pragati thashe", english: "Through memorisation, one will experience great progress in satsang and studies", sub: "Brahmavidyano Path | January 8 2025", category: "encouragement" },
     ];
 
     let motivCurrentQuote = null;
@@ -6949,7 +7107,7 @@
         el.style.whiteSpace = "normal";
       }
 
-      // Fade + gentle rise reveal — all lines share the same delay so they animate together
+      // Fade + gentle rise reveal - all lines share the same delay so they animate together
       el.style.animation = "none";
       el.style.opacity = "0";
       void el.offsetWidth;
@@ -7096,8 +7254,8 @@
       const page = document.getElementById(id);
       if (page) page.classList.add("active");
       if (id === "myshloks") { render(); }
-      if (id === "learn")    initLearnPage();
-      if (id === "home")     renderProgressPage();
+      if (id === "learn")    { initLearnPage(); initLearnReviseSection(); }
+      if (id === "home")     { renderProgressPage(); updateHomePage(); }
       if (id === "mandal")   renderMandal();
 
       // If Quick Guide is open, update it to show the relevant section
@@ -7167,35 +7325,6 @@
       if (activeTab) requestAnimationFrame(() => positionNavIndicator(activeTab));
     });
 
-    function updatePanelParisCountdown() {
-      const el = document.getElementById("panelParisCountdown");
-      if (!el) return;
-
-      const target = new Date("September 2, 2026 00:00:00").getTime();
-      const now    = new Date().getTime();
-      const daysLeft = Math.max(0, Math.ceil((target - now) / (1000 * 60 * 60 * 24)));
-      const known    = myShloks.filter(s => s.mastery === "learnt" || s.mastery === "memorised").length;
-      const remaining = Math.max(0, 315 - known);
-
-      let motivLine = "";
-      if (daysLeft > 0 && remaining > 0) {
-        if (daysLeft >= remaining) {
-          motivLine = `That's enough time to learn every remaining shlok - one a day and you'll reach Rajipo by Paris! 🙏`;
-        } else {
-          const perDay = Math.ceil(remaining / daysLeft);
-          motivLine = `That's ${daysLeft} days to learn as many shloks as you can.<br>You got this! 💪`;
-        }
-      } else if (remaining === 0) {
-        motivLine = `All 315 shloks done! Extraordinary seva - Jai Swaminarayan! 🎉🙏`;
-      }
-
-      el.innerHTML = `
-        <span class="panel-paris-days">${daysLeft}</span>
-        days until Paris Mandir Mahotsav<br>
-        <span style="opacity:0.65; font-size:0.72rem; margin-top:0.4rem; display:block;">${motivLine}</span>
-      `;
-    }
-
     function loadReviseNow() {
       const reviseList = myShloks.filter(s => s.mastery === "revise");
       const el = document.getElementById("reviseNowContent");
@@ -7222,30 +7351,11 @@
       const s = myShloks.find(x => x.number === num);
       if (!s) return;
       s.mastery = "memorised";
-      s.reviewed = localDateStr();
+      s.memorisedDate = localDateStr();
       save(); render(); updateDashboard(); updateHomePage();
       showToast("🏆 Marked as Memorised!");
     }
 
-    function bulkUpdateDate() {
-      const start = parseInt(document.getElementById("bulkDateStart").value);
-      const end   = parseInt(document.getElementById("bulkDateEnd").value);
-      const date  = document.getElementById("bulkDateVal").value;
-      if (isNaN(start) || isNaN(end) || start > end || !date) {
-        showToast("Please enter a valid range and date."); return;
-      }
-      let updated = 0;
-      for (let i = start; i <= end; i++) {
-        const s = myShloks.find(x => x.number === String(i));
-        if (s) { s.reviewed = date; updated++; }
-      }
-      if (!updated) { showToast("No shloks found in that range."); return; }
-      save(); updateHomePage();
-      document.getElementById("bulkDateStart").value = "";
-      document.getElementById("bulkDateEnd").value = "";
-      document.getElementById("bulkDateVal").value = "";
-      showToast(`✅ Review date updated for ${updated} shlok${updated > 1 ? "s" : ""}`);
-    }
     /* ------------------------------
        BULK UPDATE STATUS
        ------------------------------ */
@@ -7537,7 +7647,7 @@
     /* ------------------------------
        MUKHPATH MANDAL (demo preview)
        ------------------------------ */
-    /* ── MUKHPATH MANDAL — FIRESTORE ── */
+    /* ── MUKHPATH MANDAL - FIRESTORE ── */
     function getMandalUserId() {
       if (currentUser) return currentUser.uid;
       let uid = localStorage.getItem("mandalUserId");
@@ -7662,6 +7772,7 @@
       const isRecent = (Date.now() - lastMilestoneDate) < 3 * 24 * 60 * 60 * 1000;
       try {
         await db.collection("mandal").doc(getMandalUserId()).set({
+          uid:             getMandalUserId(),
           name:            profile.name,
           mandalName:      profile.mandalName || "",
           startDate:       profile.startDate || "",
@@ -7841,12 +7952,19 @@
       const grid = document.getElementById("mandalGrid");
       if (!grid) return;
       const q = mandalFilterQuery.toLowerCase().trim();
-      const filtered = q
+      const myId = getMandalUserId();
+      let filtered = q
         ? mandalAllData.filter(p =>
             (p.name || "").toLowerCase().includes(q) ||
             (p.mandalName || "").toLowerCase().includes(q)
           )
-        : mandalAllData;
+        : [...mandalAllData];
+      // Always put current user's card first
+      filtered.sort((a, b) => {
+        if (a.uid === myId) return -1;
+        if (b.uid === myId) return 1;
+        return 0;
+      });
       grid.innerHTML = "";
       filtered.forEach(person => grid.appendChild(mandalBuildCard(person)));
     }
@@ -8057,7 +8175,7 @@
       document.body.appendChild(text);
       requestAnimationFrame(() => text.style.opacity = "1");
 
-      // Swap text after 5s — no backdrop flicker
+      // Swap text after 5s - no backdrop flicker
       setTimeout(() => {
         text.style.opacity = "0";
         setTimeout(() => {
@@ -8189,7 +8307,7 @@
       }
       results.innerHTML = matches.map(s => `
         <div class="learn-search-result" onclick="startLearnShlok('${s.id}')">
-          <strong>Shlok ${s.id}</strong> — ${s.line1.length > 45 ? s.line1.slice(0, 45) + "…" : s.line1}
+          <strong>Shlok ${s.id}</strong> - ${s.line1.length > 45 ? s.line1.slice(0, 45) + "…" : s.line1}
         </div>
       `).join("");
     }
@@ -8220,7 +8338,7 @@
         setLearnSubtitle("When learning a shlok, it's important to understand what it means too - that's what makes it easier to remember!");
         card.innerHTML = `
           <div class="learn-next-header">
-            <div class="learn-next-title">📖 Understand — Shlok ${lnsShlok.id}</div>
+            <div class="learn-next-title">📖 Understand - Shlok ${lnsShlok.id}</div>
           </div>
           <div class="learn-shlok-display">${l1}<br>${l2}</div>
           ${meaning ? `<div class="learn-meaning-box">${meaning}</div>` : ""}
@@ -8262,7 +8380,7 @@
           const s = steps[lnsPhase - 1];
           card.innerHTML = `
             <div class="learn-next-header">
-              <div class="learn-next-title">🧠 Practice — Shlok ${lnsShlok.id}</div>
+              <div class="learn-next-title">🧠 Practice - Shlok ${lnsShlok.id}</div>
               <div class="learn-next-shlok-num">${s.title}</div>
             </div>
             <div class="learn-phase-indicator">${dots}</div>
@@ -8276,11 +8394,11 @@
           return;
         }
 
-        // Phase 4: Say It From Memory — first-two-words cue only
+        // Phase 4: Say It From Memory - first-two-words cue only
         const cue = l1.split(" ").slice(0, 2).join(" ") + " ...";
         card.innerHTML = `
           <div class="learn-next-header">
-            <div class="learn-next-title">🧠 Practice — Shlok ${lnsShlok.id}</div>
+            <div class="learn-next-title">🧠 Practice - Shlok ${lnsShlok.id}</div>
             <div class="learn-next-shlok-num">Say the whole shlok from memory</div>
           </div>
           <div class="learn-phase-indicator">${dots}</div>
@@ -8304,7 +8422,7 @@
       setLearnSubtitle("Well done - you've understood it, practiced it line by line, and recalled it from memory.");
       card.innerHTML = `
         <div class="learn-next-header">
-          <div class="learn-next-title">✅ Complete — Shlok ${lnsShlok.id}</div>
+          <div class="learn-next-title">✅ Complete - Shlok ${lnsShlok.id}</div>
         </div>
         <div class="learn-phase-label">You've worked through it line by line and recalled it from just a two-word cue. Add it to your collection?</div>
         <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
@@ -8331,7 +8449,7 @@
         line1: lnsShlok.line1,
         line2: lnsShlok.line2,
         mastery: "learnt",
-        reviewed: localDateStr()
+        addedDate: localDateStr()
       });
       save(); render(); updateDashboard(); updateHomePage();
       showToast(`🎉 Shlok ${lnsShlok.id} added as Learnt!`);
@@ -8358,12 +8476,13 @@
         return;
       }
 
-      // Pick a seeded random shlok for today using all myShloks
-      if (!myShloks.length) { document.getElementById("dcNumber").textContent = "Add some shloks first!"; return; }
+      // Pick a random shlok from learnt/memorised only
+      const eligible = myShloks.filter(s => s.mastery === "learnt" || s.mastery === "memorised");
+      if (!eligible.length) { document.getElementById("dcNumber").textContent = "Learn some shloks first!"; return; }
       const todayDC = localDateStr();
       const seed = todayDC.replace(/-/g, "");
-      const idx = parseInt(seed) % myShloks.length;
-      const shlok = myShloks[idx];
+      const idx = parseInt(seed) % eligible.length;
+      const shlok = eligible[idx];
       localStorage.setItem("dailyChallenge", JSON.stringify({ date: todayDC, number: shlok.number, done: false }));
       document.getElementById("dcNumber").textContent = `Shlok ${shlok.number}`;
     }
@@ -8407,24 +8526,153 @@
     let rmPool = [], rmIndex = 0, rmKnown = 0, rmNotYet = 0;
 
     function loadRevisionMode() {
-      rmPool = shuffle(myShloks.filter(s => s.mastery === "revise"));
+      rmPool = myShloks.filter(s => s.mastery === "revise");
       rmIndex = 0; rmKnown = 0; rmNotYet = 0;
       document.getElementById("rmKnownCount").textContent = 0;
       document.getElementById("rmTotal").textContent = rmPool.length;
       document.getElementById("rmDone").style.display = "none";
+      document.getElementById("rmPlayCard").style.display = "block";
       document.getElementById("rmFeedback").textContent = "";
       if (!rmPool.length) {
         document.getElementById("rmPrompt").textContent = "No shloks marked as Revise!";
         document.getElementById("rmRevealBtn").style.display = "none";
         return;
       }
+      rmPool = shuffle(rmPool);
       document.getElementById("rmRevealBtn").style.display = "inline-block";
       rmShowCard();
+    }
+
+    let learnRevisePool = [];
+    let learnReviseIndex = 0;
+
+    function learnSetMode(mode) {
+      const learnSection  = document.getElementById("learnModeSection");
+      const reviseSection = document.getElementById("learnReviseSection");
+      const btnLearn      = document.getElementById("learnToggleLearn");
+      const btnRevise     = document.getElementById("learnToggleRevise");
+      const pageTitle     = document.querySelector("#learn h2");
+      if (mode === "learn") {
+        learnSection.style.display  = "block";
+        reviseSection.style.display = "none";
+        if (pageTitle) pageTitle.textContent = "Learn";
+        btnLearn.style.background   = "var(--blue)";
+        btnLearn.style.color        = "white";
+        btnLearn.style.borderColor  = "var(--blue)";
+        btnRevise.style.background  = "transparent";
+        btnRevise.style.color       = "var(--text-muted)";
+        btnRevise.style.borderColor = "var(--border)";
+      } else {
+        learnSection.style.display  = "none";
+        reviseSection.style.display = "block";
+        if (pageTitle) pageTitle.textContent = "Revise";
+        btnRevise.style.background  = "var(--blue)";
+        btnRevise.style.color       = "white";
+        btnRevise.style.borderColor = "var(--blue)";
+        btnLearn.style.background   = "transparent";
+        btnLearn.style.color        = "var(--text-muted)";
+        btnLearn.style.borderColor  = "var(--border)";
+        initLearnReviseSection();
+      }
+    }
+
+    function initLearnReviseSection() {
+      learnRevisePool = myShloks.filter(s => s.mastery === "revise");
+      const emptyEl = document.getElementById("learnReviseEmpty");
+      const mainEl  = document.getElementById("learnReviseMain");
+      if (!learnRevisePool.length) {
+        if (emptyEl) emptyEl.style.display = "block";
+        if (mainEl)  mainEl.style.display  = "none";
+        return;
+      }
+      if (emptyEl) emptyEl.style.display = "none";
+      if (mainEl)  mainEl.style.display  = "block";
+      learnReviseIndex = 0;
+      renderLearnReviseCard();
+    }
+
+    function learnReviseNav(dir) {
+      learnReviseIndex = (learnReviseIndex + dir + learnRevisePool.length) % learnRevisePool.length;
+      renderLearnReviseCard();
+    }
+
+    function renderLearnReviseCard() {
+      const s = learnRevisePool[learnReviseIndex];
+      const master = allShloks.find(a => a.id === s.number);
+      const shlok = myShloks.find(x => x.number === s.number);
+      const hint = shlok && shlok.reviseHint ? shlok.reviseHint : null;
+
+      let line1Html = master ? master.line1 : "";
+      let line2Html = master ? master.line2 : "";
+
+      if (hint) {
+        const blurWords = (text, words) => {
+          let result = text;
+          (words || []).forEach(word => {
+            const esc = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            result = result.replace(new RegExp(esc, 'g'),
+              `<span class="revise-blur" onclick="this.classList.remove('revise-blur')" title="Tap to reveal">${word}</span>`);
+          });
+          return result;
+        };
+        if (hint.type === "line1") {
+          line1Html = `<span class="revise-blur" onclick="this.classList.remove('revise-blur')" title="Tap to reveal">${line1Html}</span>`;
+        } else if (hint.type === "line2") {
+          line2Html = `<span class="revise-blur" onclick="this.classList.remove('revise-blur')" title="Tap to reveal">${line2Html}</span>`;
+        } else if (hint.type === "whole") {
+          const blurAfterTwo = (text) => {
+            const parts = text.split(' ');
+            if (parts.length <= 2) return text;
+            const visible = parts.slice(0, 2).join(' ');
+            const hidden  = parts.slice(2).join(' ');
+            return `${visible} <span class="revise-blur" onclick="this.classList.remove('revise-blur')" title="Tap to reveal">${hidden}</span>`;
+          };
+          line1Html = blurAfterTwo(line1Html);
+          line2Html = blurAfterTwo(line2Html);
+        } else if (hint.type === "word") {
+          if (hint.line1words && hint.line1words.length) line1Html = blurWords(line1Html, hint.line1words);
+          if (hint.line2words && hint.line2words.length) line2Html = blurWords(line2Html, hint.line2words);
+        }
+      }
+
+      const hintBanner = hint
+        ? hint.type === "whole"
+          ? `<div style="font-size:0.82rem; color:var(--gold); margin-bottom:0.8rem; background:rgba(244,201,93,0.08); border:1px solid rgba(244,201,93,0.3); border-radius:8px; padding:0.6rem 0.8rem;">💡 You found it tricky to recall the full shlok last time - see if you can recall it now! Tap to reveal.</div>`
+          : `<div style="font-size:0.82rem; color:var(--gold); margin-bottom:0.8rem; background:rgba(244,201,93,0.08); border:1px solid rgba(244,201,93,0.3); border-radius:8px; padding:0.6rem 0.8rem;">💡 You found some parts of this shlok tricky last time - see if you can recall them! Tap to reveal.</div>`
+        : "";
+
+      document.getElementById("learnReviseCounter").textContent = `${learnReviseIndex + 1} of ${learnRevisePool.length}`;
+      document.getElementById("learnReviseCard").innerHTML = `
+        <div class="learn-suggested-box">
+          <div style="font-size:1.1rem; font-weight:700; color:white; margin-bottom:0.6rem;">Shlok ${s.number}</div>
+          ${hintBanner}
+          <div class="learn-shlok-display" style="margin-bottom:0.6rem;">${line1Html}<br>${line2Html}</div>
+        </div>
+      `;
+    }
+
+    function learnMarkReviewed() {
+      learnRevisePool = myShloks.filter(x => x.mastery === "revise");
+      if (!learnRevisePool.length) {
+        document.getElementById("learnReviseSection").style.display = "none";
+        return;
+      }
+      learnReviseIndex = (learnReviseIndex + 1) % learnRevisePool.length;
+      renderLearnReviseCard();
+    }
+
+
+
+    function getFirstTwoWords(line) {
+      // Get first 2 words that aren't hyphenated compounds
+      const words = line.split(" ").filter(w => !w.includes("-"));
+      return words.slice(0, 2).join(" ");
     }
 
     function rmShowCard() {
       if (rmIndex >= rmPool.length) { rmFinish(); return; }
       const s = rmPool[rmIndex];
+      const shlok = myShloks.find(x => x.number === s.number);
       document.getElementById("rmCurrent").textContent = rmIndex + 1;
       const firstTwo = s.line1.split(" ").slice(0, 2).join(" ") + "...";
       document.getElementById("rmPrompt").textContent = firstTwo;
@@ -8432,6 +8680,23 @@
       document.getElementById("rmRevealBtn").style.display = "inline-block";
       document.getElementById("rmFeedback").textContent = "";
       document.getElementById("rmFeedback").className = "game-feedback";
+      document.getElementById("rmHintPanel").style.display = "none";
+      document.getElementById("rmWordRow").style.display = "none";
+      // Show existing hint if there is one
+      const hintEl = document.getElementById("rmCurrentHint");
+      if (shlok && shlok.reviseHint) {
+        const h = shlok.reviseHint;
+        let hintMsg = "";
+        if (h.type === "line1")  hintMsg = "💡 Last time you found line 1 tricky - see if you can recall it now!";
+        else if (h.type === "line2")  hintMsg = "💡 Last time you found line 2 tricky - see if you can recall it now!";
+        else if (h.type === "whole")  hintMsg = "💡 You found it tricky to recall the full shlok last time - see if you can recall it now!";
+        else if (h.type === "word")   hintMsg = "💡 You couldn't remember a word or part of this shlok - see if you can recall it now!";
+        else hintMsg = `💡 Last time: ${h.text}`;
+        hintEl.textContent = hintMsg;
+        hintEl.style.display = "block";
+      } else {
+        hintEl.style.display = "none";
+      }
     }
 
     function rmReveal() {
@@ -8448,25 +8713,134 @@
       if (correct) {
         rmKnown++;
         document.getElementById("rmKnownCount").textContent = rmKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.reviewed = localDateStr(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.reviseHint = null; shlok.memorisedDate = localDateStr(); }
         document.getElementById("rmFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("rmFeedback").className = "game-feedback correct";
+        document.getElementById("rmHintPanel").style.display = "none";
+        save(); render(); updateDashboard(); updateHomePage();
+        rmIndex++;
+        setTimeout(rmShowCard, 800);
       } else {
         rmNotYet++;
         document.getElementById("rmFeedback").textContent = "✗ Keeping in Revise";
         document.getElementById("rmFeedback").className = "game-feedback wrong";
+        document.getElementById("rmRevealSection").style.display = "none";
+        // Show hint panel
+        document.getElementById("rmHintPanel").style.display = "block";
+        document.getElementById("rmWordRow").style.display = "none";
       }
+    }
+
+    function rmSetHint(type) {
+      const s = rmPool[rmIndex];
+      const master = allShloks.find(a => a.id === s.number);
+      const shlok = myShloks.find(x => x.number === s.number);
+      if (!shlok || !master) { rmNextAfterHint(); return; }
+      if (type === "word") {
+        const s = rmPool[rmIndex];
+        const master = allShloks.find(a => a.id === s.number);
+        if (!master) { rmNextAfterHint(); return; }
+        const splitWords = line => line.split(/[\s-]+/).filter(Boolean);
+        const words1 = splitWords(master.line1);
+        const words2 = splitWords(master.line2);
+        rmWordOptions = [...words1, ...words2];
+        const wordRow = document.getElementById("rmWordRow");
+        wordRow.style.display = "block";
+        document.getElementById("rmWordPicker").innerHTML = `
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;">Tap the word(s) or part you couldn't remember - tap again to deselect:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;">
+            ${words1.map((w,i) => `<button class="rm-word-pick-btn" id="rmwb${i}" onclick="rmToggleWord(${i})">${w}</button>`).join('')}
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.35rem;margin-top:0.2rem;">Line 2:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem;">
+            ${words2.map((w,i) => `<button class="rm-word-pick-btn" id="rmwb${words1.length+i}" onclick="rmToggleWord(${words1.length+i})">${w}</button>`).join('')}
+          </div>
+          <button class="rm-hint-save-btn" onclick="rmSaveSelectedWords()">Save</button>
+        `;
+        rmSelectedWords = new Set();
+        return;
+      }
+      let hintText = "";
+      if (type === "line1")  hintText = `Last time you found line 1 tricky - it starts with '${getFirstTwoWords(master.line1)}...'`;
+      if (type === "line2")  hintText = `Last time you found line 2 tricky - it starts with '${getFirstTwoWords(master.line2)}...'`;
+      if (type === "whole")  hintText = `You couldn't remember the full shlok - line 1 starts with '${getFirstTwoWords(master.line1)}...', line 2 starts with '${getFirstTwoWords(master.line2)}...'`;
+      if (type === "skip")   hintText = "";
+      if (hintText) shlok.reviseHint = { type, text: hintText };
+      save();
+      rmNextAfterHint();
+    }
+
+    let rmWordOptions = [];
+    let rmSelectedWords = new Set();
+
+    function rmToggleWord(index) {
+      const btn = document.getElementById(`rmwb${index}`);
+      if (!btn) return;
+      if (rmSelectedWords.has(index)) {
+        rmSelectedWords.delete(index);
+        btn.style.background = "";
+        btn.style.borderColor = "";
+        btn.style.color = "";
+        btn.style.fontWeight = "";
+      } else {
+        rmSelectedWords.add(index);
+        btn.style.background = "var(--gold)";
+        btn.style.borderColor = "var(--gold)";
+        btn.style.color = "var(--blue-dark)";
+        btn.style.fontWeight = "700";
+      }
+    }
+
+    function rmSaveSelectedWords() {
+      if (rmSelectedWords.size === 0) { rmNextAfterHint(); return; }
+      const s = rmPool[rmIndex];
+      const master = allShloks.find(a => a.id === s.number);
+      const shlok = myShloks.find(x => x.number === s.number);
+      if (!master || !shlok) { rmNextAfterHint(); return; }
+      const splitWords = line => line.split(/[\s-]+/).filter(Boolean);
+      const words1 = splitWords(master.line1);
+      const line1count = words1.length;
+      const line1words = [...rmSelectedWords].filter(i => i < line1count).map(i => rmWordOptions[i]);
+      const line2words = [...rmSelectedWords].filter(i => i >= line1count).map(i => rmWordOptions[i]);
+      let textParts = [];
+      if (line1words.length) textParts.push(`'${line1words.join(' ')}' in line 1`);
+      if (line2words.length) textParts.push(`'${line2words.join(' ')}' in line 2`);
+      shlok.reviseHint = {
+        type: "word",
+        text: `You couldn't remember ${textParts.join(' and ')}`,
+        line1words, line2words
+      };
+      save();
+      rmNextAfterHint();
+    }
+
+    function rmNextAfterHint() {
+      document.getElementById("rmHintPanel").style.display = "none";
       save(); render(); updateDashboard(); updateHomePage();
       rmIndex++;
-      setTimeout(rmShowCard, 800);
+      setTimeout(rmShowCard, 300);
     }
 
     function rmFinish() {
-      document.getElementById("rmPrompt").textContent = "";
-      document.getElementById("rmRevealBtn").style.display = "none";
-      document.getElementById("rmFeedback").textContent = "";
+      document.getElementById("rmPlayCard").style.display = "none";
+      const reviewBtn = rmNotYet > 0
+        ? `<div style="margin-top:1rem;">
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">Want to review the shloks you couldn't remember?</p>
+            <button onclick="switchTab(document.querySelectorAll('.nav-item')[2], 'learn'); learnSetMode('revise');"
+              style="padding:0.45rem 1.2rem; border-radius:999px; border:1.5px solid var(--gold); background:transparent; color:var(--gold); font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer; transition:0.2s;"
+              onmouseover="this.style.background='var(--gold)';this.style.color='var(--blue-dark)';"
+              onmouseout="this.style.background='transparent';this.style.color='var(--gold)';">
+              Go to Revise on the Learn page →
+            </button>
+          </div>`
+        : "";
       document.getElementById("rmDoneMsg").innerHTML =
-        `Session complete! 🎉<br><span style="font-size:0.9rem; font-weight:400;">✅ ${rmKnown} memorised &nbsp;·&nbsp; ✗ ${rmNotYet} still revising</span>`;
+        `<div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.8rem;">Revision Complete! 🎉</div>
+        <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You got <strong style="color:var(--text-main);">${rmKnown}</strong> shlok${rmKnown !== 1 ? "s" : ""} correct.</div>
+        ${rmNotYet > 0
+          ? `<div style="font-size:1rem; color:var(--text-muted);">📖 <strong style="color:var(--text-main);">${rmNotYet}</strong> shlok${rmNotYet !== 1 ? "s" : ""} still to practise.</div>`
+          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}
+        ${reviewBtn}`;
       document.getElementById("rmDone").style.display = "block";
     }
 
@@ -8478,6 +8852,7 @@
       document.getElementById("frKnownCount").textContent = 0;
       document.getElementById("frTotal").textContent = frPool.length;
       document.getElementById("frDone").style.display = "none";
+      document.getElementById("frPlayCard").style.display = "block";
       document.getElementById("frFeedback").textContent = "";
       if (!frPool.length) {
         document.getElementById("frPrompt").textContent = "No shloks added yet!";
@@ -8509,10 +8884,10 @@
       const segs0 = words[0] ? words[0].split("-") : [];
       let clue;
       if (segs0.length >= 2) {
-        // First word is itself a hyphenated compound — take its first two segments only
+        // First word is itself a hyphenated compound - take its first two segments only
         clue = segs0.slice(0, 2).join("-");
       } else {
-        // First word is plain — pair it with just the first hyphen-segment of the next word
+        // First word is plain - pair it with just the first hyphen-segment of the next word
         const word1 = words[1] || "";
         const seg1First = word1.split("-")[0] || "";
         clue = seg1First ? `${words[0]} ${seg1First}` : `${words[0] || ""}`;
@@ -8536,12 +8911,12 @@
       if (correct) {
         frKnown++;
         document.getElementById("frKnownCount").textContent = frKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.reviewed = localDateStr(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.memorisedDate = localDateStr(); }
         document.getElementById("frFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("frFeedback").className = "game-feedback correct";
       } else {
         frNotYet++;
-        if (shlok) { shlok.mastery = "revise"; shlok.reviewed = localDateStr(); }
+        if (shlok) { shlok.mastery = "revise"; }
         document.getElementById("frFeedback").textContent = "✗ Moved to Revise";
         document.getElementById("frFeedback").className = "game-feedback wrong";
       }
@@ -8551,11 +8926,14 @@
     }
 
     function frFinish() {
-      document.getElementById("frPrompt").textContent = "";
-      document.getElementById("frRevealBtn").style.display = "none";
-      document.getElementById("frFeedback").textContent = "";
-      document.getElementById("frDoneMsg").innerHTML =
-        `Full review complete! 🎉<br><span style="font-size:0.9rem; font-weight:400;">✅ ${frKnown} knew it &nbsp;·&nbsp; ✗ ${frNotYet} need practice</span>`;
+      document.getElementById("frPlayCard").style.display = "none";
+      document.getElementById("frDoneMsg").innerHTML = `
+        <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.8rem;">Full Review Complete! 🎉</div>
+        <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You got <strong style="color:var(--text-main);">${frKnown}</strong> shlok${frKnown !== 1 ? "s" : ""} correct.</div>
+        ${frNotYet > 0
+          ? `<div style="font-size:1rem; color:var(--text-muted);">📖 <strong style="color:var(--text-main);">${frNotYet}</strong> shlok${frNotYet !== 1 ? "s" : ""} moved to Revise for further practice.</div>`
+          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}
+      `;
       document.getElementById("frDone").style.display = "block";
     }
 
@@ -8619,7 +8997,7 @@
     updateFlipClock();
 
     /* ------------------------------
-       HELP ICON — STOP ABOVE FOOTER
+       HELP ICON - STOP ABOVE FOOTER
        ------------------------------ */
     function updateHelpIconPosition() {
       const icon   = document.getElementById("helpIcon");
@@ -8767,11 +9145,11 @@
       // Revise Now
       loadReviseNow();
 
-      // Count reviewed today
+      // Count shloks memorised today
       const todayStr = localDateStr();
-      const reviewedToday = myShloks.filter(s => s.reviewed === todayStr).length;
+      const memorisedToday = myShloks.filter(s => s.memorisedDate === todayStr).length;
       const statTodayEl = document.getElementById("statTodayNum");
-      if (statTodayEl) statTodayEl.textContent = reviewedToday;
+      if (statTodayEl) statTodayEl.textContent = memorisedToday;
 
       const memorisedList = myShloks.filter(s => s.mastery === "memorised");
       const container = document.getElementById("dailyShlokContent");
@@ -8791,26 +9169,29 @@
         }
       }
 
-      // Streak — count consecutive days with Daily Challenge completions
+      // Streak - count consecutive days with correct Daily Challenge completions
       const dcHistory = new Set(JSON.parse(localStorage.getItem("dcHistory") || "[]"));
 
       let streak = 0;
-      const d = new Date();
-      d.setHours(0,0,0,0);
-      const fmt = dt => localDateStr(dt);
 
-      // Allow today OR yesterday to count as "active"
-      if (dcHistory.has(fmt(d))) {
-        streak = 1;
-      } else {
-        d.setDate(d.getDate() - 1);
-        if (dcHistory.has(fmt(d))) streak = 1;
+      // Start from today - if today not done yet, allow yesterday to still keep streak alive
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const todayStr2 = localDateStr(todayDate);
+      const yesterdayDate = new Date(todayDate);
+      yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+      const yesterdayStr = localDateStr(yesterdayDate);
+
+      let startDate = null;
+      if (dcHistory.has(todayStr2)) {
+        startDate = new Date(todayDate);
+      } else if (dcHistory.has(yesterdayStr)) {
+        startDate = new Date(yesterdayDate);
       }
 
-      if (streak > 0) {
-        let check = new Date(d);
-        check.setDate(check.getDate() - 1);
-        while (dcHistory.has(fmt(check))) {
+      if (startDate) {
+        let check = new Date(startDate);
+        while (dcHistory.has(localDateStr(check))) {
           streak++;
           check.setDate(check.getDate() - 1);
         }
@@ -8859,10 +9240,10 @@
     }
 
     function showAddBox(which) {
-      document.getElementById("addOneBox").style.display    = which === "one"    ? "block" : "none";
-      document.getElementById("addRangeBox").style.display  = which === "range"  ? "block" : "none";
-      document.getElementById("addStatusBox").style.display = which === "status" ? "block" : "none";
-      document.getElementById("addDateBox").style.display   = which === "date"   ? "block" : "none";
+      document.getElementById("addOneBox").style.display     = which === "one"    ? "block" : "none";
+      document.getElementById("addRangeBox").style.display   = which === "range"  ? "block" : "none";
+      document.getElementById("addStatusBox").style.display  = which === "status" ? "block" : "none";
+      document.getElementById("addRemoveBox").style.display  = which === "remove" ? "block" : "none";
     }
 
     window.addEventListener("load", () => {
@@ -8979,7 +9360,7 @@
       allShloks.forEach(s => {
         const opt = document.createElement("option");
         opt.value = s.id;
-        opt.textContent = `${s.id} — ${s.line1}`;
+        opt.textContent = `${s.id} - ${s.line1}`;
         select.appendChild(opt);
       });
 
@@ -9005,7 +9386,6 @@
       } else {
         panel.classList.add("open");
         overlay.classList.add("open");
-        updatePanelParisCountdown();
         loadProfile();
       }
     }
