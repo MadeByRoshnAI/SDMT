@@ -9961,10 +9961,17 @@
       const size = ssRoundSizes[round];
 
       // Get learned shlok numbers sorted
-      const learnedNums = myShloks
-        .filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise')
-        .map(s => parseInt(s.number))
-        .sort((a, b) => a - b);
+      const learnedNums = [...new Set(
+        myShloks
+          .filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise')
+          .map(s => parseInt(s.number))
+          .filter(n => !isNaN(n))
+      )].sort((a, b) => a - b);
+
+      if (learnedNums.length < size) {
+        alert(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) — individual shloks learnt out of order won't count.`);
+        backToHub(); return;
+      }
 
       // Find runs of strictly consecutive numbers
       const runs = [];
@@ -10173,7 +10180,7 @@
       // Send new challenge
       html += `<div class="card game-play-card">
         <div class="game-title-row">🤝 Challenge a Friend</div>
-        <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your Mandal to challenge.</div>
+        <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your mandal to challenge.</div>
         <div id="cfFriendList" style="display:flex; flex-direction:column; gap:0.6rem;">
           <div style="color:var(--text-muted); font-size:0.85rem;">Loading Mandal...</div>
         </div>
