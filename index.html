@@ -2955,6 +2955,85 @@
     }
     .revise-blur:hover { filter: blur(3px); }
 
+    .kahoot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .kahoot-btn {
+      padding: 1rem 0.8rem;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      color: white;
+      text-align: center;
+      line-height: 1.4;
+      transition: opacity 0.3s, transform 0.15s;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kahoot-btn:active { transform: scale(0.97); }
+    .kahoot-btn.k-red    { background: #e53e3e; }
+    .kahoot-btn.k-blue   { background: #3182ce; }
+    .kahoot-btn.k-yellow { background: #d69e2e; }
+    .kahoot-btn.k-green  { background: #38a169; }
+    .kahoot-btn.k-correct { box-shadow: 0 0 0 3px white, 0 0 0 5px currentColor; transform: scale(1.03); }
+    .kahoot-btn.k-wrong  { opacity: 0.3; }
+    .kahoot-question {
+      background: var(--blue);
+      border-radius: 12px;
+      padding: 1.2rem;
+      color: white;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ss-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.6rem;
+      transition: border-color 0.2s;
+    }
+    .ss-card.ss-correct { border-color: var(--green-text); }
+    .ss-card.ss-wrong   { border-color: #dc2626; }
+    .ss-card-content { flex: 1; font-size: 0.82rem; line-height: 1.5; }
+    .ss-card-num { font-size: 0.7rem; font-weight: 700; color: var(--gold); margin-bottom: 0.2rem; display: none; }
+    .ss-card-num.revealed { display: block; }
+    .ss-arrows { display: flex; flex-direction: column; gap: 2px; }
+    .ss-arrow-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      color: var(--text-main); font-size: 0.75rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .ss-arrow-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+    .ss-arrow-btn:disabled { opacity: 0.3; cursor: default; }
+    .ss-pos-badge {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue); color: white;
+      font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
     .game-feedback {
       margin-top: 1rem;
       font-size: 0.9rem;
@@ -3381,6 +3460,13 @@
 
       <!-- JOURNEY TO RAJIPO + CARDS CONTAINER -->
       <div class="home-content-wrap">
+
+        <!-- CHALLENGE BANNER -->
+        <div id="challengeBanner" style="display:none; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>startGame('challengeFriend'),200);">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); margin-bottom:0.3rem;">⚔️ CHALLENGE</div>
+          <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.3rem;"></div>
+          <div id="challengeBannerTime" style="font-size:0.75rem; color:rgba(255,255,255,0.6);"></div>
+        </div>
 
         <!-- JOURNEY TO RAJIPO PROGRESS BAR -->
         <div class="home-card home-progress-card">
@@ -3928,24 +4014,6 @@
           <p style="color:var(--text-muted); font-size:0.9rem;">Choose a game - all games use your memorised shloks. You need at least 4 memorised shloks to play.</p>
         </div>
         <div class="game-grid">
-          <div class="game-card" onclick="startGame('spotMistake')">
-            <div class="game-card-icon">🔍</div>
-            <div class="game-card-title">Spot the Mistake</div>
-            <div class="game-card-desc">A shlok with one wrong word - can you spot it?</div>
-            <div class="game-card-tag">Accuracy</div>
-          </div>
-          <div class="game-card" onclick="startGame('snap')">
-            <div class="game-card-icon">🃏</div>
-            <div class="game-card-title">Snap</div>
-            <div class="game-card-desc">Match line 1 to line 2, or match a shlok to its meaning - you choose!</div>
-            <div class="game-card-tag">Memory</div>
-          </div>
-          <div class="game-card" onclick="startGame('wordScramble')">
-            <div class="game-card-icon">🔤</div>
-            <div class="game-card-title">Word Scramble</div>
-            <div class="game-card-desc">Words of a shlok line are shuffled - tap them in the correct order.</div>
-            <div class="game-card-tag">Order</div>
-          </div>
           <div class="game-card" onclick="startGame('dailyChallenge')">
             <div class="game-card-icon">📅</div>
             <div class="game-card-title">Daily Challenge</div>
@@ -3964,6 +4032,43 @@
             <div class="game-card-desc">Go through every shlok you've added - learnt, memorised and revise - and test yourself on all of them.</div>
             <div class="game-card-tag">Everything</div>
           </div>
+          <div class="game-card" onclick="startGame('spotMistake')">
+            <div class="game-card-icon">🔍</div>
+            <div class="game-card-title">Spot the Mistake</div>
+            <div class="game-card-desc">A shlok with one wrong word - can you spot it?</div>
+            <div class="game-card-tag">Accuracy</div>
+          </div>
+          <div class="game-card" onclick="startGame('snap')">
+            <div class="game-card-icon">🃏</div>
+            <div class="game-card-title">Snap</div>
+            <div class="game-card-desc">Match line 1 to line 2, or match a shlok to its meaning - you choose!</div>
+            <div class="game-card-tag">Memory</div>
+          </div>
+          <div class="game-card" onclick="startGame('wordScramble')">
+            <div class="game-card-icon">🔤</div>
+            <div class="game-card-title">Word Scramble</div>
+            <div class="game-card-desc">Words of a shlok line are shuffled - tap them in the correct order.</div>
+            <div class="game-card-tag">Order</div>
+          </div>
+          <div class="game-card" onclick="startGame('kahootQuiz')">
+            <div class="game-card-icon">🤔</div>
+            <div class="game-card-title">Quiz Time</div>
+            <div class="game-card-desc">4 options, 1 correct answer - how well do you know your shloks?</div>
+            <div class="game-card-tag">Quiz</div>
+          </div>
+          <div class="game-card" onclick="startGame('shlokSequence')">
+            <div class="game-card-icon">🔢</div>
+            <div class="game-card-title">Shlok Sequence</div>
+            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds — 3, 5, 10, 15 then 20 shloks. Gets trickier each time!</div>
+            <div class="game-card-tag">Order</div>
+          </div>
+          <div class="game-card" onclick="startGame('challengeFriend')">
+            <div class="game-card-icon">🤝</div>
+            <div class="game-card-title">Challenge a Friend</div>
+            <div class="game-card-desc">Pick 5 shloks to test a friend on — they challenge you back. 48 hours to complete!</div>
+            <div class="game-card-tag">vs Friend</div>
+          </div>
+
         </div>
       </div>
 
@@ -4131,6 +4236,86 @@
           <div id="snapGrid" class="snap-grid"></div>
           <div id="snapFeedback" class="game-feedback"></div>
         </div>
+      </div>
+
+      <!-- KAHOOT QUIZ -->
+      <div id="gameKahootQuiz" class="game-screen" style="display:none;">
+        <!-- MODE SELECTOR -->
+        <div id="kqModeSelector">
+          <div class="game-topbar">
+            <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          </div>
+          <div class="card game-play-card" style="text-align:center;">
+            <div class="game-title-row">🤔 Choose Your Quiz Mode</div>
+            <div class="game-instruction" style="margin-bottom:2rem;">Pick how you want to be tested on your shloks.</div>
+            <div style="display:flex; flex-direction:column; gap:1rem; max-width:360px; margin:0 auto;">
+              <button class="snap-mode-btn" onclick="loadKahootQuiz('normal')">
+                <div class="snap-mode-icon">🫡</div>
+                <div><div class="snap-mode-title">Normal Quiz</div>
+                <div class="snap-mode-sub">10 questions, answer at your own pace. See the full shlok after each answer.</div></div>
+              </button>
+              <button class="snap-mode-btn" onclick="loadKahootQuiz('speed')">
+                <div class="snap-mode-icon">⚡</div>
+                <div><div class="snap-mode-title">Speed Round</div>
+                <div class="snap-mode-sub">10 questions, 5 seconds each. Pick before the timer runs out - or it counts as wrong!</div></div>
+              </button>
+              <button class="snap-mode-btn" onclick="loadKahootQuiz('nodeath')">
+                <div class="snap-mode-icon">💀</div>
+                <div><div class="snap-mode-title">No Mistakes</div>
+                <div class="snap-mode-sub">Keep answering until you get one wrong. One mistake ends the game - how far can you go?</div></div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- GAME -->
+        <div id="kqGameArea" style="display:none;">
+          <div class="game-topbar">
+            <button class="game-back-btn" onclick="backToHub()">← Games</button>
+            <div class="game-score-label">✅ <span id="kqScore">0</span> &nbsp;·&nbsp; <span id="kqProgress">1 / 10</span></div>
+          </div>
+          <div id="kqTimerBar" style="display:none; height:5px; background:var(--border); border-radius:999px; margin-bottom:0.8rem; overflow:hidden;">
+            <div id="kqTimerFill" style="height:100%; background:var(--gold); border-radius:999px; transition:width 0.1s linear; width:100%;"></div>
+          </div>
+          <div class="card game-play-card" id="kqPlayCard">
+            <div class="game-title-row">🤔 Quiz Time</div>
+            <div id="kqTypeLabel" class="game-instruction"></div>
+            <div id="kqQuestion" class="kahoot-question"></div>
+            <div id="kqOptions" class="kahoot-grid"></div>
+            <div id="kqFeedback" class="game-feedback" style="margin-top:0.8rem;"></div>
+          </div>
+          <div id="kqDone" style="display:none; text-align:center; padding:2rem;">
+            <div id="kqDoneMsg"></div>
+            <button class="game-next-btn" onclick="showKahootModeSelector()" style="margin-top:1.2rem;">🔄 Play Again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHLOK SEQUENCE -->
+      <div id="gameShlokSequence" class="game-screen" style="display:none;">
+        <div class="game-topbar">
+          <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          <div class="game-score-label">Round <span id="ssRoundNum">1</span> / 5</div>
+        </div>
+        <div class="card game-play-card" id="ssPlayCard">
+          <div class="game-title-row">🔢 Shlok Sequence</div>
+          <div id="ssInstruction" class="game-instruction"></div>
+          <div id="ssCardList"></div>
+          <button class="game-submit-btn" id="ssCheckBtn" onclick="ssCheckOrder()" style="width:100%; margin-top:0.5rem;">Check Order</button>
+          <div id="ssFeedback" class="game-feedback" style="margin-top:0.8rem;"></div>
+        </div>
+        <div id="ssDone" style="display:none; text-align:center; padding:2rem;">
+          <div id="ssDoneMsg"></div>
+          <button class="game-next-btn" onclick="loadShlokSequence()" style="margin-top:1.2rem;">🔄 Play Again</button>
+        </div>
+      </div>
+
+      <!-- CHALLENGE A FRIEND -->
+      <div id="gameChallengeFriend" class="game-screen" style="display:none;">
+        <div class="game-topbar">
+          <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          <div class="game-score-label">🤝 Challenge</div>
+        </div>
+        <div id="cfMain"></div>
       </div>
 
     </section>
@@ -6779,6 +6964,10 @@
       if (game === "dailyChallenge"){ document.getElementById("gameDailyChallenge").style.display = "block"; loadDailyChallenge(); }
       if (game === "revisionMode")  { document.getElementById("gameRevisionMode").style.display = "block";  loadRevisionMode(); }
       if (game === "fullReview")    { document.getElementById("gameFullReview").style.display = "block";    loadFullReview(); }
+      if (game === "kahootQuiz")    { document.getElementById("gameKahootQuiz").style.display = "block";    showKahootModeSelector(); }
+      if (game === "shlokSequence") { document.getElementById("gameShlokSequence").style.display = "block"; loadShlokSequence(); }
+      if (game === "challengeFriend") { document.getElementById("gameChallengeFriend").style.display = "block"; loadChallengeFriend(); }
+
     }
 
     function shuffle(arr) {
@@ -7551,7 +7740,7 @@
           document.getElementById("wsScore").textContent = parseInt(document.getElementById("wsScore").textContent) + 1;
           setTimeout(loadWordScramble, 1000);
         } else {
-          fb.innerHTML = `✗ Correct order: ${wsJoinDisplay(wsWords, wsSeps)}`;
+          fb.innerHTML = `❌ Correct order: ${wsJoinDisplay(wsWords, wsSeps)}`;
           fb.className = "game-feedback wrong";
           setTimeout(loadWordScramble, 2500);
         }
@@ -7907,7 +8096,7 @@
         </div>
         <div style="font-size:0.72rem; color:var(--text-muted,rgba(255,255,255,0.5)); padding-bottom:0.7rem; border-bottom:1px solid var(--border,rgba(255,255,255,0.08)); font-weight:400;">
           ${person.goalTarget
-            ? `🎯 Aim of memorising ${person.goalTarget} shloks${person.goalName ? ` for ${mandalEscapeHtml(person.goalName)}` : person.goalDate ? ` by ${new Date(person.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}` : ""}`
+            ? `🎯 Aim of memorising ${person.goalTarget} shloks${person.goalName ? ` by ${mandalEscapeHtml(person.goalName)}` : person.goalDate ? ` by ${new Date(person.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}` : ""}`
             : person.uid === getMandalUserId()
               ? `🎯 Aim: <span style="opacity:0.6;">Add an aim in 'My Profile'</span>`
               : `🎯 Aim: <span style="opacity:0.5;">not set</span>`
@@ -8528,7 +8717,7 @@
 
       if (saved.date === today && saved.done) {
         document.getElementById("dcNumber").textContent = `Shlok ${saved.number}`;
-        document.getElementById("dcFeedback").textContent = saved.result ? "✅ You got it!" : "✗ You missed this one";
+        document.getElementById("dcFeedback").textContent = saved.result ? "✅ You got it!" : "❌ You missed this one";
         document.getElementById("dcFeedback").className = "game-feedback " + (saved.result ? "correct" : "wrong");
         document.getElementById("dcRevealBtn").style.display = "none";
         document.getElementById("dcDoneMsg").style.display = "block";
@@ -8573,7 +8762,7 @@
       }
 
       const fb = document.getElementById("dcFeedback");
-      fb.textContent = correct ? "✅ Amazing - come back tomorrow!" : "✗ No worries - practice makes perfect!";
+      fb.textContent = correct ? "✅ Amazing - come back tomorrow!" : "❌ No worries - practice makes perfect!";
       fb.className = "game-feedback " + (correct ? "correct" : "wrong");
       document.getElementById("dcRevealSection").style.display = "none";
       document.getElementById("dcDoneMsg").style.display = "block";
@@ -8781,7 +8970,7 @@
         setTimeout(rmShowCard, 800);
       } else {
         rmNotYet++;
-        document.getElementById("rmFeedback").textContent = "✗ Keeping in Revise";
+        document.getElementById("rmFeedback").textContent = "❌ Keeping in Revise";
         document.getElementById("rmFeedback").className = "game-feedback wrong";
         document.getElementById("rmRevealSection").style.display = "none";
         // Show hint panel
@@ -8976,7 +9165,7 @@
       } else {
         frNotYet++;
         if (shlok) { shlok.mastery = "revise"; }
-        document.getElementById("frFeedback").textContent = "✗ Moved to Revise";
+        document.getElementById("frFeedback").textContent = "❌ Moved to Revise";
         document.getElementById("frFeedback").className = "game-feedback wrong";
       }
       save(); render(); updateDashboard(); updateHomePage();
@@ -9135,6 +9324,7 @@
        ------------------------------ */
     function updateHomePage() {
       const name = window.userFirstName || "Haribhakta";
+      updateChallengeBanner();
 
       // Welcome text
       const welcomeEl = document.getElementById("welcomeText");
@@ -9557,6 +9747,633 @@
       closeEditPanel();
       showToast("Profile saved!");
     }
+    // ── SHLOK QUIZ (KAHOOT STYLE) ──
+    let kqPool = [], kqIndex = 0, kqCorrectCount = 0;
+    const kqTotal = 10;
+    const kqColours = ['k-red','k-blue','k-yellow','k-green'];
+
+    function loadKahootQuiz() {
+      const eligible = myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised');
+      if (eligible.length < 4) { alert('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
+      kqPool = shuffle(eligible).slice(0, kqTotal);
+      kqIndex = 0; kqCorrectCount = 0;
+      document.getElementById('kqScore').textContent = 0;
+      document.getElementById('kqDone').style.display = 'none';
+      document.getElementById('kqPlayCard').style.display = 'block';
+      kqShowQuestion();
+    }
+
+    let kqCurrentMaster = null;
+    let kqMode = 'normal';
+    let kqStreak = 0;
+    let kqBestStreak = parseInt(localStorage.getItem('kqBestStreak') || '0');
+    let kqTimerInterval = null;
+    let kqTimeLeft = 5;
+    const kqTimePerQ = 5;
+
+    function showKahootModeSelector() {
+      document.getElementById('kqModeSelector').style.display = 'block';
+      document.getElementById('kqGameArea').style.display = 'none';
+      clearInterval(kqTimerInterval);
+    }
+
+    function loadKahootQuiz(mode) {
+      const eligible = myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised');
+      if (eligible.length < 4) { alert('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
+      kqMode = mode || 'normal';
+      kqPool = shuffle(eligible);
+      if (kqMode !== 'nodeath') kqPool = kqPool.slice(0, kqTotal);
+      kqIndex = 0; kqCorrectCount = 0; kqStreak = 0;
+      document.getElementById('kqScore').textContent = 0;
+      document.getElementById('kqDone').style.display = 'none';
+      document.getElementById('kqPlayCard').style.display = 'block';
+      document.getElementById('kqModeSelector').style.display = 'none';
+      document.getElementById('kqGameArea').style.display = 'block';
+      document.getElementById('kqTimerBar').style.display = kqMode === 'speed' ? 'block' : 'none';
+      document.getElementById('kqProgress').textContent = kqMode === 'nodeath' ? '0 in a row' : `1 / ${kqTotal}`;
+      kqShowQuestion();
+    }
+
+    function kqShowQuestion() {
+      clearInterval(kqTimerInterval);
+      if (kqMode !== 'nodeath' && kqIndex >= kqPool.length) { kqFinish(); return; }
+      if (kqMode !== 'nodeath') document.getElementById('kqProgress').textContent = `${kqIndex + 1} / ${kqTotal}`;
+      document.getElementById('kqFeedback').innerHTML = '';
+      document.getElementById('kqFeedback').className = 'game-feedback';
+
+      if (kqMode === 'nodeath' && kqIndex >= kqPool.length) {
+        kqPool = shuffle(myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised'));
+        kqIndex = 0;
+      }
+
+      const shlok = kqPool[kqIndex];
+      const master = allShloks.find(a => a.id === shlok.number);
+      if (!master) { kqIndex++; kqShowQuestion(); return; }
+      kqCurrentMaster = master;
+
+      const types = ['line1to2', 'line2to1'];
+      if (master.meaning) types.push('shlokToMeaning');
+      const type = types[Math.floor(Math.random() * types.length)];
+
+      const others = myShloks.filter(s => s.number !== shlok.number && (s.mastery === 'learnt' || s.mastery === 'memorised'));
+      const distractors = shuffle(others).slice(0, 3).map(s => allShloks.find(a => a.id === s.number)).filter(Boolean);
+      if (distractors.length < 3) { kqIndex++; kqShowQuestion(); return; }
+
+      let questionHtml = '', correctAnswer = '', options = [];
+      if (type === 'line1to2') {
+        document.getElementById('kqTypeLabel').textContent = 'Which is line 2 of this shlok?';
+        questionHtml = `<em>${master.line1}</em>`;
+        correctAnswer = master.line2;
+        options = [master.line2, ...distractors.map(d => d.line2)];
+      } else if (type === 'line2to1') {
+        document.getElementById('kqTypeLabel').textContent = 'Which is line 1 of this shlok?';
+        questionHtml = `<em>${master.line2}</em>`;
+        correctAnswer = master.line1;
+        options = [master.line1, ...distractors.map(d => d.line1)];
+      } else {
+        document.getElementById('kqTypeLabel').textContent = 'What is the meaning of this shlok?';
+        questionHtml = `<em>${master.line1}</em><br><em>${master.line2}</em>`;
+        correctAnswer = master.meaning;
+        options = [master.meaning, ...distractors.filter(d => d.meaning).slice(0,3).map(d => d.meaning)];
+        if (options.length < 4) { kqIndex++; kqShowQuestion(); return; }
+      }
+
+      document.getElementById('kqQuestion').innerHTML = questionHtml;
+      const shuffledOptions = shuffle(options);
+      const grid = document.getElementById('kqOptions');
+      grid.innerHTML = '';
+      shuffledOptions.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = `kahoot-btn ${kqColours[i]}`;
+        btn.textContent = opt;
+        btn.onclick = () => kqAnswer(opt, correctAnswer, grid);
+        grid.appendChild(btn);
+      });
+
+      if (kqMode === 'speed') {
+        kqTimeLeft = kqTimePerQ;
+        document.getElementById('kqTimerFill').style.width = '100%';
+        kqTimerInterval = setInterval(() => {
+          kqTimeLeft -= 0.1;
+          const pct = Math.max(0, (kqTimeLeft / kqTimePerQ) * 100);
+          document.getElementById('kqTimerFill').style.width = pct + '%';
+          document.getElementById('kqTimerFill').style.background = pct > 50 ? 'var(--gold)' : pct > 25 ? '#f97316' : '#dc2626';
+          if (kqTimeLeft <= 0) { clearInterval(kqTimerInterval); kqAnswer(null, correctAnswer, grid); }
+        }, 100);
+      }
+    }
+
+    function kqAnswer(selected, correct, grid) {
+      clearInterval(kqTimerInterval);
+      grid.querySelectorAll('.kahoot-btn').forEach(btn => {
+        btn.onclick = null;
+        if (btn.textContent === correct) btn.classList.add('k-correct');
+        else btn.classList.add('k-wrong');
+      });
+
+      const isCorrect = selected === correct;
+      const m = kqCurrentMaster;
+
+      if (isCorrect) {
+        kqCorrectCount++;
+        kqStreak++;
+        document.getElementById('kqScore').textContent = kqCorrectCount;
+        if (kqMode === 'nodeath') document.getElementById('kqProgress').textContent = `${kqStreak} in a row`;
+      }
+
+      const fb = document.getElementById('kqFeedback');
+
+      if (kqMode === 'nodeath' && !isCorrect) {
+        if (kqStreak > kqBestStreak) { kqBestStreak = kqStreak; localStorage.setItem('kqBestStreak', kqBestStreak); }
+        fb.innerHTML = `
+          <div style="margin-bottom:0.6rem;">❌ Not quite - game over!</div>
+          <div style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.3rem;">Shlok ${m.id}</div>
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.8rem; line-height:1.6;">${m.line1}<br>${m.line2}</div>
+          <button class="game-next-btn" onclick="kqEndNoDeath()">See Results</button>
+        `;
+        return;
+      }
+
+      const timeOut = selected === null;
+      const nextLabel = kqMode !== 'nodeath' && kqIndex + 1 >= kqPool.length ? 'See Results' : 'Next Question →';
+      fb.innerHTML = `
+        <div style="margin-bottom:0.6rem;">${isCorrect ? '✅ Correct!' : timeOut ? '⏱️ Time\'s up!' : '❌ Not quite!'}</div>
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-main); margin-bottom:0.3rem;">Shlok ${m.id}</div>
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.8rem; line-height:1.6;">${m.line1}<br>${m.line2}</div>
+        ${kqMode !== 'speed' ? `<button class="game-next-btn" onclick="kqNext()" style="margin-top:0;">${nextLabel}</button>` : ''}
+      `;
+
+      kqIndex++;
+      if (kqMode === 'speed') setTimeout(kqNext, 1200);
+    }
+
+    function kqNext() { kqShowQuestion(); }
+
+    function kqEndNoDeath() {
+      document.getElementById('kqPlayCard').style.display = 'none';
+      const isNewBest = kqStreak >= kqBestStreak && kqStreak > 0;
+      document.getElementById('kqDoneMsg').innerHTML = `
+        <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.6rem;">${kqStreak === 0 ? '💀 First one got you!' : kqStreak >= 10 ? '🏆 Incredible run!' : kqStreak >= 5 ? '🔥 Great streak!' : '👍 Keep practising!'}</div>
+        <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">You got <strong style="color:var(--text-main);">${kqStreak}</strong> in a row${isNewBest ? ' - new personal best! 🎉' : ''}</div>
+        ${kqBestStreak > 0 ? `<div style="font-size:0.85rem; color:var(--text-muted);">Personal best: ${kqBestStreak}</div>` : ''}
+      `;
+      document.getElementById('kqDone').style.display = 'block';
+    }
+
+    function kqFinish() {
+      document.getElementById('kqPlayCard').style.display = 'none';
+      const pct = Math.round((kqCorrectCount / kqTotal) * 100);
+      const msg = kqCorrectCount === kqTotal ? '🏆 Perfect score!' : kqCorrectCount >= 7 ? '🎉 Great work!' : kqCorrectCount >= 4 ? '👍 Good effort!' : '📖 Keep practising!';
+      document.getElementById('kqDoneMsg').innerHTML = `
+        <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.6rem;">${msg}</div>
+        <div style="font-size:1rem; color:var(--text-muted);">You got <strong style="color:var(--text-main);">${kqCorrectCount} / ${kqTotal}</strong> correct (${pct}%)</div>
+      `;
+      document.getElementById('kqDone').style.display = 'block';
+    }
+
+    // ── SHLOK SEQUENCE GAME ──
+    const ssRoundSizes = [3, 5, 10, 15, 20];
+    let ssRound = 0;
+    let ssCurrentOrder = [];
+    let ssCorrectOrder = [];
+    let ssScore = 0;
+    let ssUsedIds = new Set();
+
+    function loadShlokSequence() {
+      ssRound = 0; ssScore = 0; ssUsedIds = new Set();
+      document.getElementById('ssDone').style.display = 'none';
+      document.getElementById('ssPlayCard').style.display = 'block';
+      ssLoadRound(0);
+    }
+
+    function ssLoadRound(round) {
+      ssRound = round;
+      document.getElementById('ssRoundNum').textContent = round + 1;
+      document.getElementById('ssFeedback').textContent = '';
+      document.getElementById('ssFeedback').className = 'game-feedback';
+      document.getElementById('ssCheckBtn').style.display = 'block';
+      document.getElementById('ssCheckBtn').textContent = 'Check Order';
+      document.getElementById('ssCheckBtn').disabled = false;
+
+      const size = ssRoundSizes[round];
+
+      // Get learned shlok numbers sorted
+      const learnedNums = myShloks
+        .filter(s => s.mastery === 'learnt' || s.mastery === 'memorised')
+        .map(s => parseInt(s.number))
+        .sort((a, b) => a - b);
+
+      // Find runs of strictly consecutive numbers
+      const runs = [];
+      let run = [learnedNums[0]];
+      for (let i = 1; i < learnedNums.length; i++) {
+        if (learnedNums[i] === learnedNums[i - 1] + 1) {
+          run.push(learnedNums[i]);
+        } else {
+          if (run.length >= size) runs.push([...run]);
+          run = [learnedNums[i]];
+        }
+      }
+      if (run.length >= size) runs.push([...run]);
+
+      // Filter runs that don't overlap with already used shloks
+      const validRuns = runs.filter(r => !r.some(n => ssUsedIds.has(String(n))));
+
+      let selectedNums;
+      if (validRuns.length > 0) {
+        // Pick a random valid run and a random subrun of the right size
+        const chosen = validRuns[Math.floor(Math.random() * validRuns.length)];
+        const maxStart = chosen.length - size;
+        const start = Math.floor(Math.random() * (maxStart + 1));
+        selectedNums = chosen.slice(start, start + size);
+      } else {
+        alert(`You need at least ${size} shloks in a row (consecutive numbers) to play round ${round + 1}. Keep learning more shloks in order and come back!`);
+        backToHub(); return;
+      }
+
+      selectedNums.forEach(n => ssUsedIds.add(String(n)));
+      ssCorrectOrder = selectedNums.map(n => allShloks.find(a => parseInt(a.id) === n)).filter(Boolean);
+      ssCurrentOrder = shuffle([...ssCorrectOrder]);
+
+      const sizes = ['3 shloks', '5 shloks', '10 shloks', '15 shloks', '20 shloks'];
+      document.getElementById('ssInstruction').textContent =
+        `Round ${round + 1}: Put these ${sizes[round]} in order of shlok number. Tap ↑ ↓ to rearrange.`;
+
+      ssRenderCards();
+    }
+
+    function ssRenderCards(revealed = false) {
+      const list = document.getElementById('ssCardList');
+      list.innerHTML = '';
+      ssCurrentOrder.forEach((master, i) => {
+        const correctIdx = ssCorrectOrder.indexOf(master);
+        const isCorrect = i === correctIdx;
+        const card = document.createElement('div');
+        card.className = 'ss-card' + (revealed ? (isCorrect ? ' ss-correct' : ' ss-wrong') : '');
+        card.innerHTML = `
+          <div class="ss-pos-badge" style="${revealed ? '' : 'visibility:hidden;'}">${master.id}</div>
+          <div class="ss-card-content">
+            <div class="ss-card-num${revealed ? ' revealed' : ''}">Shlok ${master.id}</div>
+            <div style="color:var(--text-main);">${master.line1}</div>
+            <div style="color:var(--text-muted); margin-top:0.2rem;">${master.line2}</div>
+          </div>
+          ${!revealed ? `<div class="ss-arrows">
+            <button class="ss-arrow-btn" onclick="ssMoveCard(${i}, -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
+            <button class="ss-arrow-btn" onclick="ssMoveCard(${i}, 1)" ${i === ssCurrentOrder.length - 1 ? 'disabled' : ''}>↓</button>
+          </div>` : ''}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function ssMoveCard(idx, dir) {
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= ssCurrentOrder.length) return;
+      [ssCurrentOrder[idx], ssCurrentOrder[newIdx]] = [ssCurrentOrder[newIdx], ssCurrentOrder[idx]];
+      ssRenderCards();
+    }
+
+    function ssCheckOrder() {
+      const correct = ssCurrentOrder.every((m, i) => m.id === ssCorrectOrder[i].id);
+      const fb = document.getElementById('ssFeedback');
+      ssRenderCards(true);
+      document.getElementById('ssCheckBtn').style.display = 'none';
+
+      if (correct) ssScore++;
+
+      if (ssRound < ssRoundSizes.length - 1) {
+        const nextRound = ssRound + 1;
+        fb.innerHTML = correct
+          ? `✅ Perfect! Shloks ${ssCorrectOrder[0].id}–${ssCorrectOrder[ssCorrectOrder.length-1].id} in the right order!<br><button class="game-next-btn" onclick="ssLoadRound(${nextRound})" style="margin-top:0.8rem;">Round ${nextRound + 1} →</button>`
+          : `❌ Not quite — check the numbers above.<br><button class="game-next-btn" onclick="ssLoadRound(${nextRound})" style="margin-top:0.8rem;">Round ${nextRound + 1} →</button>`;
+      } else {
+        fb.innerHTML = correct ? '✅ Perfect!' : '❌ Not quite — check the numbers above.';
+        setTimeout(() => ssFinish(), 1500);
+      }
+    }
+
+    function ssFinish() {
+      document.getElementById('ssPlayCard').style.display = 'none';
+      const msgs = ['📖 Keep practising!', '👍 Keep going!', '👍 Good effort!', '🔥 Well done!', '🎉 Great work!', '🏆 Perfect — you know your shloks!'];
+      document.getElementById('ssDoneMsg').innerHTML = `
+        <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.6rem;">${msgs[ssScore]}</div>
+        <div style="font-size:1rem; color:var(--text-muted);">You got <strong style="color:var(--text-main);">${ssScore} / 5</strong> rounds correct</div>
+      `;
+      document.getElementById('ssDone').style.display = 'block';
+    }
+
+    // ── CHALLENGE A FRIEND ──
+    const CF_EXPIRY_MS = 48 * 60 * 60 * 1000;
+
+    function cfTimeLeft(ts) {
+      const ms = (ts.toMillis ? ts.toMillis() : ts) + CF_EXPIRY_MS - Date.now();
+      if (ms <= 0) return null;
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      return h > 0 ? `${h}h ${m}m remaining` : `${m}m remaining`;
+    }
+
+    async function loadChallengeFriend() {
+      const main = document.getElementById('cfMain');
+      main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
+
+      // Must be signed in
+      if (!currentUser) {
+        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.8rem;">🔒</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">Sign in to challenge friends</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You need to be signed in with Google and have a Mukhpath Mandal card to send or receive challenges.</div>
+          <button class="google-signin-btn" onclick="signInWithGoogle()" style="margin:0 auto;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Sign in with Google
+          </button>
+        </div>`;
+        return;
+      }
+
+      // Must have a Mandal card
+      const myDoc = await db.collection('mandal').doc(getMandalUserId()).get();
+      if (!myDoc.exists) {
+        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.8rem;">👤</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">Set up your profile first</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You need a Mukhpath Mandal card to send or receive challenges. Add your name and favourite shlok in My Profile.</div>
+          <button class="game-next-btn" onclick="backToHub(); setTimeout(togglePanel, 200)">Go to My Profile</button>
+        </div>`;
+        return;
+      }
+
+      // Load active challenges
+      const now = Date.now();
+      const snap = await db.collection('challenges')
+        .where('participants', 'array-contains', currentUser.uid)
+        .orderBy('createdAt', 'desc')
+        .limit(10)
+        .get();
+
+      const active = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(c => (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
+
+      cfRenderMain(main, active, myDoc.data());
+    }
+
+    function cfRenderMain(main, challenges, myData) {
+      const uid = currentUser.uid;
+      const incoming = challenges.filter(c => c.toUid === uid && !c.toCompleted);
+      const waitingForThem = challenges.filter(c => c.fromUid === uid && c.toCompleted && !c.fromCompleted);
+      const completed = challenges.filter(c =>
+        (c.toUid === uid && c.toCompleted) || (c.fromUid === uid && c.fromCompleted)
+      );
+
+      let html = '';
+
+      // Incoming challenge to complete
+      if (incoming.length > 0) {
+        const c = incoming[0];
+        const tl = cfTimeLeft(c.createdAt);
+        html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
+          <div class="game-title-row">⚔️ Incoming Challenge!</div>
+          <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> has challenged you! ${tl ? `⏰ ${tl}` : ''}</div>
+          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}', false)">Accept &amp; Start →</button>
+        </div>`;
+      }
+
+      // Waiting for them to challenge back
+      if (waitingForThem.length > 0) {
+        const c = waitingForThem[0];
+        html += `<div class="card game-play-card">
+          <div style="font-size:0.88rem; color:var(--text-muted);">⏳ Waiting for <strong style="color:var(--text-main);">${c.toName}</strong> to challenge you back...</div>
+        </div>`;
+      }
+
+      // Results
+      const results = challenges.filter(c => c.toCompleted && c.fromCompleted);
+      if (results.length > 0) {
+        html += `<div class="card game-play-card">
+          <div class="game-title-row" style="margin-bottom:0.8rem;">📊 Results</div>
+          ${results.map(c => {
+            const iFrom = c.fromUid === uid;
+            const myScore = iFrom ? c.fromScore : c.toScore;
+            const theirScore = iFrom ? c.toScore : c.fromScore;
+            const theirName = iFrom ? c.toName : c.fromName;
+            const won = myScore > theirScore;
+            return `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border); font-size:0.88rem;">
+              <span>vs <strong>${theirName}</strong></span>
+              <span style="font-weight:700; color:${won ? 'var(--green-text)' : '#dc2626'};">${myScore}/5 vs ${theirScore}/5 ${won ? '🏆' : '😅'}</span>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }
+
+      // Send new challenge
+      html += `<div class="card game-play-card">
+        <div class="game-title-row">🤝 Challenge a Friend</div>
+        <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your Mandal to challenge.</div>
+        <div id="cfFriendList" style="display:flex; flex-direction:column; gap:0.6rem;">
+          <div style="color:var(--text-muted); font-size:0.85rem;">Loading Mandal...</div>
+        </div>
+      </div>`;
+
+      main.innerHTML = html;
+      cfLoadFriendList();
+    }
+
+    async function cfLoadFriendList() {
+      const snap = await db.collection('mandal').get();
+      const list = document.getElementById('cfFriendList');
+      if (!list) return;
+      const friends = snap.docs
+        .map(d => d.data())
+        .filter(d => d.uid && d.uid !== currentUser.uid && d.name);
+
+      if (!friends.length) { list.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">No one else on the Mandal yet!</div>'; return; }
+
+      list.innerHTML = friends.map(f => `
+        <button class="snap-mode-btn" style="text-align:left;" onclick="cfPickShloks('${f.uid}', '${f.name.replace(/'/g,"\\'")}')">
+          <div class="snap-mode-icon" style="font-size:1.2rem; width:36px; height:36px; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:700; font-size:0.85rem; flex-shrink:0;">${f.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+          <div><div class="snap-mode-title">${f.name}</div>
+          <div class="snap-mode-sub">${f.mandalName || ''} · ${f.totalKnown || 0} shloks known</div></div>
+        </button>`).join('');
+    }
+
+    let cfTargetUid = '', cfTargetName = '', cfTargetShloks = [];
+
+    async function cfPickShloks(uid, name) {
+      cfTargetUid = uid; cfTargetName = name;
+      const main = document.getElementById('cfMain');
+
+      // Load their shloks
+      const doc = await db.collection('mandal').doc(uid).get();
+      const data = doc.data();
+      // Get all shloks they've learnt/memorised/revise from Firestore snap data
+      // We use allShloks filtered by their totalKnown — but we need their actual list
+      // Instead just use allShloks up to their totalKnown for picking
+      const snap = await db.collection('users').doc(uid).get();
+      let theirShloks = [];
+      if (snap.exists && snap.data().myShloks) {
+        theirShloks = snap.data().myShloks.filter(s =>
+          s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise'
+        );
+      }
+      cfTargetShloks = theirShloks;
+
+      if (theirShloks.length < 5) {
+        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+          <div style="font-weight:700; margin-bottom:0.5rem;">${name} hasn't learnt enough shloks yet!</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">They need at least 5 shloks to be challenged.</div>
+          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+        </div>`;
+        return;
+      }
+
+      cfRenderPickScreen(main, theirShloks, name);
+    }
+
+    function cfRenderPickScreen(main, shloks, name) {
+      let selected = [];
+      main.innerHTML = `<div class="card game-play-card">
+        <div class="game-title-row">Pick 5 shloks for ${name}</div>
+        <div class="game-instruction" style="margin-bottom:1rem;">Choose 5 shloks from their list to test them on. They'll only see the shlok number and first word.</div>
+        <div id="cfPickList" style="display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto;"></div>
+        <div id="cfPickCount" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.8rem; text-align:center;">0 / 5 selected</div>
+        <button class="game-submit-btn" id="cfSendBtn" onclick="cfSendChallenge()" style="width:100%; margin-top:0.8rem;" disabled>Send Challenge →</button>
+      </div>`;
+
+      const list = document.getElementById('cfPickList');
+      shloks.forEach(s => {
+        const master = allShloks.find(a => a.id === s.number);
+        if (!master) return;
+        const btn = document.createElement('button');
+        btn.className = 'snap-mode-btn';
+        btn.style.textAlign = 'left';
+        btn.dataset.num = s.number;
+        btn.innerHTML = `<div style="font-weight:700; font-size:0.85rem; color:var(--gold); min-width:40px;">Shlok ${s.number}</div>
+          <div style="font-size:0.78rem; color:var(--text-muted); flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
+        btn.onclick = () => {
+          const idx = selected.indexOf(s.number);
+          if (idx > -1) { selected.splice(idx, 1); btn.style.borderColor = ''; btn.style.background = ''; }
+          else if (selected.length < 5) { selected.push(s.number); btn.style.borderColor = 'var(--gold)'; btn.style.background = 'rgba(244,201,93,0.08)'; }
+          document.getElementById('cfPickCount').textContent = `${selected.length} / 5 selected`;
+          document.getElementById('cfSendBtn').disabled = selected.length !== 5;
+          window._cfSelected = selected;
+        };
+        list.appendChild(btn);
+      });
+      window._cfSelected = selected;
+    }
+
+    async function cfSendChallenge() {
+      const selected = window._cfSelected || [];
+      if (selected.length !== 5) return;
+      const myData = (await db.collection('mandal').doc(getMandalUserId()).get()).data();
+      await db.collection('challenges').add({
+        fromUid: currentUser.uid,
+        fromName: myData.name,
+        toUid: cfTargetUid,
+        toName: cfTargetName,
+        participants: [currentUser.uid, cfTargetUid],
+        shloks: selected,
+        fromScore: null,
+        toScore: null,
+        toCompleted: false,
+        fromCompleted: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('cfMain').innerHTML = `<div class="card game-play-card" style="text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.8rem;">🎉</div>
+        <div style="font-weight:700; font-size:1.1rem; margin-bottom:0.5rem;">Challenge sent to ${cfTargetName}!</div>
+        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">They have 48 hours to complete it. Once they're done, they'll challenge you back!</div>
+        <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+      </div>`;
+      updateChallengeBanner();
+    }
+
+    async function cfStartAttempt(challengeId, isChallenger) {
+      const doc = await db.collection('challenges').doc(challengeId).get();
+      const c = { id: doc.id, ...doc.data() };
+      const uid = currentUser.uid;
+      const isFrom = c.fromUid === uid;
+      const shlokNums = c.shloks;
+      let cfScore = 0, cfIdx = 0;
+
+      const main = document.getElementById('cfMain');
+
+      function showShlok() {
+        if (cfIdx >= shlokNums.length) { finishAttempt(); return; }
+        const master = allShloks.find(a => a.id === shlokNums[cfIdx]);
+        const firstWord = master ? master.line1.split(' ')[0] : '?';
+        main.innerHTML = `<div class="card game-play-card">
+          <div class="game-title-row">Shlok ${shlokNums[cfIdx]}</div>
+          <div style="font-size:1.1rem; color:var(--gold); font-weight:700; margin:1rem 0;">${firstWord}...</div>
+          <div class="game-instruction">Recite the full shlok from memory, then reveal to check.</div>
+          <div id="cfReveal" style="display:none; margin:1rem 0; font-size:0.88rem; color:var(--text-muted); line-height:1.7;">${master ? master.line1 + '<br>' + master.line2 : ''}</div>
+          <button class="edit-save-btn" id="cfRevealBtn" onclick="document.getElementById('cfReveal').style.display='block'; document.getElementById('cfRevealBtn').style.display='none'; document.getElementById('cfMarkBtns').style.display='flex';" style="background:var(--blue-mid); color:white; margin-bottom:0.8rem;">Reveal Shlok</button>
+          <div id="cfMarkBtns" style="display:none; gap:0.8rem;">
+            <button class="game-next-btn" style="flex:1; background:#22c55e;" onclick="cfMark(true, ${cfIdx}, ${shlokNums.length})">✅ Got it</button>
+            <button class="game-next-btn" style="flex:1; background:#dc2626;" onclick="cfMark(false, ${cfIdx}, ${shlokNums.length})">❌ Missed it</button>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-muted); margin-top:1rem; text-align:center;">${cfIdx + 1} / ${shlokNums.length}</div>
+        </div>`;
+      }
+
+      async function cfMark(correct, idx, total) {
+        if (correct) cfScore++;
+        cfIdx++;
+        if (cfIdx >= total) {
+          // Save score
+          const update = isFrom
+            ? { fromScore: cfScore, fromCompleted: true }
+            : { toScore: cfScore, toCompleted: true };
+          await db.collection('challenges').doc(challengeId).update(update);
+
+          // If they're the challenged person, now they challenge back
+          if (!isFrom) {
+            main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+              <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
+              <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Great effort! Now challenge ${c.fromName} back!</div>
+              <button class="game-next-btn" onclick="cfPickShloks('${c.fromUid}', '${c.fromName}')">Challenge ${c.fromName} →</button>
+            </div>`;
+          } else {
+            main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+              <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
+              <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Waiting for ${c.toName} to complete their challenge...</div>
+              <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+            </div>`;
+          }
+          updateChallengeBanner();
+        } else {
+          showShlok();
+        }
+      };
+
+      showShlok();
+    }
+
+    async function updateChallengeBanner() {
+      const banner = document.getElementById('challengeBanner');
+      if (!banner || !currentUser) { if (banner) banner.style.display = 'none'; return; }
+      try {
+        const now = Date.now();
+        const snap = await db.collection('challenges')
+          .where('toUid', '==', currentUser.uid)
+          .where('toCompleted', '==', false)
+          .orderBy('createdAt', 'desc')
+          .limit(1)
+          .get();
+        const active = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .filter(c => (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
+        if (active.length > 0) {
+          const c = active[0];
+          const tl = cfTimeLeft(c.createdAt);
+          document.getElementById('challengeBannerText').textContent = `${c.fromName} has challenged you! ${tl ? `⏰ ${tl}. ` : ''}Tap to complete.`;
+          document.getElementById('challengeBannerTime').textContent = '';
+          banner.style.display = 'block';
+        } else {
+          banner.style.display = 'none';
+        }
+      } catch(e) { banner.style.display = 'none'; }
+    }
+
   </script>
 </body>
 </html>
