@@ -7755,6 +7755,14 @@
         updateAuthUI(user);
         if (user) {
           await restoreOrSyncUserData(user);
+          // Delete old anonymous Mandal document if it exists under a different ID
+          const anonId = localStorage.getItem("mandalUserId");
+          if (db && anonId && anonId !== user.uid) {
+            try {
+              await db.collection("mandal").doc(anonId).delete();
+              localStorage.removeItem("mandalUserId");
+            } catch(e) { console.warn("Could not delete anon mandal doc:", e); }
+          }
           syncToMandal();
         }
       });
