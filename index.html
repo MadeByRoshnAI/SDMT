@@ -8013,9 +8013,11 @@
       if (localStorage.getItem("mandalOptOut") === "true") return;
       const profile = JSON.parse(localStorage.getItem("profile") || "null");
       if (!profile || !profile.name) return;
-      const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
-      const memorised = myShloks.filter(s => s.mastery === "memorised").length;
-      const revise    = myShloks.filter(s => s.mastery === "revise").length;
+      // Always reload fresh from localStorage so shlokList is never stale or empty
+      const freshShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+      const learnt    = freshShloks.filter(s => s.mastery === "learnt").length;
+      const memorised = freshShloks.filter(s => s.mastery === "memorised").length;
+      const revise    = freshShloks.filter(s => s.mastery === "revise").length;
       const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
       const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
       const isRecent = (Date.now() - lastMilestoneDate) < 3 * 24 * 60 * 60 * 1000;
@@ -8035,7 +8037,7 @@
           goalName:        profile.goalName || null,
           goalTarget:      profile.goalTarget || null,
           goalDate:        profile.goalDate || null,
-          shlokList:       myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise').map(s => s.number),
+          shlokList:       freshShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise').map(s => s.number),
           lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch (e) {
