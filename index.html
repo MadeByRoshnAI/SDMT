@@ -3545,14 +3545,6 @@
 
       </div><!-- end home-content-wrap -->
 
-      <!-- CUSTOM GOAL CARD -->
-      <div id="customGoalCard" style="display:none; margin-top:1rem;">
-        <div class="home-card" style="padding:1.2rem 1.5rem;">
-          <div class="home-card-label" id="customGoalLabel">🎯 Personal Aim</div>
-          <div id="customGoalContent"></div>
-        </div>
-      </div>
-
       <!-- PROGRESS BREAKDOWN -->
       <div class="progress-section-card" style="margin-top:1.5rem;">
         <div class="progress-section-title">📈 Progress Breakdown</div>
@@ -3564,6 +3556,12 @@
           </div>
         </div>
         <div class="donut-legend" id="donutLegend"></div>
+
+        <!-- PERSONAL AIM -->
+        <div id="customGoalCard" style="display:none; border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem;">
+          <div class="home-card-label" id="customGoalLabel">🎯 Your Personal Aim</div>
+          <div id="customGoalContent"></div>
+        </div>
       </div>
 
     </section>
@@ -8037,6 +8035,7 @@
           goalName:        profile.goalName || null,
           goalTarget:      profile.goalTarget || null,
           goalDate:        profile.goalDate || null,
+          shlokList:       myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise').map(s => s.number),
           lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch (e) {
@@ -9404,8 +9403,12 @@
         const totalKnown = myShloks.filter(s => s.mastery === "learnt" || s.mastery === "memorised").length;
         const pct        = Math.min(100, Math.round((totalKnown / goalTarget) * 100));
         const remaining  = Math.max(0, goalTarget - totalKnown);
-        const name       = prof.goalName || "Personal Aim";
-        goalLabel.textContent = `🎯 ${name}`;
+        const aimLabel   = prof.goalName
+          ? `Learn ${goalTarget} shloks by ${prof.goalName}`
+          : prof.goalDate
+            ? `Learn ${goalTarget} shloks by ${new Date(prof.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}`
+            : `Learn ${goalTarget} shloks`;
+        goalLabel.textContent = "🎯 Your Personal Aim";
         let daysLine = "";
         if (prof.goalDate) {
           const daysLeft = Math.ceil((new Date(prof.goalDate) - new Date()) / 86400000);
@@ -9416,11 +9419,12 @@
         goalContent.innerHTML = totalKnown >= goalTarget
           ? `<div style="color:var(--gold); font-weight:700; font-size:1rem; margin:0.5rem 0;">🏆 Goal reached! You know ${totalKnown} shloks.</div>`
           : `
-            <div style="font-size:0.88rem; color:var(--text-muted); margin:0.4rem 0;">${totalKnown} / ${goalTarget} shloks - ${pct}% of the way there</div>
-            <div style="background:var(--border); border-radius:999px; height:8px; overflow:hidden; margin:0.5rem 0;">
+            <div style="font-size:0.82rem; color:var(--text-muted); margin:0.3rem 0 0.5rem;">${aimLabel}</div>
+            <div style="font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">${totalKnown} / ${goalTarget} shloks — ${pct}% of the way there</div>
+            <div style="background:var(--border); border-radius:999px; height:8px; overflow:hidden; margin:0.4rem 0;">
               <div style="background:var(--gold); width:${pct}%; height:100%; border-radius:999px; transition:width 0.5s;"></div>
             </div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">${remaining} shlok${remaining !== 1 ? "s" : ""} to go</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.3rem;">${remaining} shlok${remaining !== 1 ? "s" : ""} to go</div>
             ${daysLine}
           `;
         goalCard.style.display = "block";
@@ -10104,17 +10108,24 @@
 
       // Load active challenges
       const now = Date.now();
-      const snap = await db.collection('challenges')
-        .where('participants', 'array-contains', currentUser.uid)
-        .orderBy('createdAt', 'desc')
-        .limit(10)
-        .get();
+      try {
+        const snap = await db.collection('challenges')
+          .where('participants', 'array-contains', currentUser.uid)
+          .limit(20)
+          .get();
 
-      const active = snap.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(c => (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
+        const active = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now)
+          .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
 
-      cfRenderMain(main, active, myDoc.data());
+        cfRenderMain(main, active, myDoc.data());
+      } catch(e) {
+        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Couldn't load challenges. Please check your connection and try again.</div>
+          <button class="game-next-btn" onclick="loadChallengeFriend()">Try Again</button>
+        </div>`;
+      }
     }
 
     function cfRenderMain(main, challenges, myData) {
@@ -10201,20 +10212,17 @@
     async function cfPickShloks(uid, name) {
       cfTargetUid = uid; cfTargetName = name;
       const main = document.getElementById('cfMain');
+      main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
 
-      // Load their shloks
+      // Read their public shlok list from Mandal doc
       const doc = await db.collection('mandal').doc(uid).get();
-      const data = doc.data();
-      // Get all shloks they've learnt/memorised/revise from Firestore snap data
-      // We use allShloks filtered by their totalKnown — but we need their actual list
-      // Instead just use allShloks up to their totalKnown for picking
-      const snap = await db.collection('users').doc(uid).get();
-      let theirShloks = [];
-      if (snap.exists && snap.data().myShloks) {
-        theirShloks = snap.data().myShloks.filter(s =>
-          s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise'
-        );
-      }
+      const data = doc.exists ? doc.data() : {};
+      const shlokNums = data.shlokList || [];
+
+      const theirShloks = shlokNums
+        .map(num => allShloks.find(a => a.id === num))
+        .filter(Boolean);
+
       cfTargetShloks = theirShloks;
 
       if (theirShloks.length < 5) {
@@ -10240,19 +10248,18 @@
       </div>`;
 
       const list = document.getElementById('cfPickList');
-      shloks.forEach(s => {
-        const master = allShloks.find(a => a.id === s.number);
+      shloks.forEach(master => {
         if (!master) return;
         const btn = document.createElement('button');
         btn.className = 'snap-mode-btn';
         btn.style.textAlign = 'left';
-        btn.dataset.num = s.number;
-        btn.innerHTML = `<div style="font-weight:700; font-size:0.85rem; color:var(--gold); min-width:40px;">Shlok ${s.number}</div>
+        btn.dataset.num = master.id;
+        btn.innerHTML = `<div style="font-weight:700; font-size:0.85rem; color:var(--gold); min-width:40px;">Shlok ${master.id}</div>
           <div style="font-size:0.78rem; color:var(--text-muted); flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
         btn.onclick = () => {
-          const idx = selected.indexOf(s.number);
+          const idx = selected.indexOf(master.id);
           if (idx > -1) { selected.splice(idx, 1); btn.style.borderColor = ''; btn.style.background = ''; }
-          else if (selected.length < 5) { selected.push(s.number); btn.style.borderColor = 'var(--gold)'; btn.style.background = 'rgba(244,201,93,0.08)'; }
+          else if (selected.length < 5) { selected.push(master.id); btn.style.borderColor = 'var(--gold)'; btn.style.background = 'rgba(244,201,93,0.08)'; }
           document.getElementById('cfPickCount').textContent = `${selected.length} / 5 selected`;
           document.getElementById('cfSendBtn').disabled = selected.length !== 5;
           window._cfSelected = selected;
@@ -10357,11 +10364,11 @@
         const snap = await db.collection('challenges')
           .where('toUid', '==', currentUser.uid)
           .where('toCompleted', '==', false)
-          .orderBy('createdAt', 'desc')
-          .limit(1)
+          .limit(10)
           .get();
         const active = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-          .filter(c => (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
+          .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now)
+          .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
         if (active.length > 0) {
           const c = active[0];
           const tl = cfTimeLeft(c.createdAt);
