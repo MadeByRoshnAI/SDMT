@@ -3296,8 +3296,7 @@
     }
 
     .mandal-extra {
-      border-top: 1px solid var(--border);
-      padding-top: 1rem;
+      padding-top: 0.8rem;
       display: flex;
       flex-direction: column;
       gap: 0.8rem;
@@ -4355,7 +4354,7 @@
       <!-- SECTION 6: MUKHPATH MANDAL -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🕌 Mukhpath Mandal</div>
-        <div class="tutorial-three-cards">
+        <div class="tutorial-four-cards">
           <div class="tutorial-card slide-mandal">
             <div class="tutorial-card-img">👥</div>
             <div class="tutorial-card-body">
@@ -4373,8 +4372,15 @@
           <div class="tutorial-card slide-mandal">
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Set a Personal Aim</div>
+              <div class="tutorial-slide-text">Set a personal aim in 'My Profile' - choose a target number of shloks and label it by a name or date.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">✨</div>
+            <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Stay Inspired</div>
-              <div class="tutorial-slide-text">We're all doing this mukhpath together with the same goal so lets use this page as a way to encourage and motivate each other to keep learning our shloks!</div>
+              <div class="tutorial-slide-text">We're all doing this mukhpath together - use this page as a way to encourage and motivate each other to keep learning!</div>
             </div>
           </div>
         </div>
@@ -4451,7 +4457,7 @@
           <div class="edit-avatar-ring" id="editAvatarInitials">YN</div>
         </div>
 
-        <div style="font-size:0.7rem; color:rgba(255,200,50,0.9); margin-bottom:0.5rem; text-align:center; white-space:nowrap;">⚠️ The information entered below will be visible on the Mukhpath Mandal page for others to see.</div>
+        <div style="font-size:0.7rem; color:rgba(255,200,50,0.9); margin-bottom:0.5rem; text-align:center;">⚠️ The information entered below will be visible on the Mukhpath Mandal page for others to see.</div>
         <div style="font-size:0.72rem; color:#dc2626; margin-bottom:1rem; text-align:center;">* Required fields</div>
 
         <div class="edit-field">
@@ -7893,12 +7899,19 @@
           <div class="mandal-prog-track">
             <div class="mandal-prog-fill" style="width:${pct}%;"></div>
           </div>
-          ${person.goalTarget ? `<div style="font-size:0.72rem; color:var(--text-muted,rgba(255,255,255,0.5)); margin-top:0.35rem;">🎯 Aim of memorising ${person.goalTarget} shloks${person.goalName ? ` for ${mandalEscapeHtml(person.goalName)}` : person.goalDate ? ` by ${new Date(person.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}` : ""}</div>` : ""}
         </div>
-        <div class="mandal-stats-row">
+        <div class="mandal-stats-row" style="margin-bottom:0.7rem;">
           <div class="mandal-stat-chip learnt"><span class="num">${person.learnt}</span>learnt</div>
           <div class="mandal-stat-chip memorised"><span class="num">${person.memorised}</span>memorised</div>
           <div class="mandal-stat-chip revise"><span class="num">${person.revise}</span>revise</div>
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-muted,rgba(255,255,255,0.5)); padding-bottom:0.7rem; border-bottom:1px solid var(--border,rgba(255,255,255,0.08)); font-weight:400;">
+          ${person.goalTarget
+            ? `🎯 Aim of memorising ${person.goalTarget} shloks${person.goalName ? ` for ${mandalEscapeHtml(person.goalName)}` : person.goalDate ? ` by ${new Date(person.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}` : ""}`
+            : person.uid === getMandalUserId()
+              ? `🎯 Aim: <span style="opacity:0.6;">Add an aim in 'My Profile'</span>`
+              : `🎯 Aim: <span style="opacity:0.5;">not set</span>`
+          }
         </div>
 
         <!-- Shloks -->
