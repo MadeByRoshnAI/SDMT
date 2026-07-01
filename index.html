@@ -9941,10 +9941,9 @@
     let ssCurrentOrder = [];
     let ssCorrectOrder = [];
     let ssScore = 0;
-    let ssUsedIds = new Set();
 
     function loadShlokSequence() {
-      ssRound = 0; ssScore = 0; ssUsedIds = new Set();
+      ssRound = 0; ssScore = 0;
       document.getElementById('ssDone').style.display = 'none';
       document.getElementById('ssPlayCard').style.display = 'block';
       ssLoadRound(0);
@@ -9980,22 +9979,17 @@
       }
       if (run.length >= size) runs.push([...run]);
 
-      // Filter runs that don't overlap with already used shloks
-      const validRuns = runs.filter(r => !r.some(n => ssUsedIds.has(String(n))));
-
-      let selectedNums;
-      if (validRuns.length > 0) {
-        // Pick a random valid run and a random subrun of the right size
-        const chosen = validRuns[Math.floor(Math.random() * validRuns.length)];
-        const maxStart = chosen.length - size;
-        const start = Math.floor(Math.random() * (maxStart + 1));
-        selectedNums = chosen.slice(start, start + size);
-      } else {
+      if (runs.length === 0) {
         alert(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) — individual shloks learnt out of order won't count.`);
         backToHub(); return;
       }
 
-      selectedNums.forEach(n => ssUsedIds.add(String(n)));
+      // Pick a random run and a random subrun of the right size
+      const chosen = runs[Math.floor(Math.random() * runs.length)];
+      const maxStart = chosen.length - size;
+      const start = Math.floor(Math.random() * (maxStart + 1));
+      const selectedNums = chosen.slice(start, start + size);
+
       ssCorrectOrder = selectedNums.map(n => allShloks.find(a => parseInt(a.id) === n)).filter(Boolean);
       ssCurrentOrder = shuffle([...ssCorrectOrder]);
 
