@@ -4057,7 +4057,7 @@
           <div class="game-card" onclick="startGame('shlokSequence')">
             <div class="game-card-icon">🔢</div>
             <div class="game-card-title">Shlok Sequence</div>
-            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds — 3, 5, 10, 15 then 20 shloks. Gets trickier each time!</div>
+            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds — 3, 5, 10, 15 then 20 shloks. You need to have learnt shloks consecutively (e.g. 1-10) for each round.</div>
             <div class="game-card-tag">Order</div>
           </div>
           <div class="game-card" onclick="startGame('challengeFriend')">
@@ -9963,7 +9963,7 @@
 
       // Get learned shlok numbers sorted
       const learnedNums = myShloks
-        .filter(s => s.mastery === 'learnt' || s.mastery === 'memorised')
+        .filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise')
         .map(s => parseInt(s.number))
         .sort((a, b) => a - b);
 
@@ -9991,7 +9991,7 @@
         const start = Math.floor(Math.random() * (maxStart + 1));
         selectedNums = chosen.slice(start, start + size);
       } else {
-        alert(`You need at least ${size} shloks in a row (consecutive numbers) to play round ${round + 1}. Keep learning more shloks in order and come back!`);
+        alert(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) — individual shloks learnt out of order won't count.`);
         backToHub(); return;
       }
 
