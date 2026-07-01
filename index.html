@@ -10146,7 +10146,7 @@
         html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
           <div class="game-title-row">⚔️ Incoming Challenge!</div>
           <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> has challenged you! ${tl ? `⏰ ${tl}` : ''}</div>
-          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}', false)">Accept &amp; Start →</button>
+          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept &amp; Start →</button>
         </div>`;
       }
 
@@ -10299,65 +10299,73 @@
       updateChallengeBanner();
     }
 
-    async function cfStartAttempt(challengeId, isChallenger) {
+    // Module-level state for challenge attempt
+    let cfAttemptData = null;
+
+    async function cfStartAttempt(challengeId) {
       const doc = await db.collection('challenges').doc(challengeId).get();
       const c = { id: doc.id, ...doc.data() };
       const uid = currentUser.uid;
-      const isFrom = c.fromUid === uid;
-      const shlokNums = c.shloks;
-      let cfScore = 0, cfIdx = 0;
+      cfAttemptData = {
+        c, challengeId,
+        isFrom: c.fromUid === uid,
+        shlokNums: c.shloks,
+        cfScore: 0,
+        cfIdx: 0,
+        total: c.shloks.length
+      };
+      cfShowShlok();
+    }
 
+    function cfShowShlok() {
+      const { shlokNums, cfIdx, total } = cfAttemptData;
+      const main = document.getElementById('cfMain');
+      if (cfIdx >= total) return;
+      const master = allShloks.find(a => a.id === shlokNums[cfIdx]);
+      const firstWord = master ? master.line1.split(' ')[0] : '?';
+      main.innerHTML = `<div class="card game-play-card">
+        <div class="game-title-row">Shlok ${shlokNums[cfIdx]}</div>
+        <div style="font-size:1.1rem; color:var(--gold); font-weight:700; margin:1rem 0;">${firstWord}...</div>
+        <div class="game-instruction">Recite the full shlok from memory, then reveal to check.</div>
+        <div id="cfReveal" style="display:none; margin:1rem 0; font-size:0.88rem; color:var(--text-muted); line-height:1.7;">${master ? master.line1 + '<br>' + master.line2 : ''}</div>
+        <button class="edit-save-btn" id="cfRevealBtn" onclick="document.getElementById('cfReveal').style.display='block'; document.getElementById('cfRevealBtn').style.display='none'; document.getElementById('cfMarkBtns').style.display='flex';" style="background:var(--blue-mid); color:white; margin-bottom:0.8rem;">Reveal Shlok</button>
+        <div id="cfMarkBtns" style="display:none; gap:0.8rem;">
+          <button class="game-next-btn" style="flex:1; background:#22c55e;" onclick="cfMark(true)">✅ Got it</button>
+          <button class="game-next-btn" style="flex:1; background:#dc2626;" onclick="cfMark(false)">❌ Missed it</button>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:1rem; text-align:center;">${cfIdx + 1} / ${total}</div>
+      </div>`;
+    }
+
+    async function cfMark(correct) {
+      if (!cfAttemptData) return;
+      if (correct) cfAttemptData.cfScore++;
+      cfAttemptData.cfIdx++;
+      const { cfIdx, cfScore, total, isFrom, c, challengeId } = cfAttemptData;
       const main = document.getElementById('cfMain');
 
-      function showShlok() {
-        if (cfIdx >= shlokNums.length) { finishAttempt(); return; }
-        const master = allShloks.find(a => a.id === shlokNums[cfIdx]);
-        const firstWord = master ? master.line1.split(' ')[0] : '?';
-        main.innerHTML = `<div class="card game-play-card">
-          <div class="game-title-row">Shlok ${shlokNums[cfIdx]}</div>
-          <div style="font-size:1.1rem; color:var(--gold); font-weight:700; margin:1rem 0;">${firstWord}...</div>
-          <div class="game-instruction">Recite the full shlok from memory, then reveal to check.</div>
-          <div id="cfReveal" style="display:none; margin:1rem 0; font-size:0.88rem; color:var(--text-muted); line-height:1.7;">${master ? master.line1 + '<br>' + master.line2 : ''}</div>
-          <button class="edit-save-btn" id="cfRevealBtn" onclick="document.getElementById('cfReveal').style.display='block'; document.getElementById('cfRevealBtn').style.display='none'; document.getElementById('cfMarkBtns').style.display='flex';" style="background:var(--blue-mid); color:white; margin-bottom:0.8rem;">Reveal Shlok</button>
-          <div id="cfMarkBtns" style="display:none; gap:0.8rem;">
-            <button class="game-next-btn" style="flex:1; background:#22c55e;" onclick="cfMark(true, ${cfIdx}, ${shlokNums.length})">✅ Got it</button>
-            <button class="game-next-btn" style="flex:1; background:#dc2626;" onclick="cfMark(false, ${cfIdx}, ${shlokNums.length})">❌ Missed it</button>
-          </div>
-          <div style="font-size:0.78rem; color:var(--text-muted); margin-top:1rem; text-align:center;">${cfIdx + 1} / ${shlokNums.length}</div>
-        </div>`;
-      }
-
-      async function cfMark(correct, idx, total) {
-        if (correct) cfScore++;
-        cfIdx++;
-        if (cfIdx >= total) {
-          // Save score
-          const update = isFrom
-            ? { fromScore: cfScore, fromCompleted: true }
-            : { toScore: cfScore, toCompleted: true };
-          await db.collection('challenges').doc(challengeId).update(update);
-
-          // If they're the challenged person, now they challenge back
-          if (!isFrom) {
-            main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-              <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
-              <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Great effort! Now challenge ${c.fromName} back!</div>
-              <button class="game-next-btn" onclick="cfPickShloks('${c.fromUid}', '${c.fromName}')">Challenge ${c.fromName} →</button>
-            </div>`;
-          } else {
-            main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-              <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
-              <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Waiting for ${c.toName} to complete their challenge...</div>
-              <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
-            </div>`;
-          }
-          updateChallengeBanner();
+      if (cfIdx >= total) {
+        const update = isFrom
+          ? { fromScore: cfScore, fromCompleted: true }
+          : { toScore: cfScore, toCompleted: true };
+        await db.collection('challenges').doc(challengeId).update(update);
+        if (!isFrom) {
+          main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+            <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
+            <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Great effort! Now challenge ${c.fromName} back!</div>
+            <button class="game-next-btn" onclick="cfPickShloks('${c.fromUid}', '${c.fromName}')">Challenge ${c.fromName} →</button>
+          </div>`;
         } else {
-          showShlok();
+          main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
+            <div style="font-size:1.8rem; font-weight:800; margin-bottom:0.5rem;">${cfScore} / ${total}</div>
+            <div style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.2rem;">Waiting for ${c.toName} to complete their challenge...</div>
+            <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+          </div>`;
         }
-      };
-
-      showShlok();
+        updateChallengeBanner();
+      } else {
+        cfShowShlok();
+      }
     }
 
     async function updateChallengeBanner() {
