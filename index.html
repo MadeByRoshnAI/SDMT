@@ -2339,13 +2339,15 @@
     body.dark-mode #cfTabSend,
     body.dark-mode #cfTabMine,
     body.dark-mode #cfTabSent {
-      border-color: rgba(255,255,255,0.35);
-      color: rgba(255,255,255,0.6);
+      border-color: rgba(255,255,255,0.5);
+      color: white;
+      background: transparent;
     }
     body.dark-mode #cfTabSend:hover,
     body.dark-mode #cfTabMine:hover,
     body.dark-mode #cfTabSent:hover {
-      border-color: rgba(255,255,255,0.7);
+      border-color: white;
+      background: rgba(255,255,255,0.08);
       color: white;
     }
 
@@ -10237,9 +10239,9 @@
         if (!btn || !panel) return;
         const active = t === tab;
         panel.style.display = active ? 'block' : 'none';
-        btn.style.background = active ? 'var(--blue)' : 'transparent';
-        btn.style.color = active ? 'white' : (dark ? 'rgba(255,255,255,0.6)' : 'var(--blue)');
-        btn.style.borderColor = active ? 'var(--blue)' : (dark ? 'rgba(255,255,255,0.35)' : 'var(--blue)');
+        btn.style.background = active ? 'var(--blue)' : (dark ? 'transparent' : 'transparent');
+        btn.style.color = active ? 'white' : (dark ? 'white' : 'var(--blue)');
+        btn.style.borderColor = active ? 'var(--blue)' : (dark ? 'rgba(255,255,255,0.5)' : 'var(--blue)');
       });
     }
 
