@@ -10186,10 +10186,10 @@
 
       main.innerHTML = `
         <!-- TAB BAR -->
-        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;background:var(--card-bg);border:1px solid var(--border);border-radius:999px;padding:4px;">
-          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:var(--blue);color:white;font-weight:700;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">🤝 Challenge</button>
-          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:transparent;color:var(--text-muted);font-weight:600;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">My Challenges</button>
-          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:transparent;color:var(--text-muted);font-weight:600;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">Challenges Sent</button>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--blue);color:white;font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">🤝 Challenge</button>
+          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--card-bg);color:var(--blue);font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">My Challenges</button>
+          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--card-bg);color:var(--blue);font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">Challenges Sent</button>
         </div>
 
         <!-- SEND TAB -->
@@ -10223,9 +10223,9 @@
         if (!btn || !panel) return;
         const active = t === tab;
         panel.style.display = active ? 'block' : 'none';
-        btn.style.background = active ? 'var(--blue)' : 'transparent';
-        btn.style.color = active ? 'white' : 'var(--text-muted)';
-        btn.style.fontWeight = active ? '700' : '600';
+        btn.style.background = active ? 'var(--blue)' : 'var(--card-bg)';
+        btn.style.color = active ? 'white' : 'var(--blue)';
+        btn.style.boxShadow = 'none';
       });
     }
 
