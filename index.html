@@ -10139,21 +10139,23 @@
       const results = challenges.filter(c => c.toCompleted && c.fromCompleted);
       let html = '';
       if (incoming.length > 0) {
-        const c = incoming[0];
-        const tl = cfTimeLeft(c.createdAt);
-        const typeLabel = {standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[c.challengeType||'standard'];
-        html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
-          <div class="game-title-row">⚔️ Incoming Challenge!</div>
-          <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:0.3rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> sent you a <strong style="color:var(--text-main);">${typeLabel} Challenge</strong> (${c.challengeCount||c.shloks.length} shloks)</div>
-          ${tl ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">⏰ ${tl}</div>` : ''}
-          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>
-        </div>`;
+        incoming.forEach(c => {
+          const tl = cfTimeLeft(c.createdAt);
+          const typeLabel = {standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[c.challengeType||'standard'];
+          html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
+            <div class="game-title-row">⚔️ Incoming Challenge!</div>
+            <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:0.3rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> sent you a <strong style="color:var(--text-main);">${typeLabel} Challenge</strong> (${c.challengeCount||c.shloks.length} shloks)</div>
+            ${tl ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">⏰ ${tl}</div>` : ''}
+            <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>
+          </div>`;
+        });
       }
       if (returnWaiting.length > 0) {
-        const c = returnWaiting[0];
-        html += `<div class="card game-play-card">
-          <div style="font-size:0.88rem; color:var(--text-muted);">⚔️ <strong style="color:var(--text-main);">${c.toName}</strong> has challenged you back! <button class="game-next-btn" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Start →</button></div>
-        </div>`;
+        returnWaiting.forEach(c => {
+          html += `<div class="card game-play-card">
+            <div style="font-size:0.88rem; color:var(--text-muted);">⚔️ <strong style="color:var(--text-main);">${c.toName}</strong> has challenged you back! <button class="game-next-btn" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Start →</button></div>
+          </div>`;
+        });
       }
       if (results.length > 0) {
         html += `<div class="card game-play-card"><div class="game-title-row" style="margin-bottom:0.8rem;">📊 Results</div>
@@ -10313,11 +10315,14 @@
         <button class="game-submit-btn" id="cfSendBtn" onclick="cfSendChallenge()" style="width:100%;margin-top:0.8rem;" disabled>Send Challenge →</button>
       </div>`;
       const list=document.getElementById('cfPickList');
+      const pickIsMeaning = cfChallengeType === 'meaning';
       shloks.forEach(master=>{
         if(!master)return;
         const btn=document.createElement('button');
         btn.className='snap-mode-btn'; btn.style.textAlign='left';
-        btn.innerHTML=`<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
+        btn.innerHTML=pickIsMeaning
+          ? `<div style="font-size:0.78rem;color:var(--text-muted);flex:1;font-style:italic;">${master.meaning ? master.meaning.split(' ').slice(0,10).join(' ')+'...' : master.line1.split(' ').slice(0,4).join(' ')+'...'}</div>`
+          : `<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
           <div style="font-size:0.78rem;color:var(--text-muted);flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
         btn.onclick=()=>{
           const idx=selected.indexOf(master.id);
@@ -10338,7 +10343,22 @@
       if(selected.length!==neededCount)return;
       const main=document.getElementById('cfMain');
 
-      // Check target doesn't already have 3 active challenges
+      // Check: no existing active challenge already sent to this person
+      const existingPairSnap = await db.collection('challenges')
+        .where('fromUid','==',currentUser.uid)
+        .where('toUid','==',cfTargetUid)
+        .limit(10)
+        .get();
+      const hasExisting = existingPairSnap.docs.map(d=>d.data())
+        .some(c => c.createdAt && (c.createdAt.toMillis()+CF_EXPIRY_MS)>now && !c.toCompleted);
+      if(hasExisting){
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.8rem;">⏳</div>
+          <div style="font-weight:700;margin-bottom:0.5rem;">You've already challenged ${cfTargetName}</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">Wait for them to complete your current challenge before sending another one.</div>
+          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+        </div>`; return;
+      }
       const now=Date.now();
       const existingSnap=await db.collection('challenges').where('toUid','==',cfTargetUid).limit(10).get();
       const activeCount=existingSnap.docs.map(d=>d.data()).filter(c=>c.createdAt&&(c.createdAt.toMillis()+CF_EXPIRY_MS)>now&&!c.toCompleted).length;
@@ -10366,10 +10386,56 @@
         return;
       }
       const typeLabel={standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[cfChallengeType];
-      document.getElementById('cfMain').innerHTML=`<div class="card game-play-card" style="text-align:center;">
-        <div style="font-size:2rem;margin-bottom:0.8rem;">🎉</div>
-        <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">${typeLabel} challenge sent to ${cfTargetName}!</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">They have 48 hours to complete it. Once they're done, they'll challenge you back!</div>
+      const typeDesc={
+        standard:`Recite ${cfChallengeCount} shloks from memory`,
+        chain:`Recite ${cfChallengeCount} consecutive shloks in order`,
+        reverseChain:`Recite ${cfChallengeCount} consecutive shloks in reverse`,
+        meaning:`Name the shlok from its English meaning (${cfChallengeCount} shloks)`
+      }[cfChallengeType];
+      const deadline = new Date(Date.now() + CF_EXPIRY_MS).toLocaleDateString('en-GB',{weekday:'long',hour:'2-digit',minute:'2-digit'});
+
+      // Build shlok summary
+      let shlokSummary = '';
+      if (cfChallengeType === 'chain') {
+        const start = parseInt(selected[0]);
+        const nums = [selected[0], ...Array.from({length:cfChallengeCount}, (_,i)=>String(start+i+1))];
+        shlokSummary = `Starting from Shlok ${selected[0]} → Shloks ${nums.join(', ')}`;
+      } else if (cfChallengeType === 'reverseChain') {
+        const end = parseInt(selected[0]);
+        const nums = [selected[0], ...Array.from({length:cfChallengeCount}, (_,i)=>String(end-i-1))];
+        shlokSummary = `Ending at Shlok ${selected[0]} → Shloks ${nums.join(', ')}`;
+      } else {
+        shlokSummary = `Shlok${selected.length > 1 ? 's' : ''} ${selected.join(', ')}`;
+      }
+
+      document.getElementById('cfMain').innerHTML=`<div class="card game-play-card">
+        <div style="text-align:center; margin-bottom:1.2rem;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">⚔️</div>
+          <div style="font-weight:800;font-size:1.1rem;">Challenge sent!</div>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:12px;padding:1rem;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.2rem;">
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+            <span style="color:var(--text-muted);">Sent to</span>
+            <span style="font-weight:700;">${cfTargetName}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+            <span style="color:var(--text-muted);">Challenge type</span>
+            <span style="font-weight:700;">${typeLabel}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+            <span style="color:var(--text-muted);">What they must do</span>
+            <span style="font-weight:700;text-align:right;max-width:55%;">${typeDesc}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;align-items:flex-start;">
+            <span style="color:var(--text-muted);flex-shrink:0;">Shloks sent</span>
+            <span style="font-weight:700;text-align:right;max-width:60%;color:var(--gold);">${shlokSummary}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+            <span style="color:var(--text-muted);">Deadline</span>
+            <span style="font-weight:700;">48 hours (by ${deadline})</span>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text-muted);text-align:center;margin-bottom:1rem;">Once they complete it, they'll challenge you back!</div>
         <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
       </div>`;
       updateChallengeBanner();
@@ -10443,7 +10509,7 @@
         questionHtml=`
           <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.5rem;">ENGLISH MEANING</div>
           <div style="font-size:0.9rem;line-height:1.6;font-style:italic;">${master?master.meaning:'?'}</div>
-          <div style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-top:1rem;">Recall and recite the full shlok.</div>`;
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-top:1rem;">Recall and recite the full shlok from memory.</div>`;
         revealHtml=master?`<div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.2rem;">Shlok ${master.id}</div><div>${master.line1}</div><div>${master.line2}</div>`:'?';
       } else {
         const firstWord=master?master.line1.split(' ')[0]:'?';
@@ -10457,7 +10523,9 @@
         <div class="game-title-row">{{typeLabel}}</div>
         ${questionHtml}
         <div id="cfReveal" style="display:none;margin:1rem 0;font-size:0.88rem;color:var(--text-muted);line-height:1.7;">${revealHtml}</div>
-        <button class="edit-save-btn" id="cfRevealBtn" onclick="this.style.display='none';document.getElementById('cfReveal').style.display='block';document.getElementById('cfMarkBtns').style.cssText='display:flex;gap:0.8rem;flex-direction:row;';" style="background:var(--blue-mid);color:white;margin:0.8rem 0;">Reveal Shlok</button>
+        <button class="edit-save-btn" id="cfRevealBtn" onclick="this.style.display='none';document.getElementById('cfReveal').style.display='block';document.getElementById('cfMarkBtns').style.cssText='display:flex;gap:0.8rem;flex-direction:row;';document.getElementById('cfHintBtn')&&(document.getElementById('cfHintBtn').style.display='none');" style="background:var(--blue-mid);color:white;margin:0.8rem 0;">Reveal Shlok</button>
+        ${type==='meaning' ? `<button id="cfHintBtn" class="edit-save-btn" onclick="cfShowMeaningHint()" style="background:transparent;color:var(--gold);border:1.5px solid var(--gold);margin:0 0 0.8rem;">💡 Need a hint?</button>` : ''}
+        <div id="cfHintArea"></div>
         <div id="cfMarkBtns" style="display:none;gap:0.8rem;flex-direction:row;">
           <button class="game-next-btn" style="flex:1;background:#22c55e;border:none;" onclick="cfMark(true)">✅ Got it</button>
           <button class="game-next-btn" style="flex:1;background:#dc2626;border:none;" onclick="cfMark(false)">❌ Missed it</button>
@@ -10508,6 +10576,55 @@
       }
     }
 
+    function cfShowMeaningHint() {
+      if (!cfAttemptData) return;
+      const { shlokNums, cfIdx } = cfAttemptData;
+      const correct = allShloks.find(a => a.id === shlokNums[cfIdx]);
+      if (!correct) return;
+
+      // Hide hint button, reveal button
+      const hintBtn = document.getElementById('cfHintBtn');
+      const revealBtn = document.getElementById('cfRevealBtn');
+      if (hintBtn) hintBtn.style.display = 'none';
+      if (revealBtn) revealBtn.style.display = 'none';
+
+      // Pick 3 distractors from allShloks (excluding correct)
+      const pool = allShloks.filter(s => s.id !== correct.id && s.line1);
+      const distractors = shuffle([...pool]).slice(0, 3);
+      const options = shuffle([correct, ...distractors]);
+      const colours = ['k-red','k-blue','k-yellow','k-green'];
+
+      const hintArea = document.getElementById('cfHintArea');
+      hintArea.innerHTML = `
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.6rem;">Which shlok matches this meaning?</div>
+        <div class="kahoot-grid">
+          ${options.map((s, i) => `
+            <button class="kahoot-btn ${colours[i]}" onclick="cfHintAnswer(this, '${s.id}', '${correct.id}')">
+              ${s.line1.split(' ').slice(0,5).join(' ')}...
+            </button>`).join('')}
+        </div>`;
+    }
+
+    function cfHintAnswer(btn, selectedId, correctId) {
+      // Disable all hint buttons
+      document.querySelectorAll('#cfHintArea .kahoot-btn').forEach(b => {
+        b.onclick = null;
+        if (b === btn) {
+          b.classList.add(selectedId === correctId ? 'k-correct' : 'k-wrong');
+        } else if (b.onclick === null) {
+          b.classList.add('k-wrong');
+        }
+      });
+      // Highlight correct one
+      document.querySelectorAll('#cfHintArea .kahoot-btn').forEach(b => {
+        const txt = b.textContent.trim();
+        const co = allShloks.find(s => s.line1.startsWith(txt.replace('...', '').trim()));
+        if (co && co.id === correctId) b.classList.add('k-correct');
+      });
+      // Show reveal + mark buttons
+      document.getElementById('cfReveal').style.display = 'block';
+      document.getElementById('cfMarkBtns').style.cssText = 'display:flex;gap:0.8rem;flex-direction:row;';
+    }
     function cfShowResults(main, myScore, theirScore, theirName, total) {
       const won=myScore>theirScore, draw=myScore===theirScore;
       const msg=draw?"It's a draw! 🤝":won?"You won! 🏆":"They got you this time! 😅";
