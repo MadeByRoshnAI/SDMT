@@ -3511,7 +3511,7 @@
       <div class="home-content-wrap">
 
         <!-- CHALLENGE BANNER -->
-        <div id="challengeBanner" style="display:none; border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>startGame('challengeFriend'),200);">
+        <div id="challengeBanner" style="display:none; border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>{ startGame('challengeFriend'); setTimeout(()=>cfSwitchTab('mine'),150); },200);">
           <div style="font-size:0.72rem; font-weight:700; color:#F4C95D; margin-bottom:0.3rem; letter-spacing:0.06em;">⚔️ CHALLENGE</div>
           <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.5rem;"></div>
           <div style="display:flex; align-items:center; gap:8px;">
@@ -4230,16 +4230,58 @@
           <button class="game-back-btn" onclick="backToHub()">← Games</button>
           <div class="game-score-label">📖 <span id="frCurrent">1</span> / <span id="frTotal">0</span> &nbsp; ✅ <span id="frKnownCount">0</span></div>
         </div>
-        <div class="card game-play-card" id="frPlayCard">
+
+        <!-- MODE SELECTOR -->
+        <div id="frModeSelector">
+          <div class="card game-play-card" style="text-align:center;">
+            <div class="game-title-row">📖 Full Review</div>
+            <div class="game-instruction" style="margin-bottom:1.5rem;">How do you want to review your shloks?</div>
+            <div style="display:flex;flex-direction:column;gap:0.8rem;max-width:360px;margin:0 auto;">
+              <button class="snap-mode-btn" type="button" onclick="frStartMode('order')">
+                <div class="snap-mode-icon">🔢</div>
+                <div><div class="snap-mode-title">In Order</div>
+                <div class="snap-mode-sub">Go through all your shloks from lowest to highest number.</div></div>
+              </button>
+              <button class="snap-mode-btn" type="button" onclick="frStartMode('random')">
+                <div class="snap-mode-icon">🔀</div>
+                <div><div class="snap-mode-title">Random Order</div>
+                <div class="snap-mode-sub">Shuffle all your shloks for a surprise challenge.</div></div>
+              </button>
+              <button class="snap-mode-btn" type="button" onclick="frShowRangePicker()">
+                <div class="snap-mode-icon">🎯</div>
+                <div><div class="snap-mode-title">Specific Range</div>
+                <div class="snap-mode-sub">Choose a range of shlok numbers to review, e.g. 1–10 or 23–27.</div></div>
+              </button>
+            </div>
+            <!-- Range picker (hidden until needed) -->
+            <div id="frRangePicker" style="display:none; margin-top:1.2rem;">
+              <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem;">
+                <div style="text-align:left;">
+                  <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.3rem;">From shlok</div>
+                  <input id="frRangeFrom" type="number" min="1" max="315" placeholder="e.g. 1" class="edit-input" style="width:100px;text-align:center;">
+                </div>
+                <div style="font-size:1.2rem;color:var(--text-muted);padding-top:1.2rem;">→</div>
+                <div style="text-align:left;">
+                  <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.3rem;">To shlok</div>
+                  <input id="frRangeTo" type="number" min="1" max="315" placeholder="e.g. 10" class="edit-input" style="width:100px;text-align:center;">
+                </div>
+              </div>
+              <button class="game-next-btn" type="button" onclick="frStartMode('range')">Start Review →</button>
+              <div id="frRangeError" style="font-size:0.82rem;color:#dc2626;margin-top:0.5rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card game-play-card" id="frPlayCard" style="display:none;">
           <div class="game-title-row">📖 Full Review</div>
-          <div class="game-instruction">Every shlok you've added, one by one. Recall it fully, reveal to check, then mark how it went.</div>
+          <div class="game-instruction">Recall it fully, reveal to check, then mark how it went.</div>
           <div id="frPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
           <div id="frClue" style="display:none; font-size:1rem; font-style:italic; color:var(--text-muted); margin-top:0.6rem;"></div>
           <div id="frRevealSection" style="display:none;">
             <div id="frFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
             <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
               <button class="game-next-btn" style="background:var(--green-text);" onclick="frResult(true)">✅ I knew it</button>
-              <button class="game-next-btn" style="background:#dc2626;" onclick="frResult(false)">✗ Need more practice</button>
+              <button class="game-next-btn" style="background:#dc2626;" onclick="frResult(false)">❌ Need more practice</button>
             </div>
           </div>
           <div style="display:flex; gap:0.8rem; margin-top:1.5rem; flex-wrap:wrap;">
@@ -4251,7 +4293,7 @@
       </div>
       <div id="frDone" style="display:none; text-align:center; padding:2rem;">
         <div id="frDoneMsg"></div>
-        <button class="game-next-btn" onclick="loadFullReview()" style="margin-top:1.2rem;">🔄 Try Again</button>
+        <button class="game-next-btn" onclick="frShowModeSelector()" style="margin-top:1.2rem;">🔄 Try Again</button>
       </div>
 
       <div id="gameSpotMistake" class="game-screen" style="display:none;">
@@ -7002,7 +7044,7 @@
           alert("You need at least 4 added shloks to play Full Review!");
           return;
         }
-      } else if (needMoreShloks()) {
+      } else if (game !== "challengeFriend" && needMoreShloks()) {
         return;
       }
       gameScore = 0;
@@ -9155,21 +9197,53 @@
     let frPool = [], frIndex = 0, frKnown = 0, frNotYet = 0;
 
     // ── FULL REVIEW ──
-    function loadFullReview() {
-      frPool = shuffle(myShloks.slice());
+    function loadFullReview() { frShowModeSelector(); }
+
+    function frShowModeSelector() {
+      document.getElementById('frModeSelector').style.display = 'block';
+      document.getElementById('frPlayCard').style.display = 'none';
+      document.getElementById('frDone').style.display = 'none';
+      document.getElementById('frRangePicker').style.display = 'none';
+      document.getElementById('frRangeError').textContent = '';
+    }
+
+    function frShowRangePicker() {
+      document.getElementById('frRangePicker').style.display = 'block';
+    }
+
+    function frStartMode(mode) {
+      let pool = [];
+      if (mode === 'order') {
+        pool = myShloks.slice().sort((a,b) => parseInt(a.number) - parseInt(b.number));
+      } else if (mode === 'random') {
+        pool = shuffle(myShloks.slice());
+      } else if (mode === 'range') {
+        const from = parseInt(document.getElementById('frRangeFrom').value);
+        const to   = parseInt(document.getElementById('frRangeTo').value);
+        const errEl = document.getElementById('frRangeError');
+        if (isNaN(from) || isNaN(to)) { errEl.textContent = 'Please enter both a from and to shlok number.'; return; }
+        if (from > to) { errEl.textContent = 'The "from" number must be lower than the "to" number.'; return; }
+        pool = myShloks.filter(s => parseInt(s.number) >= from && parseInt(s.number) <= to)
+                       .sort((a,b) => parseInt(a.number) - parseInt(b.number));
+        if (!pool.length) { errEl.textContent = `You haven't added any shloks between ${from} and ${to}.`; return; }
+      }
+
+      frPool = pool;
       frIndex = 0; frKnown = 0; frNotYet = 0;
-      document.getElementById("frKnownCount").textContent = 0;
-      document.getElementById("frTotal").textContent = frPool.length;
-      document.getElementById("frDone").style.display = "none";
-      document.getElementById("frPlayCard").style.display = "block";
-      document.getElementById("frFeedback").textContent = "";
+      document.getElementById('frKnownCount').textContent = 0;
+      document.getElementById('frTotal').textContent = frPool.length;
+      document.getElementById('frDone').style.display = 'none';
+      document.getElementById('frModeSelector').style.display = 'none';
+      document.getElementById('frPlayCard').style.display = 'block';
+      document.getElementById('frFeedback').textContent = '';
       if (!frPool.length) {
-        document.getElementById("frPrompt").textContent = "No shloks added yet!";
-        document.getElementById("frRevealBtn").style.display = "none";
-        document.getElementById("frClueBtn").style.display = "none";
+        document.getElementById('frPrompt').textContent = 'No shloks found!';
+        document.getElementById('frRevealBtn').style.display = 'none';
+        document.getElementById('frClueBtn').style.display = 'none';
         return;
       }
-      document.getElementById("frRevealBtn").style.display = "inline-block";
+      document.getElementById('frRevealBtn').style.display = 'inline-block';
+      document.getElementById('frClueBtn').style.display = 'inline-block';
       frShowCard();
     }
 
@@ -10130,7 +10204,7 @@
       }
       try {
         const now = Date.now();
-        const snap = await db.collection('challenges').where('participants','array-contains',currentUser.uid).limit(20).get();
+        const snap = await db.collection('challenges').where('participants','array-contains',currentUser.uid).limit(50).get();
         const active = snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.createdAt&&(c.createdAt.toMillis()+CF_EXPIRY_MS)>now).sort((a,b)=>b.createdAt.toMillis()-a.createdAt.toMillis());
         cfRenderMain(main, active, myDoc.data());
       } catch(e) {
@@ -10390,7 +10464,7 @@
       </div>`;
       const list = document.getElementById('cfPickList');
       shloks.forEach(master=>{
-        const btn=document.createElement('button');
+        const btn=document.createElement('button'); btn.type='button';
         btn.className='snap-mode-btn'; btn.style.textAlign='left';
         btn.innerHTML=`<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
           <div style="font-size:0.78rem;color:var(--text-muted);flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
@@ -10413,7 +10487,7 @@
       const pickIsMeaning = cfChallengeType === 'meaning';
       shloks.forEach(master=>{
         if(!master)return;
-        const btn=document.createElement('button');
+        const btn=document.createElement('button'); btn.type='button';
         btn.className='snap-mode-btn'; btn.style.textAlign='left';
         btn.innerHTML=pickIsMeaning
           ? `<div style="font-size:0.78rem;color:var(--text-muted);flex:1;font-style:italic;">${master.meaning ? master.meaning.split(' ').slice(0,10).join(' ')+'...' : master.line1.split(' ').slice(0,4).join(' ')+'...'}</div>`
@@ -10848,7 +10922,7 @@
         const now = Date.now();
         const snap = await db.collection('challenges')
           .where('participants', 'array-contains', currentUser.uid)
-          .limit(20)
+          .limit(50)
           .get();
         const all = snap.docs.map(d => ({ id: d.id, ...d.data() }))
           .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
