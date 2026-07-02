@@ -7972,6 +7972,7 @@
             loadProfile();
             render();
             renderProgressPage();
+            updateHomePage();
             showToast("Your progress has been restored! 🎉");
           }
         } catch(e) { console.warn("Data restore failed:", e); }
@@ -9430,7 +9431,7 @@
       }
 
       // Streak - count consecutive days with correct Daily Challenge completions
-      const dcHistory = new Set(JSON.parse(localStorage.getItem("dcHistory") || "[]"));
+      const dcHistory = new Set(JSON.parse(localStorage.getItem("dcHistory") || "[]") || []);
 
       let streak = 0;
 
