@@ -10468,7 +10468,11 @@
         btn.className='snap-mode-btn'; btn.style.textAlign='left';
         btn.innerHTML=`<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
           <div style="font-size:0.78rem;color:var(--text-muted);flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
-        btn.onclick=()=>{ window._cfSelected=[master.id]; cfSendChallenge(); };
+        btn.onclick=()=>{
+          window._cfSelected=[master.id];
+          if(sendFn === 'cfSendReturn') cfSendReturnChallenge();
+          else cfSendChallenge();
+        };
         list.appendChild(btn);
       });
     }
@@ -10511,6 +10515,7 @@
       const neededCount=(cfChallengeType==='chain'||cfChallengeType==='reverseChain')?1:cfChallengeCount;
       if(selected.length!==neededCount)return;
       const main=document.getElementById('cfMain');
+      const now=Date.now();
 
       // Check: no existing active challenge already sent to this person
       const existingPairSnap = await db.collection('challenges')
@@ -10528,7 +10533,6 @@
           <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
         </div>`; return;
       }
-      const now=Date.now();
       const existingSnap=await db.collection('challenges').where('toUid','==',cfTargetUid).limit(10).get();
       const activeCount=existingSnap.docs.map(d=>d.data()).filter(c=>c.createdAt&&(c.createdAt.toMillis()+CF_EXPIRY_MS)>now&&!c.toCompleted).length;
       if(activeCount>=3){
@@ -10979,6 +10983,3 @@
   </script>
 </body>
 </html>
-
-
-
