@@ -3561,12 +3561,6 @@
           </div>
         </div>
         <div class="donut-legend" id="donutLegend"></div>
-
-        <!-- PERSONAL AIM -->
-        <div id="customGoalCard" style="display:none; border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem;">
-          <div class="home-card-label" id="customGoalLabel">🎯 Your Personal Aim</div>
-          <div id="customGoalContent"></div>
-        </div>
       </div>
 
     </section>
@@ -9412,44 +9406,6 @@
       // Revise Now
       loadReviseNow();
 
-      // Custom goal card
-      const goalCard    = document.getElementById("customGoalCard");
-      const goalContent = document.getElementById("customGoalContent");
-      const goalLabel   = document.getElementById("customGoalLabel");
-      const prof        = JSON.parse(localStorage.getItem("profile") || "{}");
-      const goalTarget  = parseInt(prof.goalTarget);
-      if (goalCard && goalTarget > 0) {
-        const totalKnown = myShloks.filter(s => s.mastery === "learnt" || s.mastery === "memorised").length;
-        const pct        = Math.min(100, Math.round((totalKnown / goalTarget) * 100));
-        const remaining  = Math.max(0, goalTarget - totalKnown);
-        const aimLabel   = prof.goalName
-          ? `Learn ${goalTarget} shloks by ${prof.goalName}`
-          : prof.goalDate
-            ? `Learn ${goalTarget} shloks by ${new Date(prof.goalDate).toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric"})}`
-            : `Learn ${goalTarget} shloks`;
-        goalLabel.textContent = "🎯 Your Personal Aim";
-        let daysLine = "";
-        if (prof.goalDate) {
-          const daysLeft = Math.ceil((new Date(prof.goalDate) - new Date()) / 86400000);
-          daysLine = daysLeft > 0
-            ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.3rem;">${daysLeft} day${daysLeft !== 1 ? "s" : ""} remaining</div>`
-            : `<div style="font-size:0.8rem; color:#dc2626; margin-top:0.3rem;">Target date has passed</div>`;
-        }
-        goalContent.innerHTML = totalKnown >= goalTarget
-          ? `<div style="color:var(--gold); font-weight:700; font-size:1rem; margin:0.5rem 0;">🏆 Goal reached! You know ${totalKnown} shloks.</div>`
-          : `
-            <div style="font-size:0.82rem; color:var(--text-muted); margin:0.3rem 0 0.5rem;">${aimLabel}</div>
-            <div style="font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">${totalKnown} / ${goalTarget} shloks — ${pct}% of the way there</div>
-            <div style="background:var(--border); border-radius:999px; height:8px; overflow:hidden; margin:0.4rem 0;">
-              <div style="background:var(--gold); width:${pct}%; height:100%; border-radius:999px; transition:width 0.5s;"></div>
-            </div>
-            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.3rem;">${remaining} shlok${remaining !== 1 ? "s" : ""} to go</div>
-            ${daysLine}
-          `;
-        goalCard.style.display = "block";
-      } else if (goalCard) {
-        goalCard.style.display = "none";
-      }
       const todayStr = localDateStr();
       const memorisedToday = myShloks.filter(s => s.memorisedDate === todayStr).length;
       const statTodayEl = document.getElementById("statTodayNum");
@@ -10147,7 +10103,7 @@
         const hoursLeft = msLeft / 3600000;
         const pct = Math.max(0, Math.min(100, (msLeft / CF_EXPIRY_MS) * 100));
         const h = Math.floor(hoursLeft), m = Math.floor((hoursLeft%1)*60);
-        const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        const timeStr = h > 0 ? `${h}h ${m}m remaining` : `${m}m remaining`;
         const urgent = hoursLeft < 12, warning = hoursLeft < 24;
         const barCol = urgent ? '#dc2626' : warning ? '#f97316' : '#F4C95D';
         const bgCol = urgent ? '#7f1d1d' : '#0A2A66';
@@ -10156,17 +10112,17 @@
         const tl = typeLabel(isMine ? c.challengeType : c.challengeType);
         const count = c.challengeCount || c.shloks.length;
         const action = isMine
-          ? (c.returnChallengeSet ? `<button class="game-next-btn" style="width:100%;margin-top:0.8rem;background:#22c55e;border:none;font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Complete Return →</button>` : '')
-          : `<button class="game-next-btn" style="width:100%;margin-top:0.8rem;font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>`;
-        return `<div style="background:${bgCol};border:${border};border-radius:14px;padding:1rem;display:flex;flex-direction:column;min-width:0;">
-          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">⚔️ ${isMine ? 'RETURN CHALLENGE' : 'INCOMING CHALLENGE'}</div>
-          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.1rem;">${name}</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.7rem;">${tl} · ${count} shloks</div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.3rem;">
-            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:4px;overflow:hidden;">
+          ? (c.returnChallengeSet ? `<button class="game-next-btn" style="margin-top:1rem;background:#22c55e;border:none;" onclick="cfStartAttempt('${c.id}')">Complete Return Challenge →</button>` : '')
+          : `<button class="game-next-btn" style="margin-top:1rem;" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>`;
+        return `<div style="background:${bgCol};border:${border};border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:0.8rem;">
+          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.5rem;">⚔️ ${isMine ? 'RETURN CHALLENGE' : 'INCOMING CHALLENGE'}</div>
+          <div style="font-size:1rem;font-weight:700;color:white;margin-bottom:0.2rem;">${name}</div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:0.8rem;">${tl} · ${count} shloks</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:5px;overflow:hidden;">
               <div style="background:${barCol};width:${pct}%;height:100%;border-radius:999px;"></div>
             </div>
-            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
           </div>
           ${action}
         </div>`;
@@ -10177,20 +10133,19 @@
         const hoursLeft = msLeft / 3600000;
         const pct = Math.max(0, Math.min(100, (msLeft / CF_EXPIRY_MS) * 100));
         const h = Math.floor(hoursLeft), m = Math.floor((hoursLeft%1)*60);
-        const timeStr = h > 0 ? `${h}h ${m}m left` : `${m}m left`;
+        const timeStr = h > 0 ? `${h}h ${m}m remaining` : `${m}m remaining`;
         const barCol = hoursLeft < 12 ? '#dc2626' : hoursLeft < 24 ? '#f97316' : '#F4C95D';
         const count = c.challengeCount || c.shloks.length;
-        return `<div style="background:#0A2A66;border:1.5px solid rgba(244,201,93,0.3);border-radius:14px;padding:1rem;display:flex;flex-direction:column;min-width:0;">
-          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">📤 SENT</div>
-          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.1rem;">To: ${c.toName}</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.7rem;">${typeLabel(c.challengeType)} · ${count} shloks</div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:4px;overflow:hidden;">
+        return `<div style="background:#0A2A66;border:1.5px solid rgba(244,201,93,0.3);border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:0.8rem;">
+          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.5rem;">📤 SENT</div>
+          <div style="font-size:1rem;font-weight:700;color:white;margin-bottom:0.2rem;">To: ${c.toName}</div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:0.8rem;">${typeLabel(c.challengeType)} · ${count} shloks · Awaiting response</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:5px;overflow:hidden;">
               <div style="background:${barCol};width:${pct}%;height:100%;border-radius:999px;"></div>
             </div>
-            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
           </div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">Awaiting their response...</div>
         </div>`;
       }
 
@@ -10202,13 +10157,14 @@
         const tot = c.challengeCount||c.shloks.length;
         const won = myScore>theirScore, draw = myScore===theirScore;
         const col = won?'#22c55e':draw?'#f97316':'#dc2626';
-        return `<div style="background:#0A2A66;border:1.5px solid ${col}40;border-radius:14px;padding:1rem;min-width:0;">
-          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">📊 RESULT</div>
-          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.4rem;">vs ${theirName}</div>
-          <div style="display:flex;gap:0.8rem;align-items:center;">
-            <div style="font-size:1.3rem;font-weight:800;color:${col};">${myScore}/${tot}</div>
-            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">vs ${theirScore}/${tot}</div>
-            <div style="margin-left:auto;font-size:1.2rem;">${won?'🏆':draw?'🤝':'😅'}</div>
+        return `<div style="background:#0A2A66;border:1.5px solid ${col}55;border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:0.8rem;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.3rem;">📊 RESULT</div>
+            <div style="font-size:1rem;font-weight:700;color:white;">vs ${theirName}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.4rem;font-weight:800;color:${col};">${myScore}/${tot}</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">vs ${theirScore}/${tot} ${won?'🏆':draw?'🤝':'😅'}</div>
           </div>
         </div>`;
       }
@@ -10217,23 +10173,22 @@
       const challengesTab = `
         <div style="margin-bottom:0.8rem;font-size:0.8rem;color:var(--text-muted);">${myActive.length} active challenge${myActive.length!==1?'s':''}</div>
         ${myActive.length > 0
-          ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;margin-bottom:1rem;">${[...incoming.map(c=>cfCardHtml(c,false)),...returnWaiting.map(c=>cfCardHtml(c,true))].join('')}</div>`
+          ? [...incoming.map(c=>cfCardHtml(c,false)),...returnWaiting.map(c=>cfCardHtml(c,true))].join('')
           : `<div style="color:var(--text-muted);font-size:0.85rem;padding:1rem 0;">No active challenges right now.</div>`}
-        ${results.length>0 ? `<div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin:0.8rem 0 0.5rem;">Results</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;">${results.map(c=>cfResultCardHtml(c)).join('')}</div>` : ''}`;
+        ${results.length>0 ? `<div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin:0.8rem 0 0.5rem;">Results</div>${results.map(c=>cfResultCardHtml(c)).join('')}` : ''}`;
 
       const sentTab = `
         <div style="margin-bottom:0.8rem;font-size:0.8rem;color:var(--text-muted);">${sent.length} challenge${sent.length!==1?'s':''} sent</div>
         ${sent.length > 0
-          ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;">${sent.map(c=>cfSentCardHtml(c)).join('')}</div>`
+          ? sent.map(c=>cfSentCardHtml(c)).join('')
           : `<div style="color:var(--text-muted);font-size:0.85rem;padding:1rem 0;">You haven't sent any challenges yet.</div>`}`;
 
       main.innerHTML = `
         <!-- TAB BAR -->
-        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
-          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--gold);background:var(--gold);color:var(--blue-dark);font-weight:700;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">🤝 Challenge a Friend</button>
-          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">My Challenges</button>
-          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">Challenges Sent</button>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;background:var(--card-bg);border:1px solid var(--border);border-radius:999px;padding:4px;">
+          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:var(--blue);color:white;font-weight:700;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">🤝 Challenge</button>
+          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:transparent;color:var(--text-muted);font-weight:600;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">My Challenges</button>
+          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.45rem 0.8rem;border-radius:999px;border:none;background:transparent;color:var(--text-muted);font-weight:600;font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s, color 0.2s;">Challenges Sent</button>
         </div>
 
         <!-- SEND TAB -->
@@ -10261,14 +10216,14 @@
 
     function cfSwitchTab(tab) {
       ['send','mine','sent'].forEach(t => {
-        const btn = document.getElementById(`cfTab${t.charAt(0).toUpperCase()+t.slice(1)}`);
-        const panel = document.getElementById(`cfPanel${t.charAt(0).toUpperCase()+t.slice(1)}`);
+        const key = t.charAt(0).toUpperCase()+t.slice(1);
+        const btn = document.getElementById(`cfTab${key}`);
+        const panel = document.getElementById(`cfPanel${key}`);
         if (!btn || !panel) return;
         const active = t === tab;
         panel.style.display = active ? 'block' : 'none';
-        btn.style.background = active ? 'var(--gold)' : 'transparent';
-        btn.style.color = active ? 'var(--blue-dark)' : 'var(--text-muted)';
-        btn.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
+        btn.style.background = active ? 'var(--blue)' : 'transparent';
+        btn.style.color = active ? 'white' : 'var(--text-muted)';
         btn.style.fontWeight = active ? '700' : '600';
       });
     }
