@@ -3462,10 +3462,15 @@
       <div class="home-content-wrap">
 
         <!-- CHALLENGE BANNER -->
-        <div id="challengeBanner" style="display:none; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>startGame('challengeFriend'),200);">
-          <div style="font-size:0.75rem; font-weight:700; color:var(--gold); margin-bottom:0.3rem;">⚔️ CHALLENGE</div>
-          <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.3rem;"></div>
-          <div id="challengeBannerTime" style="font-size:0.75rem; color:rgba(255,255,255,0.6);"></div>
+        <div id="challengeBanner" style="display:none; border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>startGame('challengeFriend'),200);">
+          <div style="font-size:0.72rem; font-weight:700; color:#F4C95D; margin-bottom:0.3rem; letter-spacing:0.06em;">⚔️ CHALLENGE</div>
+          <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.5rem;"></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; background:rgba(255,255,255,0.15); border-radius:999px; height:5px; overflow:hidden;">
+              <div id="challengeBannerBar" style="height:100%; border-radius:999px; transition:width 0.3s;"></div>
+            </div>
+            <div id="challengeBannerTime" style="font-size:0.72rem; color:rgba(255,255,255,0.7); white-space:nowrap;"></div>
+          </div>
         </div>
 
         <!-- JOURNEY TO RAJIPO PROGRESS BAR -->
@@ -6625,8 +6630,10 @@
     /* ------------------------------
        DATA STORAGE
        ------------------------------ */
+    // ── APP STATE ──
     let myShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
 
+    // ── SAVE & RENDER ──
     function save() {
       localStorage.setItem("myShloks", JSON.stringify(myShloks));
       scheduleMandalSync();
@@ -6938,12 +6945,14 @@
       return false;
     }
 
+    // ── BACK TO HUB ──
     function backToHub() {
       document.querySelectorAll(".game-screen").forEach(s => s.style.display = "none");
       document.getElementById("gameHub").style.display = "block";
       gameScore = 0;
     }
 
+    // ── GAMES HUB ──
     function startGame(game) {
       if (game === "fullReview") {
         if (myShloks.length < 4) {
@@ -7051,6 +7060,7 @@
       return words.map((w, i) => ({ word: w, wrong: wrongPositions.includes(i) }));
     }
 
+    // ── SPOT THE MISTAKE ──
     function loadSpotMistake() {
       smAnswered = false;
       document.getElementById("smNextBtn").style.display = "none";
@@ -7645,6 +7655,7 @@
       return pick(allWords, count);
     }
 
+    // ── WORD SCRAMBLE ──
     function loadWordScramble() {
       const pool = myShloks.filter(s => s.mastery === "learnt" || s.mastery === "memorised");
       if (!pool.length) return;
@@ -8055,6 +8066,7 @@
       return name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
     }
 
+    // ── MANDAL CARD BUILDER ──
     function mandalBuildCard(person) {
       const known = person.learnt + person.memorised;
       const pct = Math.min(100, Math.round((known / 315) * 100));
@@ -8191,6 +8203,7 @@
     let mandalAllData = [];
     let mandalFilterQuery = "";
 
+    // ── MANDAL PAGE ──
     function mandalApplyFilter() {
       const grid = document.getElementById("mandalGrid");
       if (!grid) return;
@@ -8708,6 +8721,7 @@
     /* ------------------------------
        DAILY CHALLENGE
        ------------------------------ */
+    // ── DAILY CHALLENGE ──
     function loadDailyChallenge() {
       const today = localDateStr();
       const saved = JSON.parse(localStorage.getItem("dailyChallenge") || "{}");
@@ -8774,6 +8788,7 @@
        ------------------------------ */
     let rmPool = [], rmIndex = 0, rmKnown = 0, rmNotYet = 0;
 
+    // ── REVISION MODE ──
     function loadRevisionMode() {
       rmPool = myShloks.filter(s => s.mastery === "revise");
       rmIndex = 0; rmKnown = 0; rmNotYet = 0;
@@ -9095,6 +9110,7 @@
 
     let frPool = [], frIndex = 0, frKnown = 0, frNotYet = 0;
 
+    // ── FULL REVIEW ──
     function loadFullReview() {
       frPool = shuffle(myShloks.slice());
       frIndex = 0; frKnown = 0; frNotYet = 0;
@@ -9323,6 +9339,7 @@
     /* ------------------------------
        HOME PAGE STATS + GREETING
        ------------------------------ */
+    // ── HOME PAGE ──
     function updateHomePage() {
       const name = window.userFirstName || "Haribhakta";
       updateChallengeBanner();
@@ -9601,6 +9618,7 @@
       loadProfile();
     }
 
+    // ── PROFILE ──
     function loadProfile() {
       const profile = JSON.parse(localStorage.getItem("profile"));
       if (!profile) return;
@@ -9685,6 +9703,7 @@
     /* ------------------------------
        EDIT PANEL (INSIDE SLIDEOUT)
        ------------------------------ */
+    // ── PERSONAL AIM ──
     function goalToggle(mode) {
       const nameInput = document.getElementById("editGoalName");
       const dateInput = document.getElementById("editGoalDate");
@@ -10069,8 +10088,11 @@
       document.getElementById('ssDone').style.display = 'block';
     }
 
+
     // ── CHALLENGE A FRIEND ──
-    const CF_EXPIRY_MS = 24 * 60 * 60 * 1000;
+    const CF_EXPIRY_MS = 48 * 60 * 60 * 1000;
+    let cfTargetUid = '', cfTargetName = '', cfTargetShloks = [];
+    let cfChallengeCount = 5, cfChallengeType = 'standard';
 
     function cfTimeLeft(ts) {
       const ms = (ts.toMillis ? ts.toMillis() : ts) + CF_EXPIRY_MS - Date.now();
@@ -10083,111 +10105,76 @@
     async function loadChallengeFriend() {
       const main = document.getElementById('cfMain');
       main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
-
-      // Must be signed in
       if (!currentUser) {
         main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
           <div style="font-size:2rem; margin-bottom:0.8rem;">🔒</div>
           <div style="font-weight:700; margin-bottom:0.5rem;">Sign in to challenge friends</div>
           <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You need to be signed in with Google and have a Mukhpath Mandal card to send or receive challenges.</div>
-          <button class="google-signin-btn" onclick="signInWithGoogle()" style="margin:0 auto;">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Sign in with Google
-          </button>
-        </div>`;
-        return;
+          <button class="google-signin-btn" onclick="signInWithGoogle()" style="margin:0 auto;"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Sign in with Google</button>
+        </div>`; return;
       }
-
-      // Must have a Mandal card
       const myDoc = await db.collection('mandal').doc(getMandalUserId()).get();
       if (!myDoc.exists) {
         main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
           <div style="font-size:2rem; margin-bottom:0.8rem;">👤</div>
           <div style="font-weight:700; margin-bottom:0.5rem;">Set up your profile first</div>
-          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You need a Mukhpath Mandal card to send or receive challenges. Add your name and favourite shlok in My Profile.</div>
-          <button class="game-next-btn" onclick="backToHub(); setTimeout(togglePanel, 200)">Go to My Profile</button>
-        </div>`;
-        return;
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You need a Mukhpath Mandal card to send or receive challenges.</div>
+          <button class="game-next-btn" onclick="backToHub(); setTimeout(togglePanel,200)">Go to My Profile</button>
+        </div>`; return;
       }
-
-      // Load active challenges
-      const now = Date.now();
       try {
-        const snap = await db.collection('challenges')
-          .where('participants', 'array-contains', currentUser.uid)
-          .limit(20)
-          .get();
-
-        const active = snap.docs
-          .map(d => ({ id: d.id, ...d.data() }))
-          .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now)
-          .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
-
+        const now = Date.now();
+        const snap = await db.collection('challenges').where('participants','array-contains',currentUser.uid).limit(20).get();
+        const active = snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.createdAt&&(c.createdAt.toMillis()+CF_EXPIRY_MS)>now).sort((a,b)=>b.createdAt.toMillis()-a.createdAt.toMillis());
         cfRenderMain(main, active, myDoc.data());
       } catch(e) {
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Couldn't load challenges. Please check your connection and try again.</div>
-          <button class="game-next-btn" onclick="loadChallengeFriend()">Try Again</button>
-        </div>`;
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Couldn't load challenges. Check your connection and try again.</div><button class="game-next-btn" onclick="loadChallengeFriend()">Try Again</button></div>`;
       }
     }
 
     function cfRenderMain(main, challenges, myData) {
       const uid = currentUser.uid;
-      const incoming = challenges.filter(c => c.toUid === uid && !c.toCompleted);
-      const waitingForThem = challenges.filter(c => c.fromUid === uid && c.toCompleted && !c.fromCompleted);
-      const completed = challenges.filter(c =>
-        (c.toUid === uid && c.toCompleted) || (c.fromUid === uid && c.fromCompleted)
-      );
-
+      const incoming = challenges.filter(c => c.toUid===uid && !c.toCompleted);
+      const returnWaiting = challenges.filter(c => c.fromUid===uid && c.returnChallengeSet && !c.fromCompleted);
+      const results = challenges.filter(c => c.toCompleted && c.fromCompleted);
       let html = '';
-
-      // Incoming challenge to complete
       if (incoming.length > 0) {
         const c = incoming[0];
         const tl = cfTimeLeft(c.createdAt);
+        const typeLabel = {standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[c.challengeType||'standard'];
         html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
           <div class="game-title-row">⚔️ Incoming Challenge!</div>
-          <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> has challenged you! ${tl ? `⏰ ${tl}` : ''}</div>
-          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept &amp; Start →</button>
+          <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:0.3rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> sent you a <strong style="color:var(--text-main);">${typeLabel} Challenge</strong> (${c.challengeCount||c.shloks.length} shloks)</div>
+          ${tl ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">⏰ ${tl}</div>` : ''}
+          <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>
         </div>`;
       }
-
-      // Waiting for them to challenge back
-      if (waitingForThem.length > 0) {
-        const c = waitingForThem[0];
+      if (returnWaiting.length > 0) {
+        const c = returnWaiting[0];
         html += `<div class="card game-play-card">
-          <div style="font-size:0.88rem; color:var(--text-muted);">⏳ Waiting for <strong style="color:var(--text-main);">${c.toName}</strong> to challenge you back...</div>
+          <div style="font-size:0.88rem; color:var(--text-muted);">⚔️ <strong style="color:var(--text-main);">${c.toName}</strong> has challenged you back! <button class="game-next-btn" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Start →</button></div>
         </div>`;
       }
-
-      // Results
-      const results = challenges.filter(c => c.toCompleted && c.fromCompleted);
       if (results.length > 0) {
-        html += `<div class="card game-play-card">
-          <div class="game-title-row" style="margin-bottom:0.8rem;">📊 Results</div>
-          ${results.map(c => {
-            const iFrom = c.fromUid === uid;
-            const myScore = iFrom ? c.fromScore : c.toScore;
-            const theirScore = iFrom ? c.toScore : c.fromScore;
-            const theirName = iFrom ? c.toName : c.fromName;
-            const won = myScore > theirScore;
-            return `<div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border); font-size:0.88rem;">
+        html += `<div class="card game-play-card"><div class="game-title-row" style="margin-bottom:0.8rem;">📊 Results</div>
+          ${results.map(c=>{
+            const iFrom=c.fromUid===uid;
+            const myScore=iFrom?c.fromScore:c.toScore;
+            const theirScore=iFrom?c.toScore:c.fromScore;
+            const theirName=iFrom?c.toName:c.fromName;
+            const tot=c.challengeCount||c.shloks.length;
+            const won=myScore>theirScore;
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.88rem;">
               <span>vs <strong>${theirName}</strong></span>
-              <span style="font-weight:700; color:${won ? 'var(--green-text)' : '#dc2626'};">${myScore}/5 vs ${theirScore}/5 ${won ? '🏆' : '😅'}</span>
+              <span style="font-weight:700;color:${won?'var(--green-text)':'#dc2626'};">${myScore}/${tot} vs ${theirScore}/${tot} ${won?'🏆':'😅'}</span>
             </div>`;
-          }).join('')}
-        </div>`;
+          }).join('')}</div>`;
       }
-
-      // Send new challenge
       html += `<div class="card game-play-card">
         <div class="game-title-row">🤝 Challenge a Friend</div>
         <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your mandal to challenge.</div>
-        <div id="cfFriendList" style="display:flex; flex-direction:column; gap:0.6rem;">
-          <div style="color:var(--text-muted); font-size:0.85rem;">Loading Mandal...</div>
-        </div>
+        <div id="cfFriendList"><div style="color:var(--text-muted);font-size:0.85rem;">Loading mandal...</div></div>
       </div>`;
-
       main.innerHTML = html;
       cfLoadFriendList();
     }
@@ -10196,192 +10183,321 @@
       const snap = await db.collection('mandal').get();
       const list = document.getElementById('cfFriendList');
       if (!list) return;
-      const friends = snap.docs
-        .map(d => d.data())
-        .filter(d => d.uid && d.uid !== currentUser.uid && d.name);
-
-      if (!friends.length) { list.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">No one else on the Mandal yet!</div>'; return; }
-
-      list.innerHTML = friends.map(f => `
-        <button class="snap-mode-btn" style="text-align:left;" onclick="cfPickShloks('${f.uid}', '${f.name.replace(/'/g,"\\'")}')">
-          <div class="snap-mode-icon" style="font-size:1.2rem; width:36px; height:36px; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:700; font-size:0.85rem; flex-shrink:0;">${f.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
-          <div><div class="snap-mode-title">${f.name}</div>
-          <div class="snap-mode-sub">${f.mandalName || ''} · ${f.totalKnown || 0} shloks known</div></div>
+      const friends = snap.docs.map(d=>d.data()).filter(d=>d.uid&&d.uid!==currentUser.uid&&d.name);
+      if (!friends.length) { list.innerHTML='<div style="color:var(--text-muted);font-size:0.85rem;">No one else on the Mandal yet!</div>'; return; }
+      list.innerHTML = friends.map(f=>`
+        <button class="snap-mode-btn" style="text-align:left;" onclick="cfPickShloks('${f.uid}','${f.name.replace(/'/g,"\\'")}')">
+          <div class="snap-mode-icon" style="width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--blue-mid));border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;font-size:0.85rem;flex-shrink:0;">${f.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+          <div><div class="snap-mode-title">${f.name}</div><div class="snap-mode-sub">${f.mandalName||''} · ${f.totalKnown||0} shloks known</div></div>
         </button>`).join('');
     }
 
-    let cfTargetUid = '', cfTargetName = '', cfTargetShloks = [];
-
-    async function cfPickShloks(uid, name) {
-      cfTargetUid = uid; cfTargetName = name;
-      const main = document.getElementById('cfMain');
-      main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
-
-      // Read their public shlok list from Mandal doc
-      const doc = await db.collection('mandal').doc(uid).get();
-      const data = doc.exists ? doc.data() : {};
-      const shlokNums = data.shlokList || [];
-
-      const theirShloks = shlokNums
-        .map(num => allShloks.find(a => a.id === num))
-        .filter(Boolean);
-
-      cfTargetShloks = theirShloks;
-
-      if (theirShloks.length < 5) {
-        const totalKnown = data.totalKnown || 0;
-        const msg = totalKnown >= 5
-          ? `Ask ${name} to open the app and go to their home page, then come back and try again!`
-          : `${name} hasn't learnt enough shloks yet — they need at least 5 to be challenged.`;
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">${msg}</div>
-          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
-        </div>`;
-        return;
-      }
-
-      cfRenderPickScreen(main, theirShloks, name);
+    // ── HELPER: get consecutive chain options ──
+    function cfChainOptions(shloks, count, dir) {
+      const ids = new Set(shloks.map(s=>parseInt(s.id)));
+      return shloks.filter(s=>{
+        const n = parseInt(s.id);
+        for (let i=1;i<=count;i++) { if (!ids.has(dir==='fwd'?n+i:n-i)) return false; }
+        return true;
+      });
     }
 
-    function cfRenderPickScreen(main, shloks, name) {
-      let selected = [];
-      main.innerHTML = `<div class="card game-play-card">
-        <div class="game-title-row">Pick 5 shloks for ${name}</div>
-        <div class="game-instruction" style="margin-bottom:1rem;">Choose 5 shloks from their list to test them on. They'll only see the shlok number and first word.</div>
-        <div id="cfPickList" style="display:flex; flex-direction:column; gap:0.5rem; max-height:400px; overflow-y:auto;"></div>
-        <div id="cfPickCount" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.8rem; text-align:center;">0 / 5 selected</div>
-        <button class="game-submit-btn" id="cfSendBtn" onclick="cfSendChallenge()" style="width:100%; margin-top:0.8rem;" disabled>Send Challenge →</button>
+    async function cfPickShloks(uid, name) {
+      cfTargetUid=uid; cfTargetName=name;
+      const main = document.getElementById('cfMain');
+      main.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text-muted);">Loading...</div>';
+      const doc = await db.collection('mandal').doc(uid).get();
+      const data = doc.exists?doc.data():{};
+      const shlokNums = data.shlokList||[];
+      const theirShloks = shlokNums.map(num=>allShloks.find(a=>a.id===num)).filter(Boolean);
+      cfTargetShloks = theirShloks;
+      const shloksWithMeaning = theirShloks.filter(s=>s.meaning&&s.meaning.trim());
+      if (theirShloks.length < 3) {
+        const msg = (data.totalKnown||0)>=3 ? `Ask ${name} to open the app and go to their home page, then come back and try again!` : `${name} hasn't learnt enough shloks yet — they need at least 3 to be challenged.`;
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">${msg}</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`; return;
+      }
+      // Show challenge type selector
+      const types = [
+        { id:'standard', icon:'📖', title:'Standard Challenge', desc:'Recite each shlok from memory — first word is shown as a hint.' },
+        { id:'chain',    icon:'⛓️', title:'Chain Challenge',    desc:'Given the first shlok, recite the ones that follow it in order.' },
+        { id:'reverseChain', icon:'🔄', title:'Reverse Chain', desc:'Given the last shlok, recite the ones that come before it.' },
+        { id:'meaning',  icon:'💡', title:'Meaning Challenge', desc:'Shown the English meaning only — recall and recite the full shlok.' },
+      ];
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">Challenge ${name}</div>
+        <div class="game-instruction" style="margin-bottom:1.2rem;">Choose a challenge type:</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          ${types.map(t=>`<button class="snap-mode-btn" onclick="cfSelectType('${t.id}')">
+            <div class="snap-mode-icon" style="font-size:1.3rem;">${t.icon}</div>
+            <div><div class="snap-mode-title">${t.title}</div><div class="snap-mode-sub">${t.desc}</div></div>
+          </button>`).join('')}
+        </div>
       </div>`;
+    }
 
+    function cfSelectType(type) {
+      cfChallengeType = type;
+      const main = document.getElementById('cfMain');
+      const counts = [3,5,10,15];
+      const countLabels = {3:'Quick Challenge',5:'Normal Challenge',10:'Hard Challenge',15:'Expert Challenge'};
+      const theirShloks = cfTargetShloks;
+      const shloksWithMeaning = theirShloks.filter(s=>s.meaning&&s.meaning.trim());
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">How many shloks?</div>
+        <div class="game-instruction" style="margin-bottom:1.2rem;">Choose the difficulty:</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          ${counts.map(n=>{
+            let valid=true, reason='';
+            if (type==='standard') { if (theirShloks.length<n){valid=false;reason=`${cfTargetName} needs at least ${n} shloks learnt.`;} }
+            else if (type==='chain') { if (cfChainOptions(theirShloks,n,'fwd').length===0){valid=false;reason=`${cfTargetName} needs ${n} consecutive shloks after a starting point.`;} }
+            else if (type==='reverseChain') { if (cfChainOptions(theirShloks,n,'bwd').length===0){valid=false;reason=`${cfTargetName} needs ${n} consecutive shloks before an ending point.`;} }
+            else if (type==='meaning') { if (shloksWithMeaning.length<n){valid=false;reason=`${cfTargetName} only has ${shloksWithMeaning.length} shloks with English meanings.`;} }
+            return valid
+              ? `<button class="snap-mode-btn" onclick="cfChallengeCount=${n}; cfShowShlokPicker()">
+                  <div class="snap-mode-icon" style="width:36px;height:36px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.9rem;">${n}</div>
+                  <div><div class="snap-mode-title">${countLabels[n]}</div><div class="snap-mode-sub">${n} shloks</div></div>
+                </button>`
+              : `<div class="snap-mode-btn" style="opacity:0.45;cursor:not-allowed;position:relative;">
+                  <div class="snap-mode-icon" style="width:36px;height:36px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-weight:700;font-size:0.9rem;">${n}</div>
+                  <div><div class="snap-mode-title">${countLabels[n]}</div><div class="snap-mode-sub" style="color:#dc2626;">${reason}</div></div>
+                </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    function cfShowShlokPicker() {
+      const main = document.getElementById('cfMain');
+      const count = cfChallengeCount;
+      const type = cfChallengeType;
+      const name = cfTargetName;
+      if (type==='chain') {
+        const validStarts = cfChainOptions(cfTargetShloks, count, 'fwd');
+        cfRenderSinglePicker(main, validStarts, name, `Pick a starting shlok — they'll recite the ${count} that follow it.`, 'cfSendChallenge');
+      } else if (type==='reverseChain') {
+        const validEnds = cfChainOptions(cfTargetShloks, count, 'bwd');
+        cfRenderSinglePicker(main, validEnds, name, `Pick an ending shlok — they'll recite the ${count} that come before it.`, 'cfSendChallenge');
+      } else if (type==='meaning') {
+        const withMeaning = cfTargetShloks.filter(s=>s.meaning&&s.meaning.trim());
+        cfRenderPickScreen(main, withMeaning, name, count);
+      } else {
+        cfRenderPickScreen(main, cfTargetShloks, name, count);
+      }
+    }
+
+    function cfRenderSinglePicker(main, shloks, name, instruction, sendFn) {
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">Pick one shlok for ${name}</div>
+        <div class="game-instruction" style="margin-bottom:1rem;">${instruction}</div>
+        <div id="cfPickList" style="display:flex;flex-direction:column;gap:0.5rem;max-height:400px;overflow-y:auto;"></div>
+      </div>`;
       const list = document.getElementById('cfPickList');
-      shloks.forEach(master => {
-        if (!master) return;
-        const btn = document.createElement('button');
-        btn.className = 'snap-mode-btn';
-        btn.style.textAlign = 'left';
-        btn.dataset.num = master.id;
-        btn.innerHTML = `<div style="font-weight:700; font-size:0.85rem; color:var(--gold); min-width:40px;">Shlok ${master.id}</div>
-          <div style="font-size:0.78rem; color:var(--text-muted); flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
-        btn.onclick = () => {
-          const idx = selected.indexOf(master.id);
-          if (idx > -1) { selected.splice(idx, 1); btn.style.borderColor = ''; btn.style.background = ''; }
-          else if (selected.length < 5) { selected.push(master.id); btn.style.borderColor = 'var(--gold)'; btn.style.background = 'rgba(244,201,93,0.08)'; }
-          document.getElementById('cfPickCount').textContent = `${selected.length} / 5 selected`;
-          document.getElementById('cfSendBtn').disabled = selected.length !== 5;
-          window._cfSelected = selected;
+      shloks.forEach(master=>{
+        const btn=document.createElement('button');
+        btn.className='snap-mode-btn'; btn.style.textAlign='left';
+        btn.innerHTML=`<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
+        btn.onclick=()=>{ window._cfSelected=[master.id]; cfSendChallenge(); };
+        list.appendChild(btn);
+      });
+    }
+
+    function cfRenderPickScreen(main, shloks, name, count) {
+      count=count||cfChallengeCount||5;
+      let selected=[];
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">Pick ${count} shloks for ${name}</div>
+        <div class="game-instruction" style="margin-bottom:1rem;">Choose ${count} shloks to test them on.</div>
+        <div id="cfPickList" style="display:flex;flex-direction:column;gap:0.5rem;max-height:400px;overflow-y:auto;"></div>
+        <div id="cfPickCount" style="font-size:0.82rem;color:var(--text-muted);margin-top:0.8rem;text-align:center;">0 / ${count} selected</div>
+        <button class="game-submit-btn" id="cfSendBtn" onclick="cfSendChallenge()" style="width:100%;margin-top:0.8rem;" disabled>Send Challenge →</button>
+      </div>`;
+      const list=document.getElementById('cfPickList');
+      shloks.forEach(master=>{
+        if(!master)return;
+        const btn=document.createElement('button');
+        btn.className='snap-mode-btn'; btn.style.textAlign='left';
+        btn.innerHTML=`<div style="font-weight:700;font-size:0.85rem;color:var(--gold);min-width:60px;">Shlok ${master.id}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
+        btn.onclick=()=>{
+          const idx=selected.indexOf(master.id);
+          if(idx>-1){selected.splice(idx,1);btn.style.borderColor='';btn.style.background='';}
+          else if(selected.length<count){selected.push(master.id);btn.style.borderColor='var(--gold)';btn.style.background='rgba(244,201,93,0.08)';}
+          document.getElementById('cfPickCount').textContent=`${selected.length} / ${count} selected`;
+          document.getElementById('cfSendBtn').disabled=selected.length!==count;
+          window._cfSelected=selected;
         };
         list.appendChild(btn);
       });
-      window._cfSelected = selected;
+      window._cfSelected=selected;
     }
 
     async function cfSendChallenge() {
-      const selected = window._cfSelected || [];
-      if (selected.length !== 5) return;
-      const myData = (await db.collection('mandal').doc(getMandalUserId()).get()).data();
-      await db.collection('challenges').add({
-        fromUid: currentUser.uid,
-        fromName: myData.name,
-        toUid: cfTargetUid,
-        toName: cfTargetName,
-        participants: [currentUser.uid, cfTargetUid],
-        shloks: selected,
-        fromScore: null,
-        toScore: null,
-        toCompleted: false,
-        fromCompleted: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      document.getElementById('cfMain').innerHTML = `<div class="card game-play-card" style="text-align:center;">
-        <div style="font-size:2rem; margin-bottom:0.8rem;">🎉</div>
-        <div style="font-weight:700; font-size:1.1rem; margin-bottom:0.5rem;">Challenge sent to ${cfTargetName}!</div>
-        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">They have 48 hours to complete it. Once they're done, they'll challenge you back!</div>
+      const selected=window._cfSelected||[];
+      const neededCount=(cfChallengeType==='chain'||cfChallengeType==='reverseChain')?1:cfChallengeCount;
+      if(selected.length!==neededCount)return;
+      const main=document.getElementById('cfMain');
+
+      // Check target doesn't already have 3 active challenges
+      const now=Date.now();
+      const existingSnap=await db.collection('challenges').where('toUid','==',cfTargetUid).limit(10).get();
+      const activeCount=existingSnap.docs.map(d=>d.data()).filter(c=>c.createdAt&&(c.createdAt.toMillis()+CF_EXPIRY_MS)>now&&!c.toCompleted).length;
+      if(activeCount>=3){
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.8rem;">⚠️</div>
+          <div style="font-weight:700;margin-bottom:0.5rem;">${cfTargetName} already has 3 active challenges</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">They need to complete some of their existing challenges before you can send them a new one.</div>
+          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
+        </div>`; return;
+      }
+      const myData=(await db.collection('mandal').doc(getMandalUserId()).get()).data();
+      try {
+        await db.collection('challenges').add({
+          fromUid:currentUser.uid, fromName:myData.name,
+          toUid:cfTargetUid, toName:cfTargetName,
+          participants:[currentUser.uid,cfTargetUid],
+          shloks:selected, challengeType:cfChallengeType, challengeCount:cfChallengeCount,
+          fromScore:null, toScore:null,
+          toCompleted:false, fromCompleted:false,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) {
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:#dc2626;margin-bottom:1rem;">Couldn't send the challenge. Check your connection and try again.</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`;
+        return;
+      }
+      const typeLabel={standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[cfChallengeType];
+      document.getElementById('cfMain').innerHTML=`<div class="card game-play-card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.8rem;">🎉</div>
+        <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">${typeLabel} challenge sent to ${cfTargetName}!</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">They have 48 hours to complete it. Once they're done, they'll challenge you back!</div>
         <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
       </div>`;
       updateChallengeBanner();
     }
 
-    // Module-level state for challenge attempt
+    // ── ATTEMPT ──
     let cfAttemptData = null;
 
     async function cfStartAttempt(challengeId) {
-      const main = document.getElementById('cfMain');
-      main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
+      const main=document.getElementById('cfMain');
+      main.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text-muted);">Loading...</div>';
       try {
-        const doc = await db.collection('challenges').doc(challengeId).get();
-        const c = { id: doc.id, ...doc.data() };
-        const uid = currentUser.uid;
-        const isFrom = c.fromUid === uid;
-        const shlokNums = isFrom ? (c.returnShloks || c.shloks) : c.shloks;
-        cfAttemptData = { c, challengeId, isFrom, shlokNums, cfScore: 0, cfIdx: 0 };
+        const doc=await db.collection('challenges').doc(challengeId).get();
+        const c={id:doc.id,...doc.data()};
+        const uid=currentUser.uid;
+        const isFrom=c.fromUid===uid;
+        // Use return challenge type/count when Person A is completing the return
+        const type = isFrom && c.returnChallengeSet
+          ? (c.returnChallengeType || 'standard')
+          : (c.challengeType || 'standard');
+        const count = isFrom && c.returnChallengeSet
+          ? (c.returnChallengeCount || c.challengeCount || c.shloks.length)
+          : (c.challengeCount || c.shloks.length);
+        const sourceShloks = isFrom ? (c.returnShloks || c.shloks) : c.shloks;
+        let shlokNums=[], anchorId=sourceShloks[0];
+        if(type==='chain'){
+          const start=parseInt(sourceShloks[0]);
+          for(let i=1;i<=count;i++) shlokNums.push(String(start+i));
+        } else if(type==='reverseChain'){
+          const end=parseInt(sourceShloks[0]);
+          for(let i=1;i<=count;i++) shlokNums.push(String(end-i));
+        } else {
+          shlokNums=sourceShloks;
+        }
+        cfAttemptData={c,challengeId,isFrom,type,count,shlokNums,anchorId,cfScore:0,cfIdx:0};
         cfShowShlok();
       } catch(e) {
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:0.85rem; color:#dc2626; margin-bottom:1rem;">Something went wrong loading the challenge. Please try again.</div>
-          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
-        </div>`;
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:#dc2626;margin-bottom:1rem;">Something went wrong. Please try again.</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`;
       }
     }
 
     function cfShowShlok() {
-      const { shlokNums, cfIdx } = cfAttemptData;
-      const total = shlokNums.length;
-      const main = document.getElementById('cfMain');
-      const master = allShloks.find(a => a.id === shlokNums[cfIdx]);
-      const firstWord = master ? master.line1.split(' ')[0] : '?';
-      main.innerHTML = `<div class="card game-play-card">
-        <div class="game-title-row">Shlok ${shlokNums[cfIdx]}</div>
-        <div style="font-size:1.1rem; color:var(--gold); font-weight:700; margin:1rem 0;">${firstWord}...</div>
-        <div class="game-instruction">Recite the full shlok from memory, then reveal to check.</div>
-        <div id="cfReveal" style="display:none; margin:1rem 0; font-size:0.88rem; color:var(--text-muted); line-height:1.7;">${master ? master.line1 + '<br>' + master.line2 : ''}</div>
-        <button class="edit-save-btn" id="cfRevealBtn" onclick="document.getElementById('cfReveal').style.display='block'; document.getElementById('cfRevealBtn').style.display='none'; document.getElementById('cfMarkBtns').style.display='flex';" style="background:var(--blue-mid); color:white; margin-bottom:0.8rem;">Reveal Shlok</button>
-        <div id="cfMarkBtns" style="display:none; gap:0.8rem; flex-direction:row;">
-          <button class="game-next-btn" style="flex:1; background:#22c55e;" onclick="cfMark(true)">✅ Got it</button>
-          <button class="game-next-btn" style="flex:1; background:#dc2626;" onclick="cfMark(false)">❌ Missed it</button>
+      const {shlokNums,cfIdx,type,count,anchorId} = cfAttemptData;
+      const main=document.getElementById('cfMain');
+      const master=allShloks.find(a=>a.id===shlokNums[cfIdx]);
+      const anchor=allShloks.find(a=>a.id===anchorId);
+
+      let questionHtml='', revealHtml='', instructionHtml='';
+
+      if(type==='chain'){
+        const prevId=cfIdx===0?anchorId:shlokNums[cfIdx-1];
+        const prev=allShloks.find(a=>a.id===prevId);
+        questionHtml=`
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.3rem;">${cfIdx===0?'STARTING SHLOK':'PREVIOUS SHLOK'}</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.3rem;">Shlok ${prevId}</div>
+          <div style="font-size:0.88rem;margin-bottom:0.2rem;">${prev?prev.line1:''}</div>
+          <div style="font-size:0.88rem;margin-bottom:1rem;">${prev?prev.line2:''}</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text-main);">What is the shlok that comes after this?</div>`;
+        revealHtml=master?`<div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.2rem;">Shlok ${master.id}</div><div>${master.line1}</div><div>${master.line2}</div>`:'?';
+      } else if(type==='reverseChain'){
+        const nextId=cfIdx===0?anchorId:shlokNums[cfIdx-1];
+        const next=allShloks.find(a=>a.id===nextId);
+        questionHtml=`
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.3rem;">${cfIdx===0?'STARTING SHLOK':'NEXT SHLOK'}</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.3rem;">Shlok ${nextId}</div>
+          <div style="font-size:0.88rem;margin-bottom:0.2rem;">${next?next.line1:''}</div>
+          <div style="font-size:0.88rem;margin-bottom:1rem;">${next?next.line2:''}</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text-main);">What is the shlok that comes before this?</div>`;
+        revealHtml=master?`<div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.2rem;">Shlok ${master.id}</div><div>${master.line1}</div><div>${master.line2}</div>`:'?';
+      } else if(type==='meaning'){
+        questionHtml=`
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.5rem;">ENGLISH MEANING</div>
+          <div style="font-size:0.9rem;line-height:1.6;font-style:italic;">${master?master.meaning:'?'}</div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-top:1rem;">Recall and recite the full shlok.</div>`;
+        revealHtml=master?`<div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.2rem;">Shlok ${master.id}</div><div>${master.line1}</div><div>${master.line2}</div>`:'?';
+      } else {
+        const firstWord=master?master.line1.split(' ')[0]:'?';
+        questionHtml=`
+          <div style="font-size:1.1rem;color:var(--gold);font-weight:700;margin:1rem 0;">${firstWord}...</div>
+          <div class="game-instruction">Recite the full shlok from memory, then reveal to check.</div>`;
+        revealHtml=master?`<div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:0.2rem;">Shlok ${master.id}</div><div>${master.line1}</div><div>${master.line2}</div>`:'?';
+      }
+
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">{{typeLabel}}</div>
+        ${questionHtml}
+        <div id="cfReveal" style="display:none;margin:1rem 0;font-size:0.88rem;color:var(--text-muted);line-height:1.7;">${revealHtml}</div>
+        <button class="edit-save-btn" id="cfRevealBtn" onclick="this.style.display='none';document.getElementById('cfReveal').style.display='block';document.getElementById('cfMarkBtns').style.cssText='display:flex;gap:0.8rem;flex-direction:row;';" style="background:var(--blue-mid);color:white;margin:0.8rem 0;">Reveal Shlok</button>
+        <div id="cfMarkBtns" style="display:none;gap:0.8rem;flex-direction:row;">
+          <button class="game-next-btn" style="flex:1;background:#22c55e;border:none;" onclick="cfMark(true)">✅ Got it</button>
+          <button class="game-next-btn" style="flex:1;background:#dc2626;border:none;" onclick="cfMark(false)">❌ Missed it</button>
         </div>
-        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:1rem; text-align:center;">${cfIdx + 1} / ${total}</div>
-      </div>`;
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:1rem;text-align:center;">${cfIdx+1} / ${count}</div>
+      </div>`.replace('{{typeLabel}}',{standard:'📖 Standard Challenge',chain:'⛓️ Chain Challenge',reverseChain:'🔄 Reverse Chain',meaning:'💡 Meaning Challenge'}[type]||'Challenge');
     }
 
     async function cfMark(correct) {
-      if (!cfAttemptData) return;
-      if (correct) cfAttemptData.cfScore++;
+      if(!cfAttemptData)return;
+      if(correct) cfAttemptData.cfScore++;
       cfAttemptData.cfIdx++;
-      const { cfIdx, cfScore, isFrom, c, challengeId, shlokNums } = cfAttemptData;
-      const total = shlokNums.length;
-      const main = document.getElementById('cfMain');
-
-      if (cfIdx >= total) {
+      const {cfIdx,cfScore,isFrom,c,challengeId,shlokNums,type,count}=cfAttemptData;
+      const main=document.getElementById('cfMain');
+      if(cfIdx>=count){
         try {
-          const update = isFrom
-            ? { fromScore: cfScore, fromCompleted: true }
-            : { toScore: cfScore, toCompleted: true };
+          const update=isFrom?{fromScore:cfScore,fromCompleted:true}:{toScore:cfScore,toCompleted:true};
           await db.collection('challenges').doc(challengeId).update(update);
         } catch(e) {
-          main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-            <div style="font-size:0.85rem; color:#dc2626; margin-bottom:1rem;">Couldn't save your score. Check your connection and try again.</div>
-            <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
-          </div>`;
+          main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:#dc2626;margin-bottom:1rem;">Couldn't save your score. Check your connection and try again.</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`;
           return;
         }
-
-        if (!isFrom) {
-          main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-            <div style="font-size:2.5rem; font-weight:800; color:var(--gold); margin-bottom:0.3rem;">${cfScore} / ${total}</div>
-            <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem;">You scored ${cfScore} out of ${total} on ${c.fromName}'s challenge!</div>
-            <div style="font-weight:700; font-size:0.95rem; margin-bottom:0.5rem;">Now challenge ${c.fromName} back!</div>
-            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.2rem;">Pick 5 shloks from ${c.fromName}'s list to test them on.</div>
-            <button class="game-next-btn" onclick="cfPickReturnShloks('${challengeId}', '${c.fromUid}', '${c.fromName}')">Pick Shloks for ${c.fromName} →</button>
+        const typeLabel={standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[type];
+        if(!isFrom){
+          main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:var(--gold);margin-bottom:0.3rem;">${cfScore} / ${count}</div>
+            <div style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.5rem;">You scored ${cfScore} out of ${count} on ${c.fromName}'s ${typeLabel} challenge!</div>
+            <div style="font-weight:700;font-size:0.95rem;margin-bottom:0.5rem;">Now challenge ${c.fromName} back!</div>
+            <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Pick a challenge type and shloks to test them on.</div>
+            <button class="game-next-btn" onclick="cfPickReturnChallenge('${challengeId}','${c.fromUid}','${c.fromName}')">Challenge ${c.fromName} back →</button>
           </div>`;
         } else {
-          const freshDoc = await db.collection('challenges').doc(challengeId).get();
-          const fresh = freshDoc.data();
-          if (fresh.toCompleted) {
-            cfShowResults(main, cfScore, fresh.toScore, c.toName, total);
+          const freshDoc=await db.collection('challenges').doc(challengeId).get();
+          const fresh=freshDoc.data();
+          if(fresh.toCompleted){
+            cfShowResults(main,cfScore,fresh.toScore,c.toName,count);
           } else {
-            main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-              <div style="font-size:2.5rem; font-weight:800; color:var(--gold); margin-bottom:0.3rem;">${cfScore} / ${total}</div>
-              <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.2rem;">Waiting for ${c.toName} to complete their challenge...</div>
+            main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+              <div style="font-size:2.5rem;font-weight:800;color:var(--gold);margin-bottom:0.3rem;">${cfScore} / ${count}</div>
+              <div style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.2rem;">Waiting for ${c.toName} to complete their challenge...</div>
               <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
             </div>`;
           }
@@ -10393,92 +10509,124 @@
     }
 
     function cfShowResults(main, myScore, theirScore, theirName, total) {
-      const won = myScore > theirScore;
-      const draw = myScore === theirScore;
-      const msg = draw ? "It's a draw! 🤝" : won ? "You won! 🏆" : "They got you this time! 😅";
-      main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-        <div style="font-size:1.3rem; font-weight:800; margin-bottom:1.2rem;">${msg}</div>
-        <div style="display:flex; justify-content:center; gap:2rem; margin-bottom:1.5rem;">
-          <div>
-            <div style="font-size:2rem; font-weight:800; color:var(--gold);">${myScore}/${total}</div>
-            <div style="font-size:0.78rem; color:var(--text-muted);">You</div>
-          </div>
-          <div style="font-size:1.5rem; color:var(--text-muted); line-height:2.5;">vs</div>
-          <div>
-            <div style="font-size:2rem; font-weight:800; color:var(--gold);">${theirScore}/${total}</div>
-            <div style="font-size:0.78rem; color:var(--text-muted);">${theirName}</div>
-          </div>
+      const won=myScore>theirScore, draw=myScore===theirScore;
+      const msg=draw?"It's a draw! 🤝":won?"You won! 🏆":"They got you this time! 😅";
+      main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:1.2rem;">${msg}</div>
+        <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;">
+          <div><div style="font-size:2rem;font-weight:800;color:var(--gold);">${myScore}/${total}</div><div style="font-size:0.78rem;color:var(--text-muted);">You</div></div>
+          <div style="font-size:1.5rem;color:var(--text-muted);line-height:2.5;">vs</div>
+          <div><div style="font-size:2rem;font-weight:800;color:var(--gold);">${theirScore}/${total}</div><div style="font-size:0.78rem;color:var(--text-muted);">${theirName}</div></div>
         </div>
         <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
       </div>`;
     }
 
-    async function cfPickReturnShloks(challengeId, fromUid, fromName) {
-      const main = document.getElementById('cfMain');
-      main.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--text-muted);">Loading...</div>';
-      cfTargetUid = fromUid; cfTargetName = fromName;
-      const doc = await db.collection('mandal').doc(fromUid).get();
-      const data = doc.exists ? doc.data() : {};
-      const shlokNums = data.shlokList || [];
-      const theirShloks = shlokNums.map(num => allShloks.find(a => a.id === num)).filter(Boolean);
-      if (theirShloks.length < 5) {
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Ask ${fromName} to open the app and go to their home page, then come back and try again!</div>
-          <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
-        </div>`;
-        return;
+    async function cfPickReturnChallenge(challengeId, fromUid, fromName) {
+      cfTargetUid=fromUid; cfTargetName=fromName;
+      const main=document.getElementById('cfMain');
+      main.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text-muted);">Loading...</div>';
+      const doc=await db.collection('mandal').doc(fromUid).get();
+      const data=doc.exists?doc.data():{};
+      cfTargetShloks=(data.shlokList||[]).map(num=>allShloks.find(a=>a.id===num)).filter(Boolean);
+      if(cfTargetShloks.length<3){
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Ask ${fromName} to open the app and go to their home page, then come back and try again!</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`; return;
       }
-      let selected = [];
-      main.innerHTML = `<div class="card game-play-card">
-        <div class="game-title-row">Pick 5 shloks for ${fromName}</div>
-        <div class="game-instruction" style="margin-bottom:1rem;">Choose 5 shloks from ${fromName}'s list to test them on.</div>
-        <div id="cfPickList" style="display:flex; flex-direction:column; gap:0.5rem; max-height:380px; overflow-y:auto;"></div>
-        <div id="cfPickCount" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.8rem; text-align:center;">0 / 5 selected</div>
-        <button class="game-submit-btn" id="cfReturnBtn" style="width:100%; margin-top:0.8rem;" disabled onclick="cfSendReturn('${challengeId}')">Send Challenge →</button>
+      // Show type selector — same as cfPickShloks but sends as return challenge
+      window._cfReturnChallengeId=challengeId;
+      const types=[
+        {id:'standard',icon:'📖',title:'Standard Challenge',desc:'Recite each shlok from memory.'},
+        {id:'chain',   icon:'⛓️',title:'Chain Challenge',   desc:'Given the first shlok, recite the ones that follow.'},
+        {id:'reverseChain',icon:'🔄',title:'Reverse Chain',desc:'Given the last shlok, recite the ones before it.'},
+        {id:'meaning', icon:'💡',title:'Meaning Challenge', desc:'Shown the English meaning — recall the full shlok.'},
+      ];
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">Challenge ${fromName} back</div>
+        <div class="game-instruction" style="margin-bottom:1.2rem;">Choose a challenge type:</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          ${types.map(t=>`<button class="snap-mode-btn" onclick="cfSelectReturnType('${t.id}')">
+            <div class="snap-mode-icon" style="font-size:1.3rem;">${t.icon}</div>
+            <div><div class="snap-mode-title">${t.title}</div><div class="snap-mode-sub">${t.desc}</div></div>
+          </button>`).join('')}
+        </div>
       </div>`;
-      const list = document.getElementById('cfPickList');
-      theirShloks.forEach(master => {
-        const btn = document.createElement('button');
-        btn.className = 'snap-mode-btn';
-        btn.style.textAlign = 'left';
-        btn.innerHTML = `<div style="font-weight:700; font-size:0.85rem; color:var(--gold); min-width:40px;">Shlok ${master.id}</div>
-          <div style="font-size:0.78rem; color:var(--text-muted); flex:1;">${master.line1.split(' ').slice(0,4).join(' ')}...</div>`;
-        btn.onclick = () => {
-          const idx = selected.indexOf(master.id);
-          if (idx > -1) { selected.splice(idx, 1); btn.style.borderColor = ''; btn.style.background = ''; }
-          else if (selected.length < 5) { selected.push(master.id); btn.style.borderColor = 'var(--gold)'; btn.style.background = 'rgba(244,201,93,0.08)'; }
-          document.getElementById('cfPickCount').textContent = `${selected.length} / 5 selected`;
-          document.getElementById('cfReturnBtn').disabled = selected.length !== 5;
-          window._cfSelected = selected;
-        };
-        list.appendChild(btn);
-      });
-      window._cfSelected = selected;
     }
 
-    async function cfSendReturn(challengeId) {
-      const selected = window._cfSelected || [];
-      if (selected.length !== 5) return;
-      const main = document.getElementById('cfMain');
+    function cfSelectReturnType(type) {
+      cfChallengeType=type;
+      const main=document.getElementById('cfMain');
+      const counts=[3,5,10,15];
+      const countLabels={3:'Quick Challenge',5:'Normal Challenge',10:'Hard Challenge',15:'Expert Challenge'};
+      const theirShloks=cfTargetShloks;
+      const shloksWithMeaning=theirShloks.filter(s=>s.meaning&&s.meaning.trim());
+      main.innerHTML=`<div class="card game-play-card">
+        <div class="game-title-row">How many shloks?</div>
+        <div class="game-instruction" style="margin-bottom:1.2rem;">Choose the difficulty:</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+          ${counts.map(n=>{
+            let valid=true,reason='';
+            if(type==='standard'){if(theirShloks.length<n){valid=false;reason=`${cfTargetName} needs at least ${n} shloks learnt.`;}}
+            else if(type==='chain'){if(cfChainOptions(theirShloks,n,'fwd').length===0){valid=false;reason=`${cfTargetName} needs ${n} consecutive shloks after a starting point.`;}}
+            else if(type==='reverseChain'){if(cfChainOptions(theirShloks,n,'bwd').length===0){valid=false;reason=`${cfTargetName} needs ${n} consecutive shloks before an ending point.`;}}
+            else if(type==='meaning'){if(shloksWithMeaning.length<n){valid=false;reason=`${cfTargetName} only has ${shloksWithMeaning.length} shloks with meanings.`;}}
+            return valid
+              ? `<button class="snap-mode-btn" onclick="cfChallengeCount=${n}; cfShowReturnShlokPicker()">
+                  <div class="snap-mode-icon" style="width:36px;height:36px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.9rem;">${n}</div>
+                  <div><div class="snap-mode-title">${countLabels[n]}</div><div class="snap-mode-sub">${n} shloks</div></div>
+                </button>`
+              : `<div class="snap-mode-btn" style="opacity:0.45;cursor:not-allowed;">
+                  <div class="snap-mode-icon" style="width:36px;height:36px;background:var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-weight:700;font-size:0.9rem;">${n}</div>
+                  <div><div class="snap-mode-title">${countLabels[n]}</div><div class="snap-mode-sub" style="color:#dc2626;">${reason}</div></div>
+                </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    function cfShowReturnShlokPicker() {
+      const main=document.getElementById('cfMain');
+      const count=cfChallengeCount, type=cfChallengeType, name=cfTargetName;
+      if(type==='chain'){
+        const validStarts=cfChainOptions(cfTargetShloks,count,'fwd');
+        cfRenderSinglePicker(main,validStarts,name,`Pick a starting shlok — they'll recite the ${count} that follow it.`,'cfSendReturn');
+      } else if(type==='reverseChain'){
+        const validEnds=cfChainOptions(cfTargetShloks,count,'bwd');
+        cfRenderSinglePicker(main,validEnds,name,`Pick an ending shlok — they'll recite the ${count} that come before it.`,'cfSendReturn');
+      } else if(type==='meaning'){
+        const withMeaning=cfTargetShloks.filter(s=>s.meaning&&s.meaning.trim());
+        cfRenderPickScreen(main,withMeaning,name,count);
+        document.getElementById('cfSendBtn').onclick=cfSendReturnChallenge;
+      } else {
+        cfRenderPickScreen(main,cfTargetShloks,name,count);
+        document.getElementById('cfSendBtn').onclick=cfSendReturnChallenge;
+      }
+    }
+
+    async function cfSendReturnChallenge() {
+      const selected=window._cfSelected||[];
+      const neededCount=(cfChallengeType==='chain'||cfChallengeType==='reverseChain')?1:cfChallengeCount;
+      if(selected.length!==neededCount)return;
+      const challengeId=window._cfReturnChallengeId;
+      const main=document.getElementById('cfMain');
       try {
         await db.collection('challenges').doc(challengeId).update({
-          returnShloks: selected,
-          returnChallengeSet: true
+          returnShloks:selected, returnChallengeType:cfChallengeType,
+          returnChallengeCount:cfChallengeCount, returnChallengeSet:true
         });
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:2rem; margin-bottom:0.8rem;">⚔️</div>
-          <div style="font-weight:700; font-size:1rem; margin-bottom:0.5rem;">Challenge sent back!</div>
-          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">${cfTargetName} now has 24 hours to complete your challenge.</div>
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.8rem;">⚔️</div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;">Challenge sent back to ${cfTargetName}!</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">They now have 48 hours to complete your challenge.</div>
           <button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button>
         </div>`;
         updateChallengeBanner();
       } catch(e) {
-        main.innerHTML = `<div class="card game-play-card" style="text-align:center;">
-          <div style="font-size:0.85rem; color:#dc2626; margin-bottom:1rem;">Couldn't send the return challenge. Try again.</div>
-          <button class="game-next-btn" onclick="cfPickReturnShloks('${challengeId}', '${cfTargetUid}', '${cfTargetName}')">Try Again</button>
-        </div>`;
+        main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:#dc2626;margin-bottom:1rem;">Couldn't send the return challenge. Try again.</div><button class="game-next-btn" onclick="cfPickReturnChallenge('${challengeId}','${cfTargetUid}','${cfTargetName}')">Try Again</button></div>`;
       }
     }
+
+    // Alias for single-picker send
+    function cfSendReturn() { cfSendReturnChallenge(); }
 
 
         async function updateChallengeBanner() {
@@ -10490,19 +10638,51 @@
           .where('participants', 'array-contains', currentUser.uid)
           .limit(20)
           .get();
-        const now2 = Date.now();
         const all = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-          .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now2);
-        // Person B hasn't completed yet
+          .filter(c => c.createdAt && (c.createdAt.toMillis() + CF_EXPIRY_MS) > now);
         const incoming = all.filter(c => c.toUid === currentUser.uid && !c.toCompleted);
-        // Person A has a return challenge waiting
         const returnWaiting = all.filter(c => c.fromUid === currentUser.uid && c.returnChallengeSet && !c.fromCompleted);
         const active = [...incoming, ...returnWaiting];
+
         if (active.length > 0) {
-          const c = active[0];
-          const tl = cfTimeLeft(c.createdAt);
-          document.getElementById('challengeBannerText').textContent = `${c.fromName} has challenged you! ${tl ? `⏰ ${tl}. ` : ''}Tap to complete.`;
-          document.getElementById('challengeBannerTime').textContent = '';
+          // Use the most urgent challenge for the timer
+          const c = active.sort((a,b) => a.createdAt.toMillis() - b.createdAt.toMillis())[0];
+          const msLeft = (c.createdAt.toMillis() + CF_EXPIRY_MS) - now;
+          const hoursLeft = msLeft / 3600000;
+          const pct = Math.max(0, Math.min(100, (msLeft / CF_EXPIRY_MS) * 100));
+          const h = Math.floor(hoursLeft);
+          const m = Math.floor((hoursLeft % 1) * 60);
+          const timeStr = h > 0 ? `${h}h ${m}m remaining` : `${m}m remaining`;
+
+          const urgent = hoursLeft < 12;
+          const warning = hoursLeft < 24;
+          const barColour = urgent ? '#dc2626' : warning ? '#f97316' : '#F4C95D';
+          const bgColour  = urgent ? '#7f1d1d' : '#0A2A66';
+          banner.style.background = bgColour;
+          banner.style.border = urgent ? '1.5px solid #dc2626' : 'none';
+
+          // Banner text: single name or multiple
+          const challengerName = c.fromUid === currentUser.uid ? c.toName : c.fromName;
+          const multiple = active.length > 1;
+          const bannerText = multiple
+            ? `${active.length} people have challenged you! Tap to complete your challenges.`
+            : `${challengerName} has challenged you! Tap to complete.`;
+
+          document.getElementById('challengeBannerText').textContent = bannerText;
+
+          if (multiple) {
+            // Hide timer when multiple challenges
+            document.getElementById('challengeBannerTime').textContent = '';
+            document.getElementById('challengeBannerBar').style.width = '0%';
+            banner.style.background = '#0A2A66';
+            banner.style.border = 'none';
+          } else {
+            document.getElementById('challengeBannerTime').textContent = `⏰ ${timeStr}`;
+            document.getElementById('challengeBannerBar').style.width = pct + '%';
+            document.getElementById('challengeBannerBar').style.background = barColour;
+            banner.style.background = bgColour;
+            banner.style.border = urgent ? '1.5px solid #dc2626' : 'none';
+          }
           banner.style.display = 'block';
         } else {
           banner.style.display = 'none';
