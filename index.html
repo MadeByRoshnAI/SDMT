@@ -2351,6 +2351,40 @@
       color: white;
     }
 
+    .cf-tab-btn {
+      flex: 1;
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      border: 2px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 0.85rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .cf-tab-btn.active {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+      font-weight: 700;
+    }
+    body.dark-mode .cf-tab-btn {
+      border-color: rgba(255,255,255,0.6);
+      color: white;
+    }
+    body.dark-mode .cf-tab-btn:hover {
+      border-color: white;
+      background: rgba(255,255,255,0.08);
+    }
+    body.dark-mode .cf-tab-btn.active {
+      background: var(--blue-mid);
+      border-color: var(--blue-mid);
+      color: white;
+      font-weight: 700;
+    }
+
     .clear-btn {
       padding: 0.45rem 1.2rem;
       border-radius: 999px;
@@ -10202,9 +10236,9 @@
       main.innerHTML = `
         <!-- TAB BAR -->
         <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap;">
-          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--blue);color:white;font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">🤝 Challenge</button>
-          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--card-bg);color:var(--blue);font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">My Challenges</button>
-          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.5rem 1.1rem;border-radius:999px;border:2px solid var(--blue);background:var(--card-bg);color:var(--blue);font-weight:600;font-size:0.85rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:background 0.2s,color 0.2s;">Challenges Sent</button>
+          <button id="cfTabSend" class="cf-tab-btn active" onclick="cfSwitchTab('send')">🤝 Challenge</button>
+          <button id="cfTabMine" class="cf-tab-btn" onclick="cfSwitchTab('mine')">My Challenges</button>
+          <button id="cfTabSent" class="cf-tab-btn" onclick="cfSwitchTab('sent')">Challenges Sent</button>
         </div>
 
         <!-- SEND TAB -->
@@ -10231,7 +10265,6 @@
     }
 
     function cfSwitchTab(tab) {
-      const dark = document.body.classList.contains('dark-mode');
       ['send','mine','sent'].forEach(t => {
         const key = t.charAt(0).toUpperCase()+t.slice(1);
         const btn = document.getElementById(`cfTab${key}`);
@@ -10239,9 +10272,7 @@
         if (!btn || !panel) return;
         const active = t === tab;
         panel.style.display = active ? 'block' : 'none';
-        btn.style.background = active ? 'var(--blue)' : (dark ? 'transparent' : 'transparent');
-        btn.style.color = active ? 'white' : (dark ? 'white' : 'var(--blue)');
-        btn.style.borderColor = active ? 'var(--blue)' : (dark ? 'rgba(255,255,255,0.5)' : 'var(--blue)');
+        btn.classList.toggle('active', active);
       });
     }
 
