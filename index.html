@@ -2336,6 +2336,19 @@
     body.dark-mode .add-mode-radio:hover span { background: rgba(255,255,255,0.08); }
     body.dark-mode .add-mode-radio input:checked + span { background: var(--blue-mid); border-color: var(--blue-mid); }
 
+    body.dark-mode #cfTabSend,
+    body.dark-mode #cfTabMine,
+    body.dark-mode #cfTabSent {
+      border-color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.6);
+    }
+    body.dark-mode #cfTabSend:hover,
+    body.dark-mode #cfTabMine:hover,
+    body.dark-mode #cfTabSent:hover {
+      border-color: rgba(255,255,255,0.7);
+      color: white;
+    }
+
     .clear-btn {
       padding: 0.45rem 1.2rem;
       border-radius: 999px;
@@ -3419,7 +3432,7 @@
       <button class="nav-item" data-page="myshloks" onclick="switchTab(this, 'myshloks')">My Mukhpath</button>
       <button class="nav-item" data-page="learn" onclick="switchTab(this, 'learn')">Learn</button>
       <button class="nav-item" data-page="motivation" onclick="switchTab(this, 'motivation')">Motivation</button>
-      <button class="nav-item" data-page="games" onclick="switchTab(this, 'games')">Games</button>
+      <button class="nav-item" data-page="games" onclick="if(document.querySelector('.game-screen[style*=block]')){switchTab(this,'games');backToHub();}else{switchTab(this,'games');}">Games</button>
       <button class="nav-item" data-page="mandal" onclick="switchTab(this, 'mandal')">Mukhpath Mandal</button>
       <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
     </div>
@@ -3434,7 +3447,7 @@
     <button class="mobile-nav-item" data-page="myshloks" onclick="switchTabMobile(this, 'myshloks')">📘 My Mukhpath</button>
     <button class="mobile-nav-item" data-page="learn" onclick="switchTabMobile(this, 'learn')">📚 Learn</button>
     <button class="mobile-nav-item" data-page="motivation" onclick="switchTabMobile(this, 'motivation')">✨ Motivation</button>
-    <button class="mobile-nav-item" data-page="games" onclick="switchTabMobile(this, 'games')">🎮 Games</button>
+    <button class="mobile-nav-item" data-page="games" onclick="if(document.querySelector('.game-screen[style*=block]')){switchTabMobile(this,'games');backToHub();}else{switchTabMobile(this,'games');}">🎮 Games</button>
     <button class="mobile-nav-item" data-page="mandal" onclick="switchTabMobile(this, 'mandal')">Mukhpath Mandal</button>
     <button class="mobile-nav-item" id="mobileDarkToggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </div>
@@ -10216,6 +10229,7 @@
     }
 
     function cfSwitchTab(tab) {
+      const dark = document.body.classList.contains('dark-mode');
       ['send','mine','sent'].forEach(t => {
         const key = t.charAt(0).toUpperCase()+t.slice(1);
         const btn = document.getElementById(`cfTab${key}`);
@@ -10223,9 +10237,9 @@
         if (!btn || !panel) return;
         const active = t === tab;
         panel.style.display = active ? 'block' : 'none';
-        btn.style.background = active ? 'var(--blue)' : 'var(--card-bg)';
-        btn.style.color = active ? 'white' : 'var(--blue)';
-        btn.style.boxShadow = 'none';
+        btn.style.background = active ? 'var(--blue)' : 'transparent';
+        btn.style.color = active ? 'white' : (dark ? 'rgba(255,255,255,0.6)' : 'var(--blue)');
+        btn.style.borderColor = active ? 'var(--blue)' : (dark ? 'rgba(255,255,255,0.35)' : 'var(--blue)');
       });
     }
 
