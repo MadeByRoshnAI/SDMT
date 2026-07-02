@@ -10137,48 +10137,140 @@
       const incoming = challenges.filter(c => c.toUid===uid && !c.toCompleted);
       const returnWaiting = challenges.filter(c => c.fromUid===uid && c.returnChallengeSet && !c.fromCompleted);
       const results = challenges.filter(c => c.toCompleted && c.fromCompleted);
-      let html = '';
-      if (incoming.length > 0) {
-        incoming.forEach(c => {
-          const tl = cfTimeLeft(c.createdAt);
-          const typeLabel = {standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[c.challengeType||'standard'];
-          html += `<div class="card game-play-card" style="border:1.5px solid var(--gold);">
-            <div class="game-title-row">⚔️ Incoming Challenge!</div>
-            <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:0.3rem;"><strong style="color:var(--text-main);">${c.fromName}</strong> sent you a <strong style="color:var(--text-main);">${typeLabel} Challenge</strong> (${c.challengeCount||c.shloks.length} shloks)</div>
-            ${tl ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">⏰ ${tl}</div>` : ''}
-            <button class="game-next-btn" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>
-          </div>`;
-        });
+      const sent = challenges.filter(c => c.fromUid===uid && !c.returnChallengeSet);
+      const myActive = [...incoming, ...returnWaiting];
+
+      const typeLabel = t => ({standard:'Standard',chain:'Chain',reverseChain:'Reverse Chain',meaning:'Meaning'}[t||'standard']);
+
+      function cfCardHtml(c, isMine) {
+        const msLeft = c.createdAt ? (c.createdAt.toMillis() + CF_EXPIRY_MS) - Date.now() : 0;
+        const hoursLeft = msLeft / 3600000;
+        const pct = Math.max(0, Math.min(100, (msLeft / CF_EXPIRY_MS) * 100));
+        const h = Math.floor(hoursLeft), m = Math.floor((hoursLeft%1)*60);
+        const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        const urgent = hoursLeft < 12, warning = hoursLeft < 24;
+        const barCol = urgent ? '#dc2626' : warning ? '#f97316' : '#F4C95D';
+        const bgCol = urgent ? '#7f1d1d' : '#0A2A66';
+        const border = urgent ? '1.5px solid #dc2626' : '1.5px solid rgba(244,201,93,0.3)';
+        const name = isMine ? c.toName : c.fromName;
+        const tl = typeLabel(isMine ? c.challengeType : c.challengeType);
+        const count = c.challengeCount || c.shloks.length;
+        const action = isMine
+          ? (c.returnChallengeSet ? `<button class="game-next-btn" style="width:100%;margin-top:0.8rem;background:#22c55e;border:none;font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Complete Return →</button>` : '')
+          : `<button class="game-next-btn" style="width:100%;margin-top:0.8rem;font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Accept & Start →</button>`;
+        return `<div style="background:${bgCol};border:${border};border-radius:14px;padding:1rem;display:flex;flex-direction:column;min-width:0;">
+          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">⚔️ ${isMine ? 'RETURN CHALLENGE' : 'INCOMING CHALLENGE'}</div>
+          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.1rem;">${name}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.7rem;">${tl} · ${count} shloks</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:0.3rem;">
+            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:4px;overflow:hidden;">
+              <div style="background:${barCol};width:${pct}%;height:100%;border-radius:999px;"></div>
+            </div>
+            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
+          </div>
+          ${action}
+        </div>`;
       }
-      if (returnWaiting.length > 0) {
-        returnWaiting.forEach(c => {
-          html += `<div class="card game-play-card">
-            <div style="font-size:0.88rem; color:var(--text-muted);">⚔️ <strong style="color:var(--text-main);">${c.toName}</strong> has challenged you back! <button class="game-next-btn" style="margin-left:0.5rem; padding:0.3rem 0.8rem; font-size:0.8rem;" onclick="cfStartAttempt('${c.id}')">Start →</button></div>
-          </div>`;
-        });
+
+      function cfSentCardHtml(c) {
+        const msLeft = c.createdAt ? (c.createdAt.toMillis() + CF_EXPIRY_MS) - Date.now() : 0;
+        const hoursLeft = msLeft / 3600000;
+        const pct = Math.max(0, Math.min(100, (msLeft / CF_EXPIRY_MS) * 100));
+        const h = Math.floor(hoursLeft), m = Math.floor((hoursLeft%1)*60);
+        const timeStr = h > 0 ? `${h}h ${m}m left` : `${m}m left`;
+        const barCol = hoursLeft < 12 ? '#dc2626' : hoursLeft < 24 ? '#f97316' : '#F4C95D';
+        const count = c.challengeCount || c.shloks.length;
+        return `<div style="background:#0A2A66;border:1.5px solid rgba(244,201,93,0.3);border-radius:14px;padding:1rem;display:flex;flex-direction:column;min-width:0;">
+          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">📤 SENT</div>
+          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.1rem;">To: ${c.toName}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.7rem;">${typeLabel(c.challengeType)} · ${count} shloks</div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="flex:1;background:rgba(255,255,255,0.15);border-radius:999px;height:4px;overflow:hidden;">
+              <div style="background:${barCol};width:${pct}%;height:100%;border-radius:999px;"></div>
+            </div>
+            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7);white-space:nowrap;">⏰ ${timeStr}</span>
+          </div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;">Awaiting their response...</div>
+        </div>`;
       }
-      if (results.length > 0) {
-        html += `<div class="card game-play-card"><div class="game-title-row" style="margin-bottom:0.8rem;">📊 Results</div>
-          ${results.map(c=>{
-            const iFrom=c.fromUid===uid;
-            const myScore=iFrom?c.fromScore:c.toScore;
-            const theirScore=iFrom?c.toScore:c.fromScore;
-            const theirName=iFrom?c.toName:c.fromName;
-            const tot=c.challengeCount||c.shloks.length;
-            const won=myScore>theirScore;
-            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.88rem;">
-              <span>vs <strong>${theirName}</strong></span>
-              <span style="font-weight:700;color:${won?'var(--green-text)':'#dc2626'};">${myScore}/${tot} vs ${theirScore}/${tot} ${won?'🏆':'😅'}</span>
-            </div>`;
-          }).join('')}</div>`;
+
+      function cfResultCardHtml(c) {
+        const iFrom = c.fromUid===uid;
+        const myScore = iFrom?c.fromScore:c.toScore;
+        const theirScore = iFrom?c.toScore:c.fromScore;
+        const theirName = iFrom?c.toName:c.fromName;
+        const tot = c.challengeCount||c.shloks.length;
+        const won = myScore>theirScore, draw = myScore===theirScore;
+        const col = won?'#22c55e':draw?'#f97316':'#dc2626';
+        return `<div style="background:#0A2A66;border:1.5px solid ${col}40;border-radius:14px;padding:1rem;min-width:0;">
+          <div style="font-size:0.65rem;font-weight:700;color:#F4C95D;letter-spacing:0.07em;margin-bottom:0.4rem;">📊 RESULT</div>
+          <div style="font-size:0.88rem;font-weight:700;color:white;margin-bottom:0.4rem;">vs ${theirName}</div>
+          <div style="display:flex;gap:0.8rem;align-items:center;">
+            <div style="font-size:1.3rem;font-weight:800;color:${col};">${myScore}/${tot}</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">vs ${theirScore}/${tot}</div>
+            <div style="margin-left:auto;font-size:1.2rem;">${won?'🏆':draw?'🤝':'😅'}</div>
+          </div>
+        </div>`;
       }
-      html += `<div class="card game-play-card">
-        <div class="game-title-row">🤝 Challenge a Friend</div>
-        <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your mandal to challenge.</div>
-        <div id="cfFriendList"><div style="color:var(--text-muted);font-size:0.85rem;">Loading mandal...</div></div>
-      </div>`;
-      main.innerHTML = html;
+
+      // Build tab content
+      const challengesTab = `
+        <div style="margin-bottom:0.8rem;font-size:0.8rem;color:var(--text-muted);">${myActive.length} active challenge${myActive.length!==1?'s':''}</div>
+        ${myActive.length > 0
+          ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;margin-bottom:1rem;">${[...incoming.map(c=>cfCardHtml(c,false)),...returnWaiting.map(c=>cfCardHtml(c,true))].join('')}</div>`
+          : `<div style="color:var(--text-muted);font-size:0.85rem;padding:1rem 0;">No active challenges right now.</div>`}
+        ${results.length>0 ? `<div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin:0.8rem 0 0.5rem;">Results</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;">${results.map(c=>cfResultCardHtml(c)).join('')}</div>` : ''}`;
+
+      const sentTab = `
+        <div style="margin-bottom:0.8rem;font-size:0.8rem;color:var(--text-muted);">${sent.length} challenge${sent.length!==1?'s':''} sent</div>
+        ${sent.length > 0
+          ? `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;">${sent.map(c=>cfSentCardHtml(c)).join('')}</div>`
+          : `<div style="color:var(--text-muted);font-size:0.85rem;padding:1rem 0;">You haven't sent any challenges yet.</div>`}`;
+
+      main.innerHTML = `
+        <!-- TAB BAR -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
+          <button id="cfTabSend" onclick="cfSwitchTab('send')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--gold);background:var(--gold);color:var(--blue-dark);font-weight:700;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">🤝 Challenge a Friend</button>
+          <button id="cfTabMine" onclick="cfSwitchTab('mine')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">My Challenges</button>
+          <button id="cfTabSent" onclick="cfSwitchTab('sent')" style="flex:1;padding:0.55rem;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);font-weight:600;font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;">Challenges Sent</button>
+        </div>
+
+        <!-- SEND TAB -->
+        <div id="cfPanelSend">
+          <div class="card game-play-card">
+            <div class="game-title-row">🤝 Challenge a Friend</div>
+            <div class="game-instruction" style="margin-bottom:1rem;">Pick someone from your mandal to challenge.</div>
+            <div id="cfFriendList"><div style="color:var(--text-muted);font-size:0.85rem;">Loading mandal...</div></div>
+          </div>
+        </div>
+
+        <!-- MY CHALLENGES TAB -->
+        <div id="cfPanelMine" style="display:none;">
+          <div class="card game-play-card">${challengesTab}</div>
+        </div>
+
+        <!-- SENT TAB -->
+        <div id="cfPanelSent" style="display:none;">
+          <div class="card game-play-card">${sentTab}</div>
+        </div>`;
+
+      // Always default to Challenge a Friend tab
       cfLoadFriendList();
+    }
+
+    function cfSwitchTab(tab) {
+      ['send','mine','sent'].forEach(t => {
+        const btn = document.getElementById(`cfTab${t.charAt(0).toUpperCase()+t.slice(1)}`);
+        const panel = document.getElementById(`cfPanel${t.charAt(0).toUpperCase()+t.slice(1)}`);
+        if (!btn || !panel) return;
+        const active = t === tab;
+        panel.style.display = active ? 'block' : 'none';
+        btn.style.background = active ? 'var(--gold)' : 'transparent';
+        btn.style.color = active ? 'var(--blue-dark)' : 'var(--text-muted)';
+        btn.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
+        btn.style.fontWeight = active ? '700' : '600';
+      });
     }
 
     async function cfLoadFriendList() {
