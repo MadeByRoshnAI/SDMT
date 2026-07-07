@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Apply dark mode before page renders to prevent flash -->
+  <script>if(localStorage.getItem('darkMode')==='true')document.documentElement.classList.add('dark-mode-early');</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SDMT</title>
 
@@ -28,6 +30,9 @@
       --orange: #fde68a;
       --orange-text: #92400e;
     }
+
+    /* Apply dark mode instantly on html element to prevent flash */
+    html.dark-mode-early body { background: #12141c; }
 
     body.dark-mode {
       --bg: #12141c;
@@ -293,6 +298,11 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      opacity: 0;
+    }
+    body.loaded {
+      opacity: 1;
+      transition: opacity 0.2s ease, background 0.4s ease, color 0.4s ease;
     }
 
     main {
@@ -369,8 +379,9 @@
       border: 1px solid rgba(255,255,255,0.6);
       border-radius: 999px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 1px rgba(255,255,255,0.8), inset 0 -1px 2px rgba(0,0,0,0.06);
-      transition: left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1);
+      transition: left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease;
       z-index: 0;
+      opacity: 0;
     }
 
     .nav-item {
@@ -3522,6 +3533,62 @@
           </div>
         </div>
 
+        <!-- WEEKLY SUMMARY (Sundays only) -->
+      <!-- SUNDAY PARIS CARD (above weekly summary) -->
+        <div id="sundayParisCard" style="display:none;margin-bottom:1rem;"></div>
+
+        <div id="weeklySummaryCard" class="home-card home-progress-card" style="display:none;padding:0;overflow:hidden;min-height:0;">
+          <div onclick="
+            const b=document.getElementById('weeklySummaryBody');
+            const a=document.getElementById('weeklySummaryArrow');
+            const t=document.getElementById('weeklySummaryTitle');
+            const open=b.style.maxHeight&&b.style.maxHeight!=='0px';
+            b.style.maxHeight=open?'0px':b.scrollHeight+'px';
+            a.textContent=open?'↓':'↑';
+            t.textContent=open?'Click here to view your weekly summary':'Weekly Summary';
+          " style="padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+            <div id="weeklySummaryTitle" style="font-size:0.92rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div id="weeklySummaryDateRange" style="font-size:0.78rem;color:var(--text-muted);"></div>
+              <span id="weeklySummaryArrow" style="font-size:1rem;color:var(--text-muted);font-weight:700;">↑</span>
+            </div>
+          </div>
+          <div id="weeklySummaryBody" style="max-height:0px;overflow:hidden;transition:max-height 0.35s ease;">
+            <div style="height:1px;background:var(--border);"></div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--border);">
+              <!-- Personal aim -->
+              <div id="wsPAim" style="background:var(--card-bg);padding:0.9rem 1rem;grid-column:span 1;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">🎯 Personal Aim</div>
+                <div id="wsAimLabel" style="font-size:0.75rem;font-weight:500;color:var(--text-muted);margin-bottom:5px;"></div>
+                <div style="background:var(--border);border-radius:999px;height:5px;overflow:hidden;margin-bottom:4px;">
+                  <div id="wsAimBar" style="background:#0A2A66;height:100%;border-radius:999px;width:0%;transition:width 0.5s;"></div>
+                </div>
+                <div id="wsAimText" style="font-size:1.4rem;font-weight:700;color:var(--text-main);"></div>
+              </div>
+              <!-- Total shloks -->
+              <div style="background:var(--card-bg);padding:0.9rem 1rem;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Total Shloks Memorised</div>
+                <div id="wsTotalShloks" style="font-size:1.4rem;font-weight:700;color:var(--text-main);"></div>
+              </div>
+              <!-- Daily challenges -->
+              <div style="background:var(--card-bg);padding:0.9rem 1rem;border-top:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Daily Challenges</div>
+                <div id="wsDCDone" style="font-size:1.4rem;font-weight:700;color:var(--text-main);"></div>
+                <div style="font-size:0.75rem;font-weight:500;color:var(--text-muted);margin-top:2px;">this week</div>
+              </div>
+              <!-- Streak -->
+              <div style="background:var(--card-bg);padding:0.9rem 1rem;border-top:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Challenge Streak</div>
+                <div id="wsStreak" style="font-size:1.4rem;font-weight:700;color:#F4C95D;"></div>
+                <div style="font-size:0.75rem;font-weight:500;color:var(--text-muted);margin-top:2px;">day streak 🔥</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONDAY PARIS CARD (above My Mukhpath Journey) -->
+        <div id="mondayParisCard" style="display:none;margin-bottom:1rem;"></div>
+
         <!-- JOURNEY TO RAJIPO PROGRESS BAR -->
         <div class="home-card home-progress-card">
           <div class="home-card-label">🙏 My Mukhpath Journey</div>
@@ -3632,7 +3699,8 @@
 
       <!-- LEARN MODE -->
       <div id="learnModeSection">
-        <p id="learnSubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Choose a shlok to learn - we'll suggest the next one in order, or you can search for any other.</p>
+        <p id="learnSubtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.5rem;">Choose a shlok to learn - we'll suggest the next one in order, or you can search for any other.</p>
+        <p id="learnMotivationMsg" style="display:none;color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;"></p>
         <div id="learnPickerCard" class="learn-next-card"></div>
         <div id="learnNextCard" class="learn-next-card" style="display:none;"></div>
       </div>
@@ -3676,6 +3744,9 @@
           <span><span class="map-swatch map-empty"></span> Not yet added</span>
         </div>
         <div class="shlok-map-grid" id="shlokMapGrid"></div>
+
+        <!-- PARIS MAHOTSAV MOTIVATION -->
+        <div id="mukhpathMotivationMsg" style="display:none;border-radius:12px;padding:0.7rem 1rem;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);"></div>
 
         <hr class="mukhpath-divider">
 
@@ -4105,13 +4176,13 @@
           <div class="game-card" onclick="startGame('shlokSequence')">
             <div class="game-card-icon">🔢</div>
             <div class="game-card-title">Shlok Sequence</div>
-            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds — 3, 5, 10, 15 then 20 shloks. You need to have learnt shloks consecutively (e.g. 1-10) for each round.</div>
+            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds  -  3, 5, 10, 15 then 20 shloks. You need to have learnt shloks consecutively (e.g. 1-10) for each round.</div>
             <div class="game-card-tag">Order</div>
           </div>
           <div class="game-card" onclick="startGame('challengeFriend')">
             <div class="game-card-icon">🤝</div>
             <div class="game-card-title">Challenge a Friend</div>
-            <div class="game-card-desc">Pick 5 shloks to test a friend on — they challenge you back. 24 hours to complete!</div>
+            <div class="game-card-desc">Pick 5 shloks to test a friend on  -  they challenge you back. 24 hours to complete!</div>
             <div class="game-card-tag">vs Friend</div>
           </div>
 
@@ -4258,12 +4329,12 @@
               <div style="display:flex;align-items:center;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem;">
                 <div style="text-align:left;">
                   <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.3rem;">From shlok</div>
-                  <input id="frRangeFrom" type="number" min="1" max="315" placeholder="e.g. 1" class="edit-input" style="width:100px;text-align:center;">
+                  <input id="frRangeFrom" type="number" min="1" max="315" placeholder="e.g. 1" class="edit-input" style="width:100px;text-align:center;color:#000;background:#fff;" onkeypress="return event.charCode>=48&&event.charCode<=57">
                 </div>
                 <div style="font-size:1.2rem;color:var(--text-muted);padding-top:1.2rem;">→</div>
                 <div style="text-align:left;">
                   <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.3rem;">To shlok</div>
-                  <input id="frRangeTo" type="number" min="1" max="315" placeholder="e.g. 10" class="edit-input" style="width:100px;text-align:center;">
+                  <input id="frRangeTo" type="number" min="1" max="315" placeholder="e.g. 10" class="edit-input" style="width:100px;text-align:center;color:#000;background:#fff;" onkeypress="return event.charCode>=48&&event.charCode<=57">
                 </div>
               </div>
               <button class="game-next-btn" type="button" onclick="frStartMode('range')">Start Review →</button>
@@ -4434,9 +4505,151 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-center">Satsang Dikshano mukhpath = Akshardham &nbsp;|&nbsp; Inspirer: Mahant Swami Maharaj</div>
+      <div class="footer-center">Satsang Dikshano mukhpath = Akshardham &nbsp;|&nbsp; Inspirer: Mahant Swami Maharaj &nbsp;|&nbsp; <button onclick="document.getElementById('feedbackModal').style.display='flex'" style="background:none;border:none;color:inherit;font-size:inherit;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0;">💬 Feedback & Suggestions</button> &nbsp;|&nbsp; <button onclick="document.getElementById('whatsNewModal').style.display='flex'" style="background:none;border:none;color:inherit;font-size:inherit;font-family:'Poppins',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0;">📋 What's New</button></div>
     </div>
   </footer>
+
+  <!-- WHAT'S NEW MODAL -->
+  <div id="whatsNewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:var(--card-bg);border-radius:16px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:linear-gradient(135deg,#051A3A,#1a3f80);border-radius:16px 16px 0 0;position:sticky;top:0;">
+        <div style="font-weight:700;font-size:1rem;color:white;">📋 What's New</div>
+        <button onclick="document.getElementById('whatsNewModal').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;color:white;line-height:1;display:flex;align-items:center;justify-content:center;">×</button>
+      </div>
+      <div style="padding:1.5rem;">
+
+        <!-- Date stamp -->
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--gold);background:rgba(244,201,93,0.12);border:1px solid rgba(244,201,93,0.3);border-radius:999px;padding:0.2rem 0.7rem;">July 2026</div>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+
+          <!-- GENERAL -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">⚙️ General</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <!-- HOME PAGE -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🏠 Home Page</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mukhpath Monday</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Monday encouraging you to learn - tap it to go straight to the Learn page.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Summary Sunday</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Sunday encouraging you to review - tap it to go straight to Full Review.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <!-- LEARN & MY MUKHPATH -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">📖 Learn & My Mukhpath</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Paris Mandir Mahotsav motivation</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to hit your aim by Paris Mandir Mahotsav.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <!-- GAMES -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🎮 Games</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <!-- BUG FIXES -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🐛 Bug Fixes</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok data - duplicates fixed</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shloks 173 and 231 had incorrect text - now corrected.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Clear All resets Mandal card</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Clearing your shloks now also resets your progress on the Mandal page.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">"Just hit X!" badge expires after 48 hours</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">The milestone badge on your Mandal card now disappears after 48 hours.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend - multiple fixes</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Chain challenge count, button responses and score saving all fixed.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - Specific Range</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text was invisible when typing a range - now fixed.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily streak restoring correctly</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Streak was showing as 0 after the website updated - now restores correctly.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="feedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:var(--card-bg);border-radius:16px;width:100%;max-width:640px;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;background:linear-gradient(135deg,#051A3A,#1a3f80);border-radius:16px 16px 0 0;">
+        <div style="font-weight:700;font-size:1rem;color:white;">💬 Feedback & Suggestions</div>
+        <button onclick="document.getElementById('feedbackModal').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer;color:white;line-height:1;display:flex;align-items:center;justify-content:center;">×</button>
+      </div>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeXefJS7qW--oLt-SGkP1VLshsPUYRCNTUuC_DFEjMosx8zoA/viewform?embedded=true" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0" style="flex:1;min-height:700px;">Loading…</iframe>
+    </div>
+  </div>
 
   <!-- Tutorial -->
   <div id="overlay" class="overlay" onclick="closeTutorial()"></div>
@@ -5854,8 +6067,8 @@
   },
  {
     "id": "173",
-    "line1": "Sevām mātuh pituh kuryād gruhī satsangam āshritaha",
-    "line2": "Prati-dinam namaskāram tat-pādeshu nivedayet",
+    "line1": "Shvashurah pitruvat sevyo vadhvā shvashrūsh-cha mātruvat",
+    "line2": "Sva-putrīvat snushā pālyā shvashrvā'pi shvashureṇa cha",
     "meaning": "A wife should serve her father-in-law as her own father and mother-in-law as her own mother. A father-in-law and mother-in-law should care for their daughter-in-law as they would for their own daughter"
   },
  {
@@ -6202,9 +6415,9 @@
   },
  {
     "id": "231",
-    "line1": "Harer gurosh-charitreshu divyeshu mānusheshu yaha",
-    "line2": "Sa-sneham divyatā-darshī kuryāt tat-sangam ādarāt",
-    "meaning": "One should respectfully associate with those who lovingly see divinity in both the divine and human-like actions of Bhagwan and the guru"
+    "line1": "Āgnāyāh pālane nityam sotsāham tat-paro draḍhaha",
+    "line2": "Nirmānaha saralo yash-cha kuryāt tat-sangam ādarāt",
+    "meaning": "One should respectfully associate with those who always eagerly follow commands with enthusiasm and determination, and are humble and cooperative"
   },
  {
     "id": "232",
@@ -6733,10 +6946,10 @@
       if (!id) return;
 
       const master = allShloks.find(s => s.id === id);
-      if (!master) return alert("Shlok not found.");
+      if (!master) return showToast("Shlok not found.");
 
       if (myShloks.some(s => s.number === id))
-        return alert("Already added.");
+        return showToast("Already added.");
 
       myShloks.push({
         number: id,
@@ -6761,7 +6974,7 @@
       const end = parseInt(document.getElementById("bulkEnd").value);
 
       if (isNaN(start) || isNaN(end) || start > end) {
-        alert("Enter a valid range.");
+        showToast("Enter a valid range.");
         return;
       }
 
@@ -6800,9 +7013,9 @@
 
     function removeShlokRange() {
       const num = document.getElementById("removeStart").value.trim();
-      if (!num) { alert("Please enter a shlok number."); return; }
+      if (!num) { showToast("Please enter a shlok number."); return; }
       const exists = myShloks.find(s => s.number === num);
-      if (!exists) { alert(`Shlok ${num} isn't in your list.`); return; }
+      if (!exists) { showToast(`Shlok ${num} isn't in your list.`); return; }
       if (!confirm(`Remove Shlok ${num} from your list?`)) return;
       myShloks = myShloks.filter(s => s.number !== num);
       save(); render(); updateDashboard(); updateHomePage();
@@ -7024,13 +7237,125 @@
     function needMoreShloks() {
       const mem = myShloks.filter(s => s.mastery === "memorised");
       if (mem.length < 4) {
-        alert("You need at least 4 memorised shloks to play this game!");
+        showToast("You need at least 4 memorised shloks to play this game!");
         return true;
       }
       return false;
     }
 
-    // ── BACK TO HUB ──
+    function updateParisCards() {
+      const day = new Date().getDay(); // 0=Sun, 1=Mon
+      const mondayEl = document.getElementById('mondayParisCard');
+      const sundayEl = document.getElementById('sundayParisCard');
+      if (!mondayEl || !sundayEl) return;
+
+      const dark = document.body.classList.contains('dark-mode');
+      const bg = dark ? '#1e2130' : '#ffffff';
+      const textCol = dark ? 'var(--text-muted)' : 'var(--text-main)';
+
+      function parisCard(text, linkFn, dayLabel) {
+        return `<div onclick="${linkFn}" style="
+          cursor:pointer;
+          border-radius:12px;
+          padding:1.2rem 1.4rem;
+          position:relative;
+          overflow:hidden;
+          border:3px solid transparent;
+          background:linear-gradient(${bg},${bg}) padding-box,
+                      linear-gradient(to right,#003189 0%,#003189 20%,#b0b0b0 38%,#b0b0b0 62%,#C1001F 80%,#C1001F 100%) border-box;
+          color:${textCol};
+          line-height:1.5;
+        ">
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">${dayLabel}</div>
+          <div style="font-size:0.85rem;font-weight:500;line-height:1.5;opacity:0.8;">${text}</div>
+        </div>`;
+      }
+
+      if (day === 1) {
+        mondayEl.style.display = 'block';
+        mondayEl.innerHTML = parisCard(
+          "It's Mukhpath Monday - time to learn some shloks!",
+          "switchTab(document.querySelector('[data-page=learn]'),'learn')",
+          "Mukhpath Monday"
+        );
+        sundayEl.style.display = 'none';
+      } else if (day === 0) {
+        sundayEl.style.display = 'block';
+        sundayEl.innerHTML = parisCard(
+          "It's Summary Sunday! Take some time today to review all the shloks you've learnt so far.",
+          "switchTab(document.querySelector('[data-page=games]'),'games');setTimeout(()=>startGame('fullReview'),200)",
+          "Summary Sunday"
+        );
+        mondayEl.style.display = 'none';
+      } else {
+        mondayEl.style.display = 'none';
+        sundayEl.style.display = 'none';
+      }
+    }
+    function updateMotivationMsg() {
+      const learnEl = document.getElementById('learnMotivationMsg');
+      const mukhpathEl = document.getElementById('mukhpathMotivationMsg');
+      if (!learnEl && !mukhpathEl) return;
+
+      const MAHOTSAV_DATE = new Date('2026-09-02');
+      const today = new Date(); today.setHours(0,0,0,0);
+      const daysLeft = Math.ceil((MAHOTSAV_DATE - today) / 86400000);
+      if (daysLeft <= 0) return;
+
+      const learned = myShloks.filter(s => ['learnt','memorised','revise'].includes(s.mastery)).length;
+      const prof = JSON.parse(localStorage.getItem('profile') || '{}');
+      const aimNum = parseInt(prof.goalTarget);
+      const hasAim = aimNum > 0 && aimNum < 315;
+      const target = hasAim ? aimNum : 315;
+      const remaining = target - learned;
+
+      let msg = '';
+      if (remaining > 0) {
+        const perDay = remaining / daysLeft;
+        if (perDay < 1) {
+          msg = `🎉 You're nearly there - just <strong>${remaining} more shlok${remaining!==1?'s':''}</strong> to go to ${hasAim?`reach your aim of ${aimNum}`:'learn all 315'}!`;
+        } else {
+          const perDayRounded = Math.ceil(perDay);
+          msg = `Try to learn <strong>${perDayRounded} shlok${perDayRounded!==1?'s':''} a day</strong> to ${hasAim?`meet your aim of ${aimNum} shloks`:'learn all 315 shloks'} by Paris Mandir Mahotsav!`;
+        }
+      }
+
+      [learnEl, mukhpathEl].forEach(el => {
+        if (!el) return;
+        if (msg) {
+          el.innerHTML = msg;
+          el.style.display = 'block';
+          // Apply glow based on mode (only for mukhpath box, not learn plain text)
+          if (el.id === 'mukhpathMotivationMsg') {
+            const dark = document.body.classList.contains('dark-mode');
+            const bg = dark ? '#1e2130' : '#ffffff';
+            el.style.background = '';
+            el.style.border = '2px solid transparent';
+            el.style.backgroundImage = `linear-gradient(${bg}, ${bg}), linear-gradient(to right, #003189 0%, #003189 20%, #b0b0b0 38%, #b0b0b0 62%, #C1001F 80%, #C1001F 100%)`;
+            el.style.backgroundOrigin = 'padding-box, border-box';
+            el.style.backgroundClip = 'padding-box, border-box';
+            el.style.color = dark ? '' : '#000000';
+          }
+        } else el.style.display = 'none';
+      });
+    }
+
+    // ── SYNC ON PAGE FOCUS (cross-device sync) ──
+    let lastSyncTime = Date.now();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && currentUser) {
+        const timeSinceSync = Date.now() - lastSyncTime;
+        // Only re-sync if it's been more than 60 seconds since last sync
+        if (timeSinceSync > 60 * 1000) {
+          lastSyncTime = Date.now();
+          restoreOrSyncUserData(currentUser).then(() => {
+            render();
+            updateDashboard();
+            updateHomePage();
+          });
+        }
+      }
+    });
     function backToHub() {
       document.querySelectorAll(".game-screen").forEach(s => s.style.display = "none");
       document.getElementById("gameHub").style.display = "block";
@@ -7041,7 +7366,7 @@
     function startGame(game) {
       if (game === "fullReview") {
         if (myShloks.length < 4) {
-          alert("You need at least 4 added shloks to play Full Review!");
+          showToast("You need at least 4 added shloks to play Full Review!");
           return;
         }
       } else if (game !== "challengeFriend" && needMoreShloks()) {
@@ -7507,7 +7832,7 @@
     function pullLever() {
       const pool = getMotivPool();
       if (pool.length === 0) {
-        alert("No quotes in this category yet!");
+        showToast("No quotes in this category yet!");
         return;
       }
 
@@ -7632,6 +7957,7 @@
       indicator.style.width = btnRect.width + "px";
       indicator.style.left  = (btnRect.left - wrapRect.left) + "px";
       indicator.style.transform = "none";
+      indicator.style.opacity = "1";
     }
 
     window.addEventListener("scroll", () => {
@@ -8117,7 +8443,7 @@
       const revise    = freshShloks.filter(s => s.mastery === "revise").length;
       const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
       const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
-      const isRecent = (Date.now() - lastMilestoneDate) < 3 * 24 * 60 * 60 * 1000;
+      const isRecent = (Date.now() - lastMilestoneDate) < 48 * 60 * 60 * 1000;
       try {
         await db.collection("mandal").doc(getMandalUserId()).set({
           uid:             getMandalUserId(),
@@ -9329,18 +9655,23 @@
       document.getElementById("darkToggle").textContent = isDark ? "☀️" : "🌙";
       const mobileToggle = document.getElementById("mobileDarkToggle");
       if (mobileToggle) mobileToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+      updateMotivationMsg();
+      updateParisCards();
     }
 
-    // Apply on load
-    if (localStorage.getItem("darkMode") === "true") {
-      document.body.classList.add("dark-mode");
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("darkToggle");
-        if (btn) btn.textContent = "☀️";
+    // Apply dark mode on load - class already set on <html> early to prevent flash
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        document.getElementById("darkToggle").textContent = "☀️";
         const mobileToggle = document.getElementById("mobileDarkToggle");
         if (mobileToggle) mobileToggle.textContent = "☀️ Light Mode";
-      });
-    }
+      }
+      // Clean up early class now that body has proper dark-mode class
+      document.documentElement.classList.remove("dark-mode-early");
+      // Fade in once everything is ready
+      requestAnimationFrame(() => document.body.classList.add("loaded"));
+    });
     function updateFlipClock() {
       const target = new Date("September 2, 2026 00:00:00").getTime();
       const now = new Date().getTime();
@@ -9527,6 +9858,57 @@
         }
       }
 
+      updateMotivationMsg();
+      updateParisCards();
+
+      // ── WEEKLY SUMMARY (Sundays only) ──
+      const wsDay = new Date().getDay();
+      const wsCard = document.getElementById('weeklySummaryCard');
+      if (wsCard && wsDay === 0) {
+        wsCard.style.display = 'block';
+        // Expand after content is populated
+        const wsBody = document.getElementById('weeklySummaryBody');
+        if (wsBody) setTimeout(() => { wsBody.style.maxHeight = wsBody.scrollHeight + 'px'; }, 50);
+        const today2 = new Date();
+        const dayOfWeek = today2.getDay();
+        const mon = new Date(today2);
+        mon.setDate(today2.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+        mon.setHours(0,0,0,0);
+        const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+        const fmt = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+        document.getElementById('weeklySummaryDateRange').textContent = `${fmt(mon)} - ${fmt(sun)}`;
+
+        // Count daily challenges Mon-Sun
+        const wsHistory = new Set(JSON.parse(localStorage.getItem('dcHistory')||'[]')||[]);
+        let wsDC = 0;
+        for (let i=0; i<7; i++) {
+          const d = new Date(mon); d.setDate(mon.getDate() + i);
+          if (d <= today2 && wsHistory.has(localDateStr(d))) wsDC++;
+        }
+        const wsTotal = myShloks.filter(s=>['learnt','memorised','revise'].includes(s.mastery)).length;
+        document.getElementById('wsTotalShloks').textContent = `${wsTotal}/315`;
+        document.getElementById('wsDCDone').textContent = `${wsDC}/7`;
+        document.getElementById('wsStreak').textContent = document.getElementById('streakNumber').textContent||'0';
+        const wsProf = JSON.parse(localStorage.getItem('profile')||'{}');
+        const wsGoal = parseInt(wsProf.goalTarget);
+        const wsAimLabel = document.getElementById('wsAimLabel');
+        const wsAimBar = document.getElementById('wsAimBar');
+        const wsAimText = document.getElementById('wsAimText');
+        if (wsGoal > 0) {
+          const wsMem = myShloks.filter(s=>s.mastery==='learnt'||s.mastery==='memorised').length;
+          const wsPct = Math.min(100, Math.round((wsMem/wsGoal)*100));
+          wsAimLabel.textContent = wsProf.goalName ? `By ${wsProf.goalName}` : wsProf.goalDate ? `By ${new Date(wsProf.goalDate).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}` : '';
+          wsAimBar.style.width = wsPct+'%';
+          wsAimText.style.fontSize = '1.4rem';
+          wsAimText.style.fontWeight = '700';
+          wsAimText.textContent = `${wsMem}/${wsGoal} shloks`;
+        } else {
+          wsAimLabel.textContent = "No aim set yet - to set an aim go to 'Edit Profile'";
+          wsAimBar.style.width = '0%';
+          wsAimText.textContent = '';
+        }
+      }
+
       // Revise Now
       loadReviseNow();
 
@@ -9667,6 +10049,23 @@
         save();
         render();
         updateDashboard();
+        updateHomePage();
+        // Clear lastMilestone so "just hit X" badge disappears
+        localStorage.removeItem('lastMilestone');
+        localStorage.removeItem('lastMilestoneDate');
+        // Clear Mandal card progress
+        if (db && currentUser) {
+          db.collection('mandal').doc(getMandalUserId()).update({
+            shlokList: [],
+            totalKnown: 0,
+            totalMemorised: 0,
+            recentMilestone: null
+          }).catch(e => console.warn('Mandal clear failed:', e));
+          db.collection('users').doc(currentUser.uid).update({
+            lastMilestone: 0,
+            lastMilestoneDate: 0
+          }).catch(e => console.warn('Milestone clear failed:', e));
+        }
       }, 500);
     }
 
@@ -9833,11 +10232,11 @@
       const goalTarget = document.getElementById("editGoalTarget").value.trim();
       const goalDate   = document.getElementById("editGoalDate").value;
 
-      if (!name)      { alert("Please enter your full name."); return; }
-      if (!mandalName){ alert("Please enter your centre (e.g. Harrow, South London)."); return; }
-      if (!start)     { alert("Please enter the date you started your mukhpath."); return; }
-      if (!fav)       { alert("Please select your favourite shlok - this is shown on the Friends page!"); return; }
-      if (fav && !allShloks.some(s => s.id === fav)) { alert("Favourite shlok not found in list."); return; }
+      if (!name)      { showToast("Please enter your full name."); return; }
+      if (!mandalName){ showToast("Please enter your centre (e.g. Harrow, South London)."); return; }
+      if (!start)     { showToast("Please enter the date you started your mukhpath."); return; }
+      if (!fav)       { showToast("Please select your favourite shlok - this is shown on the Friends page!"); return; }
+      if (fav && !allShloks.some(s => s.id === fav)) { showToast("Favourite shlok not found in list."); return; }
 
       saveProfile(name, mandalName, start, fav);
       // Save custom goal into profile
@@ -9859,7 +10258,7 @@
 
     function loadKahootQuiz() {
       const eligible = myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised');
-      if (eligible.length < 4) { alert('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
+      if (eligible.length < 4) { showToast('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
       kqPool = shuffle(eligible).slice(0, kqTotal);
       kqIndex = 0; kqCorrectCount = 0;
       document.getElementById('kqScore').textContent = 0;
@@ -9884,7 +10283,7 @@
 
     function loadKahootQuiz(mode) {
       const eligible = myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised');
-      if (eligible.length < 4) { alert('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
+      if (eligible.length < 4) { showToast('You need at least 4 learnt or memorised shloks to play!'); backToHub(); return; }
       kqMode = mode || 'normal';
       kqPool = shuffle(eligible);
       if (kqMode !== 'nodeath') kqPool = kqPool.slice(0, kqTotal);
@@ -10070,7 +10469,7 @@
       )].sort((a, b) => a - b);
 
       if (learnedNums.length < size) {
-        alert(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) — individual shloks learnt out of order won't count.`);
+        showToast(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10)  -  individual shloks learnt out of order won't count.`);
         backToHub(); return;
       }
 
@@ -10088,7 +10487,7 @@
       if (run.length >= size) runs.push([...run]);
 
       if (runs.length === 0) {
-        alert(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) — individual shloks learnt out of order won't count.`);
+        showToast(`You need at least ${size} shloks in a row to play round ${round + 1}. This game only works with consecutively learnt shloks (e.g. shloks 1-10) - individual shloks learnt out of order won't count.`);
         backToHub(); return;
       }
 
@@ -10151,16 +10550,16 @@
         const nextRound = ssRound + 1;
         fb.innerHTML = correct
           ? `✅ Perfect! Shloks ${ssCorrectOrder[0].id}–${ssCorrectOrder[ssCorrectOrder.length-1].id} in the right order!<br><button class="game-next-btn" onclick="ssLoadRound(${nextRound})" style="margin-top:0.8rem;">Round ${nextRound + 1} →</button>`
-          : `❌ Not quite — check the numbers above.<br><button class="game-next-btn" onclick="ssLoadRound(${nextRound})" style="margin-top:0.8rem;">Round ${nextRound + 1} →</button>`;
+          : `❌ Not quite  -  check the numbers above.<br><button class="game-next-btn" onclick="ssLoadRound(${nextRound})" style="margin-top:0.8rem;">Round ${nextRound + 1} →</button>`;
       } else {
-        fb.innerHTML = correct ? '✅ Perfect!' : '❌ Not quite — check the numbers above.';
+        fb.innerHTML = correct ? '✅ Perfect!' : '❌ Not quite - check the numbers above.';
         setTimeout(() => ssFinish(), 1500);
       }
     }
 
     function ssFinish() {
       document.getElementById('ssPlayCard').style.display = 'none';
-      const msgs = ['📖 Keep practising!', '👍 Keep going!', '👍 Good effort!', '🔥 Well done!', '🎉 Great work!', '🏆 Perfect — you know your shloks!'];
+      const msgs = ['📖 Keep practising!', '👍 Keep going!', '👍 Good effort!', '🔥 Well done!', '🎉 Great work!', '🏆 Perfect  -  you know your shloks!'];
       document.getElementById('ssDoneMsg').innerHTML = `
         <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.6rem;">${msgs[ssScore]}</div>
         <div style="font-size:1rem; color:var(--text-muted);">You got <strong style="color:var(--text-main);">${ssScore} / 5</strong> rounds correct</div>
@@ -10392,15 +10791,15 @@
       cfTargetShloks = theirShloks;
       const shloksWithMeaning = theirShloks.filter(s=>s.meaning&&s.meaning.trim());
       if (theirShloks.length < 3) {
-        const msg = (data.totalKnown||0)>=3 ? `Ask ${name} to open the app and go to their home page, then come back and try again!` : `${name} hasn't learnt enough shloks yet — they need at least 3 to be challenged.`;
+        const msg = (data.totalKnown||0)>=3 ? `Ask ${name} to open the app and go to their home page, then come back and try again!` : `${name} hasn't learnt enough shloks yet  -  they need at least 3 to be challenged.`;
         main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">${msg}</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`; return;
       }
       // Show challenge type selector
       const types = [
-        { id:'standard', icon:'📖', title:'Standard Challenge', desc:'Recite each shlok from memory — first word is shown as a hint.' },
+        { id:'standard', icon:'📖', title:'Standard Challenge', desc:'Recite each shlok from memory  -  first word is shown as a hint.' },
         { id:'chain',    icon:'⛓️', title:'Chain Challenge',    desc:'Given the first shlok, recite the ones that follow it in order.' },
         { id:'reverseChain', icon:'🔄', title:'Reverse Chain', desc:'Given the last shlok, recite the ones that come before it.' },
-        { id:'meaning',  icon:'💡', title:'Meaning Challenge', desc:'Shown the English meaning only — recall and recite the full shlok.' },
+        { id:'meaning',  icon:'💡', title:'Meaning Challenge', desc:'Shown the English meaning only  -  recall and recite the full shlok.' },
       ];
       main.innerHTML=`<div class="card game-play-card">
         <div class="game-title-row">Challenge ${name}</div>
@@ -10452,10 +10851,10 @@
       const name = cfTargetName;
       if (type==='chain') {
         const validStarts = cfChainOptions(cfTargetShloks, count, 'fwd');
-        cfRenderSinglePicker(main, validStarts, name, `Pick a starting shlok — they'll recite the ${count} that follow it.`, 'cfSendChallenge');
+        cfRenderSinglePicker(main, validStarts, name, `Pick a starting shlok - they'll recite the ${count} that follow it.`, 'cfSendChallenge');
       } else if (type==='reverseChain') {
         const validEnds = cfChainOptions(cfTargetShloks, count, 'bwd');
-        cfRenderSinglePicker(main, validEnds, name, `Pick an ending shlok — they'll recite the ${count} that come before it.`, 'cfSendChallenge');
+        cfRenderSinglePicker(main, validEnds, name, `Pick an ending shlok - they'll recite the ${count} that come before it.`, 'cfSendChallenge');
       } else if (type==='meaning') {
         const withMeaning = cfTargetShloks.filter(s=>s.meaning&&s.meaning.trim());
         cfRenderPickScreen(main, withMeaning, name, count);
@@ -10832,13 +11231,13 @@
       if(cfTargetShloks.length<3){
         main.innerHTML=`<div class="card game-play-card" style="text-align:center;"><div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Ask ${fromName} to open the app and go to their home page, then come back and try again!</div><button class="game-next-btn" onclick="loadChallengeFriend()">← Back</button></div>`; return;
       }
-      // Show type selector — same as cfPickShloks but sends as return challenge
+      // Show type selector  -  same as cfPickShloks but sends as return challenge
       window._cfReturnChallengeId=challengeId;
       const types=[
         {id:'standard',icon:'📖',title:'Standard Challenge',desc:'Recite each shlok from memory.'},
         {id:'chain',   icon:'⛓️',title:'Chain Challenge',   desc:'Given the first shlok, recite the ones that follow.'},
         {id:'reverseChain',icon:'🔄',title:'Reverse Chain',desc:'Given the last shlok, recite the ones before it.'},
-        {id:'meaning', icon:'💡',title:'Meaning Challenge', desc:'Shown the English meaning — recall the full shlok.'},
+        {id:'meaning', icon:'💡',title:'Meaning Challenge', desc:'Shown the English meaning  -  recall the full shlok.'},
       ];
       main.innerHTML=`<div class="card game-play-card">
         <div class="game-title-row">Challenge ${fromName} back</div>
@@ -10888,10 +11287,10 @@
       const count=cfChallengeCount, type=cfChallengeType, name=cfTargetName;
       if(type==='chain'){
         const validStarts=cfChainOptions(cfTargetShloks,count,'fwd');
-        cfRenderSinglePicker(main,validStarts,name,`Pick a starting shlok — they'll recite the ${count} that follow it.`,'cfSendReturn');
+        cfRenderSinglePicker(main,validStarts,name,`Pick a starting shlok - they'll recite the ${count} that follow it.`,'cfSendReturn');
       } else if(type==='reverseChain'){
         const validEnds=cfChainOptions(cfTargetShloks,count,'bwd');
-        cfRenderSinglePicker(main,validEnds,name,`Pick an ending shlok — they'll recite the ${count} that come before it.`,'cfSendReturn');
+        cfRenderSinglePicker(main,validEnds,name,`Pick an ending shlok - they'll recite the ${count} that come before it.`,'cfSendReturn');
       } else if(type==='meaning'){
         const withMeaning=cfTargetShloks.filter(s=>s.meaning&&s.meaning.trim());
         cfRenderPickScreen(main,withMeaning,name,count);
