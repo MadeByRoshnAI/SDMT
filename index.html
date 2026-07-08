@@ -2500,18 +2500,10 @@
       overflow: hidden;
     }
     .slideout-panel.open { right: 0; }
-    /* On narrow phones/foldables (<480px) let the panel take the full
-       width instead of a fixed 420px, which otherwise gets pushed
-       partly off-screen to the left */
     @media (max-width: 480px) {
       .slideout-panel { width: 100vw; right: -100vw; }
     }
 
-    /* Scrollable region so short viewports (Chromebooks, iPads, small
-       laptops) can still scroll down to reach Edit Profile / Sign out.
-       justify-content spaces hero/stats/progress evenly when they DO
-       fit (no dead gap at the bottom); when content is taller than the
-       panel it just scrolls instead of being clipped. */
     .panel-scroll {
       flex: 1 1 auto;
       min-height: 0;
@@ -8791,7 +8783,12 @@
       const reactionHtml = Object.entries(rGroups).map(([e,n]) => {
         const names = Object.entries(reactions).filter(([,v])=>v===e).map(([uid])=>uid).join(',');
         const mine = myReaction === e;
-        return `<span onclick="toggleNoteReaction('${docId}','${e}')" style="cursor:pointer;display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid ${mine?'rgba(0,0,0,0.4)':'rgba(0,0,0,0.15)'};background:${mine?'rgba(0,0,0,0.1)':'transparent'};font-size:0.78rem;">${e} <span style="font-size:0.7rem;font-weight:600;">${n}</span></span>`;
+        return `<span onclick="toggleNoteReaction('${docId}','${e}')" style="cursor:pointer;display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid ${mine?'rgba(0,0,0,0.4)':'rgba(0,0,0,0.15)'};background:${mine?'rgba(0,0,0,0.1)':'transparent'};font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
+      }).join('');
+      // Read-only version for your own note - you can see who reacted but can't react to yourself
+      const reactionHtmlReadOnly = Object.entries(rGroups).map(([e,n]) => {
+        const names = Object.entries(reactions).filter(([,v])=>v===e).map(([uid])=>uid).join(',');
+        return `<span title="${n} reaction${n>1?'s':''}" style="display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid rgba(0,0,0,0.15);font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
       }).join('');
 
       const messagesHtml = Object.values(messages).map(m =>
@@ -8805,12 +8802,12 @@
       const reactRow = !isMe && currentUser ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:0.5rem 0 0.3rem;align-items:center;">
         ${reactionHtml}
         <div style="position:relative;display:inline-block;">
-          <span onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='flex'?'none':'flex'" style="cursor:pointer;font-size:0.72rem;padding:1px 7px;border-radius:999px;border:1px solid rgba(0,0,0,0.2);background:transparent;">+ React</span>
+          <span onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='flex'?'none':'flex'" style="cursor:pointer;font-size:0.72rem;padding:1px 7px;border-radius:999px;border:1px solid rgba(0,0,0,0.2);background:transparent;color:#333;">+ React</span>
           <div style="display:none;position:absolute;left:0;top:110%;background:white;border:1px solid #ddd;border-radius:8px;padding:4px 8px;gap:6px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
             ${['👏','🎉','❤️','🔥','💪'].map(e=>`<span onclick="toggleNoteReaction('${docId}','${e}');this.closest('div').style.display='none'" style="cursor:pointer;font-size:1.1rem;">${e}</span>`).join('')}
           </div>
         </div>
-      </div>` : !isMe && !currentUser ? `<div style="font-size:0.72rem;color:rgba(0,0,0,0.45);margin:0.4rem 0;font-style:italic;">Sign in to react or comment</div>` : '';
+      </div>` : !isMe && !currentUser ? `<div style="font-size:0.72rem;color:rgba(0,0,0,0.45);margin:0.4rem 0;font-style:italic;">Sign in to react or comment</div>` : (isMe && Object.keys(rGroups).length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:0.5rem 0 0.3rem;align-items:center;">${reactionHtmlReadOnly}</div>` : '');
 
       return `<div class="sticky-note" style="background:${colour};transform:rotate(${rot}deg);margin-top:${vOffset}px;">
         <div class="sticky-pin">${pin}</div>
