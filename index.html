@@ -2488,6 +2488,7 @@
       right: -460px;
       left: auto;
       width: 420px;
+      max-width: 100vw;
       height: 100vh;
       background: linear-gradient(160deg, var(--blue) 0%, var(--blue-dark) 100%);
       color: white;
@@ -2496,10 +2497,30 @@
       transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       overflow: hidden;
     }
     .slideout-panel.open { right: 0; }
+    /* On narrow phones/foldables (<480px) let the panel take the full
+       width instead of a fixed 420px, which otherwise gets pushed
+       partly off-screen to the left */
+    @media (max-width: 480px) {
+      .slideout-panel { width: 100vw; right: -100vw; }
+    }
+
+    /* Scrollable region so short viewports (Chromebooks, iPads, small
+       laptops) can still scroll down to reach Edit Profile / Sign out.
+       justify-content spaces hero/stats/progress evenly when they DO
+       fit (no dead gap at the bottom); when content is taller than the
+       panel it just scrolls instead of being clipped. */
+    .panel-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
     .panel-accent {
       height: 4px;
@@ -4694,121 +4715,6 @@
               </div>
             </div>
           </div>
-
-        </div>
-      </div>
-
-          <!-- GENERAL -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">⚙️ General</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <!-- HOME PAGE -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🏠 Home Page</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mukhpath Monday</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Monday encouraging you to learn - tap it to go straight to the Learn page.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Summary Sunday</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Sunday encouraging you to review - tap it to go straight to Full Review.</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <!-- LEARN & MY MUKHPATH -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">📖 Learn & My Mukhpath</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Paris Mandir Mahotsav motivation</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to hit your aim by Paris Mandir Mahotsav.</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <!-- GAMES -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🎮 Games</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <!-- BUG FIXES -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🐛 Bug Fixes</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok data - duplicates fixed</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shloks 173 and 231 had incorrect text - now corrected.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Clear All resets Mandal card</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Clearing your shloks now also resets your progress on the Mandal page.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">"Just hit X!" badge expires after 48 hours</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">The milestone badge on your Mandal card now disappears after 48 hours.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend - multiple fixes</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Chain challenge count, button responses and score saving all fixed.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - Specific Range</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text was invisible when typing a range - now fixed.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily streak restoring correctly</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Streak was showing as 0 after the website updated - now restores correctly.</div>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -5057,6 +4963,7 @@
   <div class="slideout-panel" id="slideoutPanel">
     <div class="panel-accent"></div>
 
+    <div class="panel-scroll">
     <div class="panel-hero">
       <div class="avatar-ring" id="avatarInitials">YN</div>
       <div class="panel-name" id="pmFullName">Your Name</div>
@@ -5102,6 +5009,7 @@
       <div style="text-align:center; padding-bottom:0.5rem;">
         <button class="panel-edit-btn" onclick="openProfileEditor()">Edit Profile</button>
       </div>
+    </div>
     </div>
 
     <!-- Edit panel inside slideout -->
@@ -8853,7 +8761,7 @@
           .orderBy('timestamp','desc').limit(10).get();
         const valid = snap.docs.filter(d => {
           const ts = d.data().timestamp;
-          return ts && (ts.toMillis() + 48*60*60*1000) > now;
+          return ts && (ts.toMillis() + 7 * 24 * 60 * 60 * 1000) > now;
         });
         if (!valid.length) {
           container.innerHTML = '<div style="color:rgba(80,50,20,0.6);font-size:0.9rem;text-align:center;padding:2rem;grid-column:1/-1;">No milestones yet - keep learning! 🌱</div>';
@@ -10363,6 +10271,35 @@
       renderProgressPage();
       showPage("home");
       initAuth();
+      // Backfill noticeboard: if user hit a milestone in the last 7 days, add it
+      setTimeout(() => {
+        if (!db || !currentUser) return;
+        const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
+        const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
+        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        if (lastMilestone > 0 && lastMilestoneDate > sevenDaysAgo) {
+          // Check if entry already exists for this user + milestone
+          db.collection("noticeboard")
+            .where("uid", "==", currentUser.uid)
+            .where("milestone", "==", lastMilestone)
+            .get().then(snap => {
+              if (snap.empty) {
+                const prof = JSON.parse(localStorage.getItem("profile") || "{}");
+                if (NOTICEBOARD_MILESTONES.includes(lastMilestone)) {
+                  db.collection("noticeboard").add({
+                    uid: currentUser.uid,
+                    name: prof.name || "Someone",
+                    milestone: lastMilestone,
+                    timestamp: firebase.firestore.Timestamp.fromMillis(lastMilestoneDate),
+                    messages: {},
+                    reactions: {}
+                  }).catch(e => console.warn("Backfill failed:", e));
+                }
+              }
+            }).catch(e => console.warn("Backfill check failed:", e));
+        }
+      }, 3000);
+
     });
 
     document.addEventListener("DOMContentLoaded", () => {
