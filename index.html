@@ -2382,12 +2382,12 @@
       font-weight: 700;
     }
     body.dark-mode .cf-tab-btn {
-      border-color: rgba(255,255,255,0.6);
+      border-color: rgba(255,255,255,0.35);
       color: white;
     }
     body.dark-mode .cf-tab-btn:hover {
       border-color: white;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.12);
     }
     body.dark-mode .cf-tab-btn.active {
       background: var(--blue-mid);
@@ -3306,6 +3306,37 @@
       padding: 0.15rem 0.6rem; transition: background 0.2s, color 0.2s;
     }
     .mandal-remove-link:hover { background: #dc2626; color: white; }
+
+    .corkboard {
+      background: #c8a265;
+      background-image:
+        radial-gradient(ellipse at 15% 25%, rgba(160,110,50,0.35) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 75%, rgba(140,95,40,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(200,160,90,0.2) 0%, transparent 70%);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15);
+      border: 3px solid #a07840;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2.5rem 2rem;
+      align-items: start;
+      min-height: 250px;
+    }
+    .sticky-note {
+      border-radius: 3px;
+      padding: 1rem 1rem 1.2rem;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.25), 0 1px 0 rgba(255,255,255,0.4) inset;
+      position: relative;
+      font-family: 'Poppins', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .sticky-note:hover { box-shadow: 5px 5px 16px rgba(0,0,0,0.3); transform: scale(1.02) translateY(-2px) !important; }
+    .sticky-pin { position:absolute; top:-10px; left:50%; transform:translateX(-50%); font-size:1.3rem; filter:drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+    .sticky-msg-input { width:100%; border:1px solid rgba(0,0,0,0.15); border-radius:6px; background:#ffffff; font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.4rem 0.5rem; margin-top:0.5rem; resize:none; outline:none; color:#555; box-sizing:border-box; }
+    .sticky-msg-input::placeholder { color:#aaa; }
+    .sticky-send-btn { background:rgba(0,0,0,0.12); border:none; border-radius:999px; padding:2px 10px; font-size:0.72rem; font-family:'Poppins',sans-serif; cursor:pointer; margin-top:0.3rem; font-weight:600; color:#333; }
+    .sticky-send-btn:hover { background:rgba(0,0,0,0.2); }
 
     .mandal-grid {
       display: grid;
@@ -4498,7 +4529,24 @@
           </div>
         </div>
       </div>
-      <div class="mandal-grid" id="mandalGrid"></div>
+
+      <!-- MANDAL / NOTICEBOARD TABS -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
+        <button id="mandalTabBtn" class="cf-tab-btn active" onclick="switchMandalTab('mandal')">👥 My Mukhpath Mandal</button>
+        <button id="noticeTabBtn" class="cf-tab-btn" onclick="switchMandalTab('noticeboard')">🪧 Noticeboard</button>
+      </div>
+
+      <!-- MANDAL PANEL -->
+      <div id="mandalPanel">
+        <div class="mandal-grid" id="mandalGrid"></div>
+      </div>
+
+      <!-- NOTICEBOARD PANEL -->
+      <div id="noticePanel" style="display:none;">
+        <div class="corkboard" id="noticeboardContainer">
+          <div style="color:rgba(80,50,20,0.5);font-size:0.9rem;text-align:center;padding:2rem;">Loading noticeboard...</div>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -4518,13 +4566,137 @@
       </div>
       <div style="padding:1.5rem;">
 
-        <!-- Date stamp -->
         <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;">
           <div style="font-size:0.72rem;font-weight:700;color:var(--gold);background:rgba(244,201,93,0.12);border:1px solid rgba(244,201,93,0.3);border-radius:999px;padding:0.2rem 0.7rem;">July 2026</div>
           <div style="flex:1;height:1px;background:var(--border);"></div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:1.2rem;">
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">⚙️ General</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🏠 Home Page</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mukhpath Monday</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Monday encouraging you to learn - tap it to go straight to the Learn page.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Summary Sunday</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Sunday encouraging you to review - tap it to go straight to Full Review.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">📖 Learn & My Mukhpath</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Paris Mandir Mahotsav motivation</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to hit your aim by Paris Mandir Mahotsav.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🪧 Noticeboard</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Celebrate milestones together</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new Noticeboard tab on the Mandal page shows everyone's milestone achievements as sticky notes on a corkboard.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">React to milestones</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 - hover to see who reacted.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Write a message</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 48 hours.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🎮 Games</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:1.5px;background:var(--border-strong);"></div>
+
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🐛 Bug Fixes</div>
+            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok data - duplicates fixed</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shloks 173 and 231 had incorrect text - now corrected.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Clear All resets Mandal card</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Clearing your shloks now also resets your progress and milestone badge on the Mandal page.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend - multiple fixes</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Chain challenge count, button responses and score saving all fixed.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - Specific Range</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text was invisible when typing a range - now fixed.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily streak restoring correctly</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Streak was showing as 0 after the website updated - now restores correctly.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
           <!-- GENERAL -->
           <div>
@@ -7905,7 +8077,7 @@
       if (id === "myshloks") { render(); }
       if (id === "learn")    { initLearnPage(); initLearnReviseSection(); }
       if (id === "home")     { renderProgressPage(); updateHomePage(); }
-      if (id === "mandal")   renderMandal();
+      if (id === "mandal")   { renderMandal(); }
 
       // If Quick Guide is open, update it to show the relevant section
       const tutorialBox = document.getElementById("tutorialBox");
@@ -8615,6 +8787,160 @@
     let mandalAllData = [];
     let mandalFilterQuery = "";
 
+    // ── NOTICEBOARD ──
+    const MILESTONE_NOTE_COLOURS = {
+      10:  '#fef08a',
+      25:  '#bbf7d0',
+      50:  '#fbcfe8',
+      75:  '#bae6fd',
+      100: '#e9d5ff',
+      150: '#fed7aa',
+      200: '#99f6e4',
+      250: '#fecaca',
+      315: '#fde68a'
+    };
+    const NOTE_PINS = ['📌','🔴','🟡','🟢','🔵'];
+
+    function switchMandalTab(tab) {
+      const mandalPanel = document.getElementById('mandalPanel');
+      const noticePanel = document.getElementById('noticePanel');
+      const mandalBtn   = document.getElementById('mandalTabBtn');
+      const noticeBtn   = document.getElementById('noticeTabBtn');
+      if (tab === 'mandal') {
+        mandalPanel.style.display = 'block';
+        noticePanel.style.display = 'none';
+        mandalBtn.classList.add('active');
+        noticeBtn.classList.remove('active');
+      } else {
+        mandalPanel.style.display = 'none';
+        noticePanel.style.display = 'block';
+        mandalBtn.classList.remove('active');
+        noticeBtn.classList.add('active');
+        loadNoticeboard();
+      }
+    }
+
+    function noteColour(milestone) {
+      return MILESTONE_NOTE_COLOURS[milestone] || '#fef08a';
+    }
+    function notePin(uid) {
+      const hash = (uid||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+      return NOTE_PINS[hash % NOTE_PINS.length];
+    }
+    function noteRotation(uid) {
+      const hash = (uid||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+      return (hash % 7) - 3;
+    }
+    function noteVerticalOffset(uid) {
+      const hash = (uid||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+      return (hash % 5) * 8;
+    }
+    function noteRelTime(ts) {
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff/60000), hours = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return mins + 'm ago';
+      if (hours < 24) return hours + 'h ago';
+      return 'Yesterday';
+    }
+
+    async function loadNoticeboard() {
+      const container = document.getElementById('noticeboardContainer');
+      if (!container || !db) return;
+      try {
+        const now = Date.now();
+        const snap = await db.collection('noticeboard')
+          .orderBy('timestamp','desc').limit(10).get();
+        const valid = snap.docs.filter(d => {
+          const ts = d.data().timestamp;
+          return ts && (ts.toMillis() + 48*60*60*1000) > now;
+        });
+        if (!valid.length) {
+          container.innerHTML = '<div style="color:rgba(80,50,20,0.6);font-size:0.9rem;text-align:center;padding:2rem;grid-column:1/-1;">No milestones yet - keep learning! 🌱</div>';
+          return;
+        }
+        container.innerHTML = valid.map(doc => buildStickyNote(doc.id, doc.data())).join('');
+      } catch(e) {
+        container.innerHTML = '<div style="color:rgba(80,50,20,0.6);font-size:0.9rem;text-align:center;padding:2rem;grid-column:1/-1;">Couldn\'t load noticeboard.</div>';
+      }
+    }
+
+    function buildStickyNote(docId, d) {
+      const colour = noteColour(d.milestone);
+      const pin = notePin(d.uid);
+      const rot = noteRotation(d.uid);
+      const vOffset = noteVerticalOffset(d.uid);
+      const ts = d.timestamp ? d.timestamp.toMillis() : Date.now();
+      const isMe = currentUser && d.uid === currentUser.uid;
+      const reactions = d.reactions || {};
+      const messages = d.messages || {};
+      const myReaction = currentUser && reactions[currentUser.uid];
+      const myMessage = currentUser && messages[currentUser.uid];
+
+      // Group reactions
+      const rGroups = {};
+      Object.values(reactions).forEach(e => { rGroups[e] = (rGroups[e]||0)+1; });
+      const reactionHtml = Object.entries(rGroups).map(([e,n]) => {
+        const names = Object.entries(reactions).filter(([,v])=>v===e).map(([uid])=>uid).join(',');
+        const mine = myReaction === e;
+        return `<span onclick="toggleNoteReaction('${docId}','${e}')" style="cursor:pointer;display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid ${mine?'rgba(0,0,0,0.4)':'rgba(0,0,0,0.15)'};background:${mine?'rgba(0,0,0,0.1)':'transparent'};font-size:0.78rem;">${e} <span style="font-size:0.7rem;font-weight:600;">${n}</span></span>`;
+      }).join('');
+
+      const messagesHtml = Object.values(messages).map(m =>
+        `<div style="font-size:0.78rem;color:#333;padding:0.3rem 0;border-top:1px dashed rgba(0,0,0,0.15);"><em>"${m.text}"</em> <span style="font-weight:700;">- ${m.name}</span></div>`
+      ).join('');
+
+      const inputHtml = !isMe && currentUser ? `
+        <textarea class="sticky-msg-input" id="msgInput_${docId}" placeholder="Write a message..." rows="2" maxlength="150" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button type="button" class="sticky-send-btn" onclick="sendNoteMessage('${docId}')">Send ✈️</button>` : '';
+
+      const reactRow = !isMe && currentUser ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:0.5rem 0 0.3rem;align-items:center;">
+        ${reactionHtml}
+        <div style="position:relative;display:inline-block;">
+          <span onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='flex'?'none':'flex'" style="cursor:pointer;font-size:0.72rem;padding:1px 7px;border-radius:999px;border:1px solid rgba(0,0,0,0.2);background:transparent;">+ React</span>
+          <div style="display:none;position:absolute;left:0;top:110%;background:white;border:1px solid #ddd;border-radius:8px;padding:4px 8px;gap:6px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+            ${['👏','🎉','❤️','🔥','💪'].map(e=>`<span onclick="toggleNoteReaction('${docId}','${e}');this.closest('div').style.display='none'" style="cursor:pointer;font-size:1.1rem;">${e}</span>`).join('')}
+          </div>
+        </div>
+      </div>` : !isMe && !currentUser ? `<div style="font-size:0.72rem;color:rgba(0,0,0,0.45);margin:0.4rem 0;font-style:italic;">Sign in to react or comment</div>` : '';
+
+      return `<div class="sticky-note" style="background:${colour};transform:rotate(${rot}deg);margin-top:${vOffset}px;">
+        <div class="sticky-pin">${pin}</div>
+        <div style="font-weight:800;font-size:0.95rem;color:#1a1a1a;margin-top:0.5rem;">🎉 ${d.name}</div>
+        <div style="font-size:0.82rem;font-weight:600;color:#333;margin-bottom:0.2rem;">Just hit <strong>${d.milestone} shloks!</strong></div>
+        <div style="font-size:0.7rem;color:rgba(0,0,0,0.45);margin-bottom:0.4rem;">${noteRelTime(ts)}</div>
+        ${reactRow}
+        ${messagesHtml}
+        ${inputHtml}
+      </div>`;
+    }
+
+    async function toggleNoteReaction(docId, emoji) {
+      if (!currentUser) return;
+      const ref = db.collection('noticeboard').doc(docId);
+      const doc = await ref.get();
+      const reactions = (doc.data()||{}).reactions || {};
+      if (reactions[currentUser.uid] === emoji) {
+        await ref.update({ [`reactions.${currentUser.uid}`]: firebase.firestore.FieldValue.delete() });
+      } else {
+        await ref.update({ [`reactions.${currentUser.uid}`]: emoji });
+      }
+      loadNoticeboard();
+    }
+
+    async function sendNoteMessage(docId) {
+      if (!currentUser) return;
+      const input = document.getElementById('msgInput_' + docId);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      const prof = JSON.parse(localStorage.getItem('profile') || '{}');
+      const name = prof.name || 'Someone';
+      const ref = db.collection('noticeboard').doc(docId);
+      await ref.update({ [`messages.${currentUser.uid}`]: { text, name } });
+      loadNoticeboard();
+    }
+
     // ── MANDAL PAGE ──
     function mandalApplyFilter() {
       const grid = document.getElementById("mandalGrid");
@@ -8679,6 +9005,7 @@
        CONFETTI & MILESTONES
        ------------------------------ */
     const MILESTONES = [50, 100, 150, 200, 250, 300, 315];
+    const NOTICEBOARD_MILESTONES = [25, 50, 100, 150, 200, 250, 300, 315];
     const MILESTONE_MSGS = {
       50:  { title: "🎉 50 Shloks!", sub: "You've learnt 50 shloks! Great start! 🙏🏽" },
       100: { title: "🙌🏽 100 Shloks!", sub: "100 shloks learnt! Keep the consistency going! 🌟" },
@@ -8706,6 +9033,19 @@
           localStorage.setItem("lastMilestoneDate", Date.now().toString());
           triggerMilestoneAnimation(highest);
           showMilestoneToast(MILESTONE_MSGS[highest]);
+          if (db && currentUser) {
+            const prof = JSON.parse(localStorage.getItem("profile") || "{}");
+            if (NOTICEBOARD_MILESTONES.includes(highest)) {
+              db.collection("noticeboard").add({
+                uid: currentUser.uid,
+                name: prof.name || "Someone",
+                milestone: highest,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                messages: {},
+                reactions: {}
+              }).catch(e => console.warn("Noticeboard write failed:", e));
+            }
+          }
         }
       }
     }
@@ -9815,7 +10155,7 @@
       const revise    = myShloks.filter(s => s.mastery === "revise").length;
 
       // Journey to Rajipo progress bar
-      const known = learnt + memorised;
+      const known = learnt + memorised + revise;
       const pct   = Math.min(100, Math.round((known / 315) * 100));
       const remaining = 315 - known;
 
