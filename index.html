@@ -700,26 +700,56 @@
       border: 1px solid var(--border);
       border-top: none;
       border-radius: 0 0 12px 12px;
-      max-height: 320px;
+      max-height: 640px;
       overflow-y: auto;
     }
-    .collection-shlok-row {
-      display: flex; align-items: center; gap: 0.7rem;
-      padding: 0.6rem 1.1rem;
-      border-bottom: 1px solid var(--border);
+    .collection-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.2rem;
+      padding: 1rem 1.1rem;
     }
-    .collection-shlok-row:last-child { border-bottom: none; }
-    .collection-shlok-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .collection-shlok-num { font-size: 0.75rem; color: var(--text-muted); width: 32px; flex-shrink: 0; }
-    .collection-shlok-text { font-size: 0.82rem; color: var(--text-main); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .collection-shlok-remove { color: var(--text-muted); cursor: pointer; font-size: 0.9rem; flex-shrink: 0; background: none; border: none; }
-    .collection-shlok-remove:hover { color: #dc2626; }
+    .collection-card { position: relative; }
+    .collection-card-remove {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.08); color: var(--text-muted);
+      border: none; cursor: pointer; font-size: 0.75rem; line-height: 1; padding: 0;
+      transition: 0.15s ease;
+    }
+    .collection-card-remove:hover { background: #dc2626; color: white; }
+    body.dark-mode .collection-card-remove { background: rgba(255,255,255,0.1); }
     .collection-empty-msg { padding: 1.5rem 1.1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
     .collection-add-row { padding: 0.7rem 1.1rem; text-align: center; border-top: 1px solid var(--border); }
+    .collection-map-cell-added {
+      box-shadow: 0 0 0 2px var(--gold);
+    }
     .collection-name-input-row {
       display: flex; gap: 0.5rem; align-items: center; margin-top: 0.8rem; flex-wrap: wrap;
     }
 
+    /* Dark mode: folders switch from blue to yellow shades (stays blue in light mode) */
+    body.dark-mode .collection-folder-tab,
+    body.dark-mode .collection-folder-back {
+      background: #8a6d2f;
+    }
+    body.dark-mode .collection-folder-front {
+      background: var(--gold);
+    }
+    body.dark-mode .collection-folder-name,
+    body.dark-mode .collection-folder-count {
+      color: var(--blue-dark);
+    }
+    body.dark-mode .collection-open-header {
+      background: #8a6d2f;
+    }
+    body.dark-mode .collection-open-title,
+    body.dark-mode .collection-open-count,
+    body.dark-mode .collection-open-back,
+    body.dark-mode .collection-icon-btn {
+      color: var(--gold);
+    }
     @keyframes mapCellFadeIn {
       from { opacity: 0; transform: scale(0.85); }
       to   { opacity: 1; transform: scale(1); }
@@ -4110,7 +4140,7 @@
 
         <div id="mukhpathCollectionsPanel" style="display:none;">
           <h3 style="margin-top:0;">📁 My Collections</h3>
-          <p style="font-size:0.82rem;color:var(--text-muted);margin:-0.4rem 0 0.9rem;">Group shloks into your own sets (up to 3) and practise just that set.</p>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin:-0.4rem 0 0.9rem;">Group shloks into your own sets (up to 5) and practise just that set.</p>
           <div id="collectionsContainer"></div>
         </div>
 
@@ -4872,7 +4902,7 @@
               </div>
               <div style="padding:0.5rem 0;">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">My Collections</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Create up to 3 named collections of shloks (like 'my hardest ones') from the My Mukhpath page, and practise just that set.</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Create up to 5 named collections of shloks (like 'my hardest ones') from the My Mukhpath page, and practise just that set.</div>
               </div>
             </div>
           </div>
@@ -5071,7 +5101,7 @@
             <div class="tutorial-card-img">📁</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">My Collections</div>
-              <div class="tutorial-slide-text">Group shloks into up to 3 named collections and practise just that set from Full Review.</div>
+              <div class="tutorial-slide-text">Group shloks into up to 5 named collections and practise just that set from Full Review.</div>
             </div>
           </div>
         </div>
@@ -7293,11 +7323,19 @@
        MY COLLECTIONS (up to 3 named
        folders of shloks to practise)
        ------------------------------ */
+    const MAX_COLLECTIONS = 5;
     let shlokCollections = JSON.parse(localStorage.getItem("shlokCollections") || "[]");
     let collectionsOpenId = null;
     let collectionsCreating = false;
     let collectionsRenamingId = null;
     let collectionsPickerOpenId = null;
+    let collectionsPickerAddMode = null;
+
+    function openCollectionPicker(id) {
+      collectionsPickerOpenId = id;
+      collectionsPickerAddMode = null;
+      renderCollections();
+    }
 
     function switchMukhpathTab(tab) {
       const mapPanel  = document.getElementById('mukhpathMapPanel');
@@ -7329,9 +7367,17 @@
       return div.innerHTML;
     }
 
+    // TEMP: Collections is still being polished - show a preview/under-construction
+    // card instead of the real feature. Flip this to false to bring it back.
+    const COLLECTIONS_UNDER_CONSTRUCTION = true;
+
     function renderCollections() {
       const container = document.getElementById("collectionsContainer");
       if (!container) return;
+      if (COLLECTIONS_UNDER_CONSTRUCTION) {
+        container.innerHTML = renderCollectionsComingSoon();
+        return;
+      }
       if (collectionsOpenId) {
         const col = shlokCollections.find(c => c.id === collectionsOpenId);
         if (!col) { collectionsOpenId = null; renderCollections(); return; }
@@ -7339,6 +7385,17 @@
       } else {
         renderCollectionsGrid(container);
       }
+    }
+
+    function renderCollectionsComingSoon() {
+      return `
+        <div style="text-align:center;padding:3rem 1.5rem;border:2px dashed var(--border);border-radius:16px;background:var(--card-bg);">
+          <div style="font-size:2.5rem;margin-bottom:0.8rem;">🚧</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--gold);margin-bottom:0.6rem;">My Collections - Coming Soon!</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);max-width:380px;margin:0 auto;line-height:1.6;">
+            Soon you'll be able to group your shloks into your own named sets - like "the shloks i cant remember" or "my favourite shloks" - and practise just that set. Still polishing it, so check back soon! (:
+          </div>
+        </div>`;
     }
 
     function renderCollectionsGrid(container) {
@@ -7354,15 +7411,15 @@
             </div>
           </button>`;
       });
-      if (shlokCollections.length < 3) {
+      if (shlokCollections.length < MAX_COLLECTIONS) {
         if (collectionsCreating) {
           html += `
             <div class="collection-folder-new" style="border-style:solid;">
               <div style="width:100%;padding:0 0.8rem;">
                 <input id="newCollectionNameInput" type="text" maxlength="30" placeholder="Collection name" style="width:100%;text-align:center;margin-bottom:0.5rem;" onkeypress="if(event.key==='Enter')confirmCreateCollection();">
                 <div style="display:flex;gap:0.4rem;justify-content:center;">
-                  <button type="button" class="game-next-btn" style="padding:0.3rem 0.8rem;font-size:0.75rem;" onclick="confirmCreateCollection()">Create</button>
-                  <button type="button" class="game-back-btn" style="padding:0.3rem 0.8rem;font-size:0.75rem;" onclick="collectionsCreating=false;renderCollections();">Cancel</button>
+                  <button type="button" class="game-next-btn" style="margin-top:0;padding:0.3rem 0.8rem;font-size:0.75rem;min-width:80px;" onclick="confirmCreateCollection()">Create</button>
+                  <button type="button" class="game-back-btn" style="margin-top:0;padding:0.3rem 0.8rem;font-size:0.75rem;min-width:80px;" onclick="collectionsCreating=false;renderCollections();">Cancel</button>
                 </div>
               </div>
             </div>`;
@@ -7371,7 +7428,7 @@
             <button type="button" class="collection-folder-new" onclick="collectionsCreating=true;renderCollections();">
               <div class="cfn-icon">📁</div>
               <div class="cfn-label">New collection</div>
-              <div class="cfn-sub">${shlokCollections.length} of 3 used</div>
+              <div class="cfn-sub">${shlokCollections.length} of ${MAX_COLLECTIONS} used</div>
             </button>`;
         }
       }
@@ -7386,7 +7443,7 @@
       if (!input) return;
       const name = input.value.trim();
       if (!name) { showToast('Give your collection a name first.'); return; }
-      if (shlokCollections.length >= 3) { showToast('You can only have 3 collections.'); return; }
+      if (shlokCollections.length >= MAX_COLLECTIONS) { showToast(`You can only have ${MAX_COLLECTIONS} collections.`); return; }
       shlokCollections.push({
         id: 'col_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
         name: name.slice(0, 30),
@@ -7401,12 +7458,14 @@
     function openCollection(id) {
       collectionsOpenId = id;
       collectionsPickerOpenId = null;
+      collectionsPickerAddMode = null;
       renderCollections();
     }
 
     function closeCollectionsView() {
       collectionsOpenId = null;
       collectionsPickerOpenId = null;
+      collectionsPickerAddMode = null;
       collectionsRenamingId = null;
       renderCollections();
     }
@@ -7442,46 +7501,154 @@
       renderCollections();
     }
 
-    function saveCollectionPicker(id) {
-      const col = shlokCollections.find(c => c.id === id);
+    function collectionChangeMastery(num) {
+      changeMastery(num);
+      renderCollections();
+    }
+
+    // Add-shlok picker deliberately mirrors the "Add Shloks" section on this
+    // same page (radio toggle + a couple of number inputs) rather than a
+    // bigger browse/search UI - simple and familiar beats another list to manage.
+    function renderCollectionPicker(col) {
+      if (collectionsPickerOpenId !== col.id) {
+        return `<span class="collection-icon-btn" style="font-size:0.8rem;text-decoration:underline;" onclick="openCollectionPicker('${col.id}')">+ Add shloks</span>`;
+      }
+      if (!myShloks.length) {
+        return `<div style="font-size:0.8rem;color:var(--text-muted);">Add some shloks on this page first, then come back to build your collection.</div>`;
+      }
+      return `
+        <div style="text-align:left;">
+          <div style="max-width:360px;margin:0 auto;">
+            <div class="add-mode-radio-group">
+              <label class="add-mode-radio">
+                <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'one' ? 'checked' : ''} onclick="collectionAddModeClick(this,'one')">
+                <span>➕ Add One</span>
+              </label>
+              <label class="add-mode-radio">
+                <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'range' ? 'checked' : ''} onclick="collectionAddModeClick(this,'range')">
+                <span>📚 Add Range</span>
+              </label>
+            </div>
+
+            <div id="collectionAddOneBox" class="add-box" style="display:${collectionsPickerAddMode === 'one' ? 'block' : 'none'};">
+              <label class="add-label">Add shlok number</label>
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center;">
+                <input id="collectionAddOneInput" type="number" placeholder="Shlok number" style="max-width:140px;" onkeypress="if(event.key==='Enter')collectionAddOne('${col.id}');">
+                <button onclick="collectionAddOne('${col.id}')">Add</button>
+              </div>
+            </div>
+
+            <div id="collectionAddRangeBox" class="add-box" style="display:${collectionsPickerAddMode === 'range' ? 'block' : 'none'};">
+              <label class="add-label">Add shloks from</label>
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center;">
+                <input id="collectionAddRangeFrom" type="number" placeholder="Start" style="max-width:90px;">
+                <span>to</span>
+                <input id="collectionAddRangeTo" type="number" placeholder="End" style="max-width:90px;">
+                <button onclick="collectionAddRange('${col.id}')">Add Range</button>
+              </div>
+            </div>
+
+            <div style="margin-top:0.8rem;">
+              <div class="add-label" style="margin-bottom:0.4rem;">Or add all at once</div>
+              <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','learnt')">+ All Learnt</span>
+                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','memorised')">+ All Memorised</span>
+                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','revise')">+ All Revise</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="add-label" style="margin-top:1.2rem;margin-bottom:0.5rem;text-align:center;">Or tap a shlok number below to add it - tap again to remove it</div>
+          ${renderCollectionPickerMap(col)}
+
+          <div style="text-align:center;margin-top:0.8rem;">
+            <span class="collection-icon-btn" style="font-size:0.78rem;text-decoration:underline;" onclick="collectionsPickerOpenId=null;collectionsPickerAddMode=null;renderCollections();">Done</span>
+          </div>
+        </div>`;
+    }
+
+    // Mirrors the compact numbered Shlok Map used elsewhere on this page -
+    // same colour coding (blue/green/orange = learnt/memorised/revise, dark
+    // = not tracked yet), but tapping a tracked number toggles it in/out of
+    // this collection instead of jumping to it.
+    function renderCollectionPickerMap(col) {
+      const byNumber = {};
+      myShloks.forEach(s => { byNumber[s.number] = s.mastery; });
+      let cells = '';
+      for (let i = 1; i <= 315; i++) {
+        const num = String(i);
+        const mastery = byNumber[num];
+        const inCollection = col.shloks.includes(num);
+        let cls = 'map-cell';
+        if (mastery) cls += ` ${mastery}`;
+        if (inCollection) cls += ' collection-map-cell-added';
+        const clickAttr = mastery ? ` onclick="toggleCollectionCard('${col.id}','${num}')"` : '';
+        const title = mastery
+          ? `Shlok ${i} - ${inCollection ? 'In this collection (tap to remove)' : 'Tap to add'}`
+          : `Shlok ${i} - not added to your Mukhpath yet`;
+        cells += `<div class="${cls}" title="${title}"${clickAttr}>${i}</div>`;
+      }
+      return `<div class="shlok-map-grid">${cells}</div>`;
+    }
+
+    function toggleCollectionCard(colId, num) {
+      const col = shlokCollections.find(c => c.id === colId);
       if (!col) return;
-      const checks = document.querySelectorAll(`.collection-picker-check[data-col="${id}"]`);
-      col.shloks = Array.from(checks).filter(c => c.checked).map(c => c.value);
-      collectionsPickerOpenId = null;
+      const idx = col.shloks.indexOf(num);
+      if (idx === -1) col.shloks.push(num);
+      else col.shloks.splice(idx, 1);
       saveCollections();
       renderCollections();
     }
 
-    function collectionDotColour(mastery) {
-      if (mastery === 'learnt') return '#3b82f6';
-      if (mastery === 'memorised') return 'var(--green-text)';
-      if (mastery === 'revise') return 'var(--orange-text)';
-      return 'var(--border)';
+    function collectionAddModeClick(radio, mode) {
+      collectionsPickerAddMode = (collectionsPickerAddMode === mode) ? null : mode;
+      renderCollections();
     }
 
-    function renderCollectionPicker(col) {
-      if (collectionsPickerOpenId !== col.id) {
-        return `<span class="collection-icon-btn" style="font-size:0.8rem;text-decoration:underline;" onclick="collectionsPickerOpenId='${col.id}';renderCollections();">+ Add shloks</span>`;
-      }
-      const sorted = myShloks.slice().sort((a, b) => parseInt(a.number) - parseInt(b.number));
-      if (!sorted.length) {
-        return `<div style="font-size:0.8rem;color:var(--text-muted);">Add some shloks on this page first, then come back to build your collection.</div>`;
-      }
-      let html = `<div style="max-height:220px;overflow-y:auto;text-align:left;margin-bottom:0.6rem;">`;
-      sorted.forEach(s => {
-        const checked = col.shloks.includes(s.number);
-        html += `
-          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;font-size:0.78rem;color:var(--text-main);cursor:pointer;">
-            <input type="checkbox" value="${s.number}" ${checked ? 'checked' : ''} class="collection-picker-check" data-col="${col.id}">
-            Shlok ${s.number}
-          </label>`;
-      });
-      html += `</div>
-        <div style="display:flex;gap:0.5rem;justify-content:center;">
-          <button type="button" class="game-next-btn" style="padding:0.3rem 0.9rem;font-size:0.75rem;" onclick="saveCollectionPicker('${col.id}')">Save</button>
-          <button type="button" class="game-back-btn" style="padding:0.3rem 0.9rem;font-size:0.75rem;" onclick="collectionsPickerOpenId=null;renderCollections();">Cancel</button>
-        </div>`;
-      return html;
+    function collectionAddOne(colId) {
+      const input = document.getElementById('collectionAddOneInput');
+      if (!input) return;
+      const num = input.value.trim();
+      if (!num) return;
+      const tracked = myShloks.find(s => s.number === num);
+      if (!tracked) { showToast(`You haven't added Shlok ${num} to your Mukhpath yet.`); return; }
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      if (!col.shloks.includes(num)) col.shloks.push(num);
+      saveCollections();
+      renderCollections();
+      showToast('Added to collection!');
+    }
+
+    function collectionAddRange(colId) {
+      const fromInput = document.getElementById('collectionAddRangeFrom');
+      const toInput = document.getElementById('collectionAddRangeTo');
+      if (!fromInput || !toInput) return;
+      const from = parseInt(fromInput.value, 10);
+      const to = parseInt(toInput.value, 10);
+      if (isNaN(from) || isNaN(to)) { showToast('Please enter both a start and end shlok number.'); return; }
+      const lo = Math.min(from, to), hi = Math.max(from, to);
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      const matches = myShloks.filter(s => { const n = parseInt(s.number, 10); return n >= lo && n <= hi; });
+      if (!matches.length) { showToast(`You haven't added any shloks between ${lo} and ${hi}.`); return; }
+      matches.forEach(s => { if (!col.shloks.includes(s.number)) col.shloks.push(s.number); });
+      saveCollections();
+      renderCollections();
+      showToast(`Added ${matches.length} shlok${matches.length !== 1 ? 's' : ''}!`);
+    }
+
+    function collectionAddAllByMastery(colId, mastery) {
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      const matches = myShloks.filter(s => s.mastery === mastery);
+      if (!matches.length) { showToast(`You don't have any ${mastery} shloks yet.`); return; }
+      let added = 0;
+      matches.forEach(s => { if (!col.shloks.includes(s.number)) { col.shloks.push(s.number); added++; } });
+      saveCollections();
+      renderCollections();
+      showToast(added ? `Added ${added} shlok${added !== 1 ? 's' : ''}!` : 'Already all in this collection!');
     }
 
     function renderCollectionOpen(container, col) {
@@ -7489,14 +7656,14 @@
         const tracked = myShloks.find(s => s.number === num);
         const master = allShloks.find(s => s.id === num);
         if (!tracked || !master) return null;
-        return { num, mastery: tracked.mastery, text: master.line1 };
+        return { num, mastery: tracked.mastery, line1: tracked.line1, line2: tracked.line2, meaning: master.meaning || "" };
       }).filter(Boolean);
 
       const titleBlock = collectionsRenamingId === col.id
         ? `<div class="collection-name-input-row" style="margin-top:0;">
              <input id="renameCollectionInput" type="text" maxlength="30" value="${collectionEscapeHtml(col.name)}" style="max-width:160px;" onkeypress="if(event.key==='Enter')confirmRenameCollection('${col.id}');">
-             <button type="button" class="game-next-btn" style="padding:0.25rem 0.7rem;font-size:0.72rem;" onclick="confirmRenameCollection('${col.id}')">Save</button>
-             <button type="button" class="game-back-btn" style="padding:0.25rem 0.7rem;font-size:0.72rem;" onclick="collectionsRenamingId=null;renderCollections();">Cancel</button>
+             <button type="button" class="game-next-btn" style="margin-top:0;padding:0.25rem 0.7rem;font-size:0.72rem;min-width:70px;" onclick="confirmRenameCollection('${col.id}')">Save</button>
+             <button type="button" class="game-back-btn" style="margin-top:0;padding:0.25rem 0.7rem;font-size:0.72rem;min-width:70px;" onclick="collectionsRenamingId=null;renderCollections();">Cancel</button>
            </div>`
         : `<div class="collection-open-title">${collectionEscapeHtml(col.name)} <span class="collection-icon-btn" onclick="collectionsRenamingId='${col.id}';renderCollections();" title="Rename">✏️</span> <span class="collection-icon-btn" onclick="deleteCollection('${col.id}')" title="Delete collection">🗑️</span></div>
            <div class="collection-open-count">${rows.length} shlok${rows.length !== 1 ? 's' : ''}</div>`;
@@ -7514,15 +7681,29 @@
       if (!rows.length) {
         html += `<div class="collection-empty-msg">No shloks in this collection yet. Add some below!</div>`;
       } else {
+        const masteryClassOf = m => m === "learnt" ? "learnt-card" : m === "memorised" ? "memorised-card" : m === "revise" ? "revise-card" : "";
+        html += `<div class="collection-cards-grid">`;
         rows.forEach(r => {
           html += `
-            <div class="collection-shlok-row">
-              <div class="collection-shlok-dot" style="background:${collectionDotColour(r.mastery)};"></div>
-              <div class="collection-shlok-num">${r.num}</div>
-              <div class="collection-shlok-text">${collectionEscapeHtml(r.text)}</div>
-              <button type="button" class="collection-shlok-remove" onclick="removeShlokFromCollection('${col.id}','${r.num}')" title="Remove from collection">✕</button>
+            <div class="shlok-card collection-card ${masteryClassOf(r.mastery)}">
+              <button type="button" class="collection-card-remove" onclick="removeShlokFromCollection('${col.id}','${r.num}')" title="Remove from collection">✕</button>
+              <div style="font-weight:700; font-size:0.82rem; color:var(--blue); margin-bottom:0.5rem;">Shlok ${r.num}</div>
+              <div class="shlok-line1" style="font-size:0.8rem; line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${r.line1}</div>
+              <div class="shlok-line2" style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-top:0.35rem;">${r.line2}</div>
+              ${r.meaning ? `<div class="shlok-meaning-bar" onclick="toggleMeaning(this, event)" style="margin-top:0.5rem;">
+                <span class="shlok-meaning-hint">📖 Tap to see meaning</span>
+                <div class="shlok-meaning-text" style="display:none;">${r.meaning}</div>
+              </div>` : ""}
+              <div class="shlok-controls" style="margin-top:0.6rem;">
+                <button class="mastery-pill"
+                  style="border-color:${getBorder(r.mastery)}; color:${getBorder(r.mastery)};"
+                  onclick="collectionChangeMastery('${r.num}')">
+                  ${r.mastery === "learnt" ? "Learnt" : r.mastery === "memorised" ? "Memorised" : "Revise"}
+                </button>
+              </div>
             </div>`;
         });
+        html += `</div>`;
       }
 
       html += `<div class="collection-add-row">${renderCollectionPicker(col)}</div></div>`;
