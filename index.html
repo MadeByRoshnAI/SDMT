@@ -615,6 +615,111 @@
     .map-cell.memorised:hover { box-shadow: 0 0 0 2px var(--green-text), 0 0 8px rgba(22,101,52,0.4); }
     .map-cell.revise:hover    { box-shadow: 0 0 0 2px var(--orange-text), 0 0 8px rgba(146,64,14,0.4); }
 
+    /* ── MY COLLECTIONS (folders) ── */
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    .collection-folder {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      font-family: inherit;
+      text-align: left;
+    }
+    .collection-folder-tab {
+      position: absolute; top: 0; left: 0;
+      width: 58%; height: 20px;
+      background: var(--blue-dark);
+      border-radius: 10px 10px 0 0;
+    }
+    .collection-folder-back {
+      position: absolute; top: 16px; left: 0;
+      width: 100%; height: calc(100% - 16px);
+      background: var(--blue-dark);
+      border-radius: 0 12px 12px 12px;
+    }
+    .collection-folder-front {
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 76%;
+      background: var(--blue-mid);
+      border-radius: 12px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0.75rem; box-sizing: border-box;
+      transition: filter 0.15s;
+    }
+    .collection-folder:hover .collection-folder-front { filter: brightness(1.12); }
+    .collection-folder-name {
+      font-size: 0.82rem; font-weight: 700; color: #ffffff;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .collection-folder-count { font-size: 0.72rem; color: var(--gold); margin-top: 0.15rem; }
+    .collection-folder-new {
+      width: 100%; height: 130px;
+      border: 1.5px dashed var(--border);
+      border-radius: 12px;
+      background: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .collection-folder-new:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+    .collection-folder-new .cfn-icon { font-size: 1.4rem; }
+    .collection-folder-new .cfn-label { font-size: 0.8rem; }
+    .collection-folder-new .cfn-sub { font-size: 0.68rem; opacity: 0.75; }
+
+    .collection-open-header {
+      background: var(--blue-dark);
+      border-radius: 12px 12px 0 0;
+      padding: 0.9rem 1.1rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .collection-open-title { font-size: 0.92rem; font-weight: 700; color: #ffffff; }
+    .collection-open-count { font-size: 0.72rem; color: var(--gold); margin-top: 0.1rem; }
+    .collection-open-back {
+      color: var(--gold); cursor: pointer; font-size: 1rem; flex-shrink: 0;
+      background: none; border: none; font-family: inherit; padding: 0;
+    }
+    .collection-icon-btn {
+      color: var(--gold); cursor: pointer; background: none; border: none; font-size: 0.85rem; padding: 0.2rem;
+    }
+    .collection-practice-btn {
+      background: var(--gold); color: var(--blue-dark); border: none; border-radius: 999px;
+      padding: 0.45rem 1rem; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      font-family: inherit; white-space: nowrap;
+    }
+    .collection-open-body {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .collection-shlok-row {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.6rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .collection-shlok-row:last-child { border-bottom: none; }
+    .collection-shlok-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .collection-shlok-num { font-size: 0.75rem; color: var(--text-muted); width: 32px; flex-shrink: 0; }
+    .collection-shlok-text { font-size: 0.82rem; color: var(--text-main); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .collection-shlok-remove { color: var(--text-muted); cursor: pointer; font-size: 0.9rem; flex-shrink: 0; background: none; border: none; }
+    .collection-shlok-remove:hover { color: #dc2626; }
+    .collection-empty-msg { padding: 1.5rem 1.1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+    .collection-add-row { padding: 0.7rem 1.1rem; text-align: center; border-top: 1px solid var(--border); }
+    .collection-name-input-row {
+      display: flex; gap: 0.5rem; align-items: center; margin-top: 0.8rem; flex-wrap: wrap;
+    }
+
     @keyframes mapCellFadeIn {
       from { opacity: 0; transform: scale(0.85); }
       to   { opacity: 1; transform: scale(1); }
@@ -1055,6 +1160,23 @@
     .tutorial-four-cards .tutorial-slide-text { font-size: 0.72rem; }
     @media (max-width: 700px) {
       .tutorial-four-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .tutorial-five-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.8rem;
+      align-items: stretch;
+    }
+    .tutorial-five-cards .tutorial-card-img { height: 75px; font-size: 1.9rem; }
+    .tutorial-five-cards .tutorial-card-body { padding: 0.75rem 0.7rem 0.85rem; }
+    .tutorial-five-cards .tutorial-slide-title { font-size: 0.8rem; }
+    .tutorial-five-cards .tutorial-slide-text { font-size: 0.7rem; }
+    @media (max-width: 900px) {
+      .tutorial-five-cards { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .tutorial-five-cards { grid-template-columns: repeat(2, 1fr); }
     }
 
     .tutorial-six-cards {
@@ -2465,6 +2587,17 @@
       background: var(--blue-mid);
       padding: 1.1rem 0.85rem;
     }
+    .slideout-tab.has-notification::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #dc2626;
+      border: 2px solid var(--blue);
+    }
 
     /* Slideout overlay */
     .slideout-overlay {
@@ -2665,6 +2798,21 @@
       transition: opacity 0.2s, transform 0.15s;
     }
     .panel-edit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .panel-reset-btn {
+      display: inline-block;
+      padding: 0.45rem 2rem;
+      margin: 0;
+      background: transparent;
+      color: #f87171;
+      border: 1.5px solid #dc2626;
+      font-weight: 600;
+      font-size: 0.82rem;
+      border-radius: 999px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s, opacity 0.2s, transform 0.15s;
+    }
+    .panel-reset-btn:hover { background: rgba(220,38,38,0.15); transform: translateY(-1px); }
 
     /* Edit panel inside slideout */
     .edit-panel {
@@ -2784,6 +2932,58 @@
       opacity: 0.9;
       transform: translateY(-1px);
     }
+    /* ── DANGER ZONE (Reset Everything) ── */
+    .danger-zone {
+      background: rgba(220,38,38,0.12);
+      border: 1.5px solid rgba(220,38,38,0.5);
+      border-radius: 10px;
+      padding: 0.9rem 1rem 1rem;
+      margin: 1rem 0 0.4rem;
+    }
+    .danger-zone-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #f87171;
+      margin-bottom: 0.35rem;
+      text-align: center;
+    }
+    .danger-zone-desc {
+      font-size: 0.74rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.5;
+      margin-bottom: 0.7rem;
+      text-align: center;
+    }
+    .danger-zone-input {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(220,38,38,0.4);
+      border-radius: 10px;
+      padding: 0.6rem 0.9rem;
+      color: white;
+      font-size: 0.85rem;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      margin-bottom: 0.6rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .danger-zone-input::placeholder { color: rgba(255,255,255,0.35); }
+    .danger-zone-btn {
+      width: 100%;
+      padding: 0.55rem;
+      border-radius: 999px;
+      border: none;
+      background: #dc2626;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .danger-zone-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .danger-zone-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     /* ── FOOTER ── */
     .site-footer {
       background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
@@ -3345,6 +3545,10 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .sticky-note:hover { box-shadow: 5px 5px 16px rgba(0,0,0,0.3); transform: scale(1.02) translateY(-2px) !important; }
+    /* Sticky notes keep their light, pastel colours regardless of theme, so
+       force dark text always - guards against dark mode's white body text
+       leaking in from anywhere, no matter the cause */
+    .sticky-note, .sticky-note * { color: #1a1a1a !important; }
     .sticky-pin { position:absolute; top:-10px; left:50%; transform:translateX(-50%); font-size:1.3rem; filter:drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
     .sticky-msg-input { width:100%; border:1px solid rgba(0,0,0,0.15); border-radius:6px; background:#ffffff; font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.4rem 0.5rem; margin-top:0.5rem; resize:none; outline:none; color:#555; box-sizing:border-box; }
     .sticky-msg-input::placeholder { color:#aaa; }
@@ -3779,6 +3983,13 @@
       <div class="card">
         <h2>My Mukhpath</h2>
 
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
+          <button id="mukhpathMapTabBtn" class="cf-tab-btn active" onclick="switchMukhpathTab('map')">🗺️ Shlok Map</button>
+          <button id="mukhpathCollectionsTabBtn" class="cf-tab-btn" onclick="switchMukhpathTab('collections')">📁 My Collections</button>
+        </div>
+
+        <div id="mukhpathMapPanel">
+
         <!-- SHLOK MAP -->
         <h3 style="margin-top:0;">Shlok Map</h3>
         <div class="shlok-map-legend">
@@ -3893,6 +4104,16 @@
         <div id="clearContainer" style="display:none; text-align:center; margin-top:1rem;">
           <button id="clearAllBtn" onclick="clearAllShloks()" class="clear-btn">Clear All</button>
         </div>
+
+        </div>
+        <!-- end mukhpathMapPanel -->
+
+        <div id="mukhpathCollectionsPanel" style="display:none;">
+          <h3 style="margin-top:0;">📁 My Collections</h3>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin:-0.4rem 0 0.9rem;">Group shloks into your own sets (up to 3) and practise just that set.</p>
+          <div id="collectionsContainer"></div>
+        </div>
+
       </div>
     </section>
 
@@ -4367,6 +4588,11 @@
                 <div><div class="snap-mode-title">Specific Range</div>
                 <div class="snap-mode-sub">Choose a range of shlok numbers to review, e.g. 1–10 or 23–27.</div></div>
               </button>
+              <button class="snap-mode-btn" type="button" onclick="frShowCollectionPicker()">
+                <div class="snap-mode-icon">📁</div>
+                <div><div class="snap-mode-title">My Collection</div>
+                <div class="snap-mode-sub">Practise just the shloks saved in one of your collections.</div></div>
+              </button>
             </div>
             <!-- Range picker (hidden until needed) -->
             <div id="frRangePicker" style="display:none; margin-top:1.2rem;">
@@ -4383,6 +4609,10 @@
               </div>
               <button class="game-next-btn" type="button" onclick="frStartMode('range')">Start Review →</button>
               <div id="frRangeError" style="font-size:0.82rem;color:#dc2626;margin-top:0.5rem;"></div>
+            </div>
+            <!-- Collection picker (hidden until needed) -->
+            <div id="frCollectionPicker" style="display:none; margin-top:1.2rem;">
+              <div id="frCollectionPickerList" style="display:flex;flex-direction:column;gap:0.6rem;max-width:360px;margin:0 auto;"></div>
             </div>
           </div>
         </div>
@@ -4536,7 +4766,7 @@
           <div style="width:2px; background:var(--border); flex-shrink:0;"></div>
           <div style="flex:1; min-width:200px; padding-left:2rem; display:flex; align-items:center;">
             <div>
-              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0 0 0.8rem 0;">See how fellow haribhaktas are progressing on their mukhpath journey. If you want your name to appear on this page for your friends/karyakars to see make sure your name is set in 'My Profile' and add in your favourite shlok that you've learnt so far!</p>
+              <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0 0 0.8rem 0;">See how fellow haribhaktas are progressing on their mukhpath journey. Sign in with Google to see and appear on this page - make sure your name is set in 'My Profile' and add in your favourite shlok that you've learnt so far!</p>
               <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.7; margin:0;">Remember we're all doing this mukhpath together with the same goal so lets use this page as a way to encourage and motivate each other to keep learning our shloks!</p>
             </div>
           </div>
@@ -4556,6 +4786,9 @@
 
       <!-- NOTICEBOARD PANEL -->
       <div id="noticePanel" style="display:none;">
+        <div style="font-size:0.82rem; color:var(--text-muted); background:rgba(244,201,93,0.12); border:1px solid rgba(244,201,93,0.35); border-radius:10px; padding:0.6rem 1rem; margin-bottom:1rem; text-align:center;">
+          💬 Be kind here - keep reactions and comments respectful and encouraging, just as you'd want on your own milestone!
+        </div>
         <div class="corkboard" id="noticeboardContainer">
           <div style="color:rgba(80,50,20,0.5);font-size:0.9rem;text-align:center;padding:2rem;">Loading noticeboard...</div>
         </div>
@@ -4597,9 +4830,13 @@
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
               </div>
-              <div style="padding:0.5rem 0;">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Reset Everything</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Permanently erase all data.</div>
               </div>
             </div>
           </div>
@@ -4629,9 +4866,13 @@
           <div>
             <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">📖 Learn & My Mukhpath</div>
             <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Paris Mandir Mahotsav motivation</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to hit your aim by Paris Mandir Mahotsav.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">My Collections</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Create up to 3 named collections of shloks (like 'my hardest ones') from the My Mukhpath page, and practise just that set.</div>
               </div>
             </div>
           </div>
@@ -4647,11 +4888,15 @@
               </div>
               <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">React to milestones</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 - hover to see who reacted.</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 🕺 - hover to see who reacted.</div>
               </div>
               <div style="padding:0.5rem 0;">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Write a message</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 48 hours.</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 7 days.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Comment & reaction notifications</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Get a badge and a toast when someone comments on or reacts to your milestone note - names them individually, or by count for a group.</div>
               </div>
             </div>
           </div>
@@ -4673,9 +4918,13 @@
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
               </div>
-              <div style="padding:0.5rem 0;">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - My Collection mode</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Practise just the shloks in one of your saved collections, picked right from the mode selector.</div>
               </div>
             </div>
           </div>
@@ -4701,9 +4950,21 @@
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - Specific Range</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text was invisible when typing a range - now fixed.</div>
               </div>
-              <div style="padding:0.5rem 0;">
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily streak restoring correctly</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Streak was showing as 0 after the website updated - now restores correctly.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode sticky notes</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text on Noticeboard sticky notes now stays black in dark mode, matching light mode.</div>
+              </div>
+              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Target Shloks validation</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Target Shloks now only accepts numbers 1-315, blocking letters and symbols.</div>
+              </div>
+              <div style="padding:0.5rem 0;">
+                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Sign-out greeting</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Signing out now correctly resets the home page greeting instead of still showing your name.</div>
               </div>
             </div>
           </div>
@@ -4775,7 +5036,7 @@
             <div class="tutorial-card-img">🔒</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Keep Your Progress Safe</div>
-              <div class="tutorial-slide-text">Sign in with Google on the home page to back up your progress. Sign in again anytime to restore everything. Sign out from 'My Profile'.</div>
+              <div class="tutorial-slide-text">Sign in with Google on the home page to back up your progress. Sign in again anytime to restore everything. Sign out from 'My Profile' - once signed in, a button below 'Edit Profile' also lets you reset everything for a fresh start.</div>
             </div>
           </div>
         </div>
@@ -4784,7 +5045,7 @@
       <!-- SECTION 2: MY SHLOKS -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">📘 My Mukhpath</div>
-        <div class="tutorial-three-cards">
+        <div class="tutorial-four-cards">
           <div class="tutorial-card slide-myshloks">
             <div class="tutorial-card-img">🗺️</div>
             <div class="tutorial-card-body">
@@ -4804,6 +5065,13 @@
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Track Status</div>
               <div class="tutorial-slide-text">Mark each shlok as <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span> or <span style="color:#92400e;font-weight:600;">revise</span>. Use 'Update Status' to bulk change a range, or 'Remove Shlok' if you accidentally added one.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-myshloks">
+            <div class="tutorial-card-img">📁</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">My Collections</div>
+              <div class="tutorial-slide-text">Group shloks into up to 3 named collections and practise just that set from Full Review.</div>
             </div>
           </div>
         </div>
@@ -4910,12 +5178,12 @@
       <!-- SECTION 6: MUKHPATH MANDAL -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🕌 Mukhpath Mandal</div>
-        <div class="tutorial-four-cards">
+        <div class="tutorial-five-cards">
           <div class="tutorial-card slide-mandal">
             <div class="tutorial-card-img">👥</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Maru Mukhpath Mandal</div>
-              <div class="tutorial-slide-text">See how fellow haribhaktas across different centres are progressing on their mukhpath journey.</div>
+              <div class="tutorial-slide-text">See how fellow haribhaktas across different centres are progressing on their mukhpath journey. Sign in with Google to see it and appear on the page.</div>
             </div>
           </div>
           <div class="tutorial-card slide-mandal">
@@ -4930,6 +5198,13 @@
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Set a Personal Aim</div>
               <div class="tutorial-slide-text">Set a personal aim in 'My Profile' - choose a target number of shloks and label it by a name or date.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">🪧</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Noticeboard</div>
+              <div class="tutorial-slide-text">See everyone's milestones as sticky notes - react, leave a message, and get notified when someone replies to yours. Sign in to see it.</div>
             </div>
           </div>
           <div class="tutorial-card slide-mandal">
@@ -5001,6 +5276,17 @@
       <div style="text-align:center; padding-bottom:0.5rem;">
         <button class="panel-edit-btn" onclick="openProfileEditor()">Edit Profile</button>
       </div>
+
+      <div id="resetPillWrap" style="text-align:center; padding-bottom:0.5rem; display:none;">
+        <button class="panel-reset-btn" id="resetPillBtn" onclick="toggleDangerZone()">Reset Everything</button>
+      </div>
+
+      <div id="dangerZoneCollapse" class="danger-zone" style="display:none;">
+        <div class="danger-zone-title">⚠️ Danger Zone</div>
+        <div class="danger-zone-desc">Permanently erases <strong>everything</strong> - your shlok progress, profile, milestones, your Mandal card, your shlok collections, any Noticeboard posts you've made, and any Challenge a Friend games you've sent or received. This cannot be undone. You'll be signed out and need to start again from scratch.</div>
+        <input id="resetConfirmInput" class="danger-zone-input" type="text" placeholder="Type RESET to confirm" autocomplete="off" oninput="document.getElementById('resetEverythingBtn').disabled = this.value.trim() !== 'RESET';">
+        <button type="button" id="resetEverythingBtn" class="danger-zone-btn" onclick="resetEverything()" disabled>Confirm Reset</button>
+      </div>
     </div>
     </div>
 
@@ -5046,7 +5332,7 @@
         <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:0.4rem; text-align:center;">Set a personal aim to work towards!</div>
         <div class="edit-field">
           <div class="edit-label">Target Shloks</div>
-          <input id="editGoalTarget" class="edit-input" type="number" min="1" max="315" placeholder="e.g. 75">
+          <input id="editGoalTarget" class="edit-input" type="number" min="1" max="315" step="1" inputmode="numeric" placeholder="e.g. 75" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,3);">
         </div>
         <div class="edit-field">
           <div class="edit-label">Label it by</div>
@@ -7003,6 +7289,248 @@
     // ── APP STATE ──
     let myShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
 
+    /* ------------------------------
+       MY COLLECTIONS (up to 3 named
+       folders of shloks to practise)
+       ------------------------------ */
+    let shlokCollections = JSON.parse(localStorage.getItem("shlokCollections") || "[]");
+    let collectionsOpenId = null;
+    let collectionsCreating = false;
+    let collectionsRenamingId = null;
+    let collectionsPickerOpenId = null;
+
+    function switchMukhpathTab(tab) {
+      const mapPanel  = document.getElementById('mukhpathMapPanel');
+      const colPanel  = document.getElementById('mukhpathCollectionsPanel');
+      const mapBtn    = document.getElementById('mukhpathMapTabBtn');
+      const colBtn    = document.getElementById('mukhpathCollectionsTabBtn');
+      if (tab === 'collections') {
+        mapPanel.style.display = 'none';
+        colPanel.style.display = 'block';
+        mapBtn.classList.remove('active');
+        colBtn.classList.add('active');
+        renderCollections();
+      } else {
+        mapPanel.style.display = 'block';
+        colPanel.style.display = 'none';
+        mapBtn.classList.add('active');
+        colBtn.classList.remove('active');
+      }
+    }
+
+    function saveCollections() {
+      localStorage.setItem("shlokCollections", JSON.stringify(shlokCollections));
+      scheduleUserSync();
+    }
+
+    function collectionEscapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function renderCollections() {
+      const container = document.getElementById("collectionsContainer");
+      if (!container) return;
+      if (collectionsOpenId) {
+        const col = shlokCollections.find(c => c.id === collectionsOpenId);
+        if (!col) { collectionsOpenId = null; renderCollections(); return; }
+        renderCollectionOpen(container, col);
+      } else {
+        renderCollectionsGrid(container);
+      }
+    }
+
+    function renderCollectionsGrid(container) {
+      let html = `<div class="collections-grid">`;
+      shlokCollections.forEach(col => {
+        html += `
+          <button type="button" class="collection-folder" onclick="openCollection('${col.id}')">
+            <div class="collection-folder-tab"></div>
+            <div class="collection-folder-back"></div>
+            <div class="collection-folder-front">
+              <div class="collection-folder-name">${collectionEscapeHtml(col.name)}</div>
+              <div class="collection-folder-count">${col.shloks.length} shlok${col.shloks.length !== 1 ? 's' : ''}</div>
+            </div>
+          </button>`;
+      });
+      if (shlokCollections.length < 3) {
+        if (collectionsCreating) {
+          html += `
+            <div class="collection-folder-new" style="border-style:solid;">
+              <div style="width:100%;padding:0 0.8rem;">
+                <input id="newCollectionNameInput" type="text" maxlength="30" placeholder="Collection name" style="width:100%;text-align:center;margin-bottom:0.5rem;" onkeypress="if(event.key==='Enter')confirmCreateCollection();">
+                <div style="display:flex;gap:0.4rem;justify-content:center;">
+                  <button type="button" class="game-next-btn" style="padding:0.3rem 0.8rem;font-size:0.75rem;" onclick="confirmCreateCollection()">Create</button>
+                  <button type="button" class="game-back-btn" style="padding:0.3rem 0.8rem;font-size:0.75rem;" onclick="collectionsCreating=false;renderCollections();">Cancel</button>
+                </div>
+              </div>
+            </div>`;
+        } else {
+          html += `
+            <button type="button" class="collection-folder-new" onclick="collectionsCreating=true;renderCollections();">
+              <div class="cfn-icon">📁</div>
+              <div class="cfn-label">New collection</div>
+              <div class="cfn-sub">${shlokCollections.length} of 3 used</div>
+            </button>`;
+        }
+      }
+      html += `</div>`;
+      container.innerHTML = html;
+      const input = document.getElementById('newCollectionNameInput');
+      if (input) input.focus();
+    }
+
+    function confirmCreateCollection() {
+      const input = document.getElementById('newCollectionNameInput');
+      if (!input) return;
+      const name = input.value.trim();
+      if (!name) { showToast('Give your collection a name first.'); return; }
+      if (shlokCollections.length >= 3) { showToast('You can only have 3 collections.'); return; }
+      shlokCollections.push({
+        id: 'col_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        name: name.slice(0, 30),
+        shloks: []
+      });
+      collectionsCreating = false;
+      saveCollections();
+      renderCollections();
+      showToast('Collection created!');
+    }
+
+    function openCollection(id) {
+      collectionsOpenId = id;
+      collectionsPickerOpenId = null;
+      renderCollections();
+    }
+
+    function closeCollectionsView() {
+      collectionsOpenId = null;
+      collectionsPickerOpenId = null;
+      collectionsRenamingId = null;
+      renderCollections();
+    }
+
+    function deleteCollection(id) {
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col) return;
+      if (!confirm(`Delete the collection "${col.name}"? The shloks themselves won't be affected.`)) return;
+      shlokCollections = shlokCollections.filter(c => c.id !== id);
+      collectionsOpenId = null;
+      saveCollections();
+      renderCollections();
+    }
+
+    function confirmRenameCollection(id) {
+      const input = document.getElementById('renameCollectionInput');
+      if (!input) return;
+      const name = input.value.trim();
+      if (!name) { showToast('Give your collection a name first.'); return; }
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col) return;
+      col.name = name.slice(0, 30);
+      collectionsRenamingId = null;
+      saveCollections();
+      renderCollections();
+    }
+
+    function removeShlokFromCollection(id, num) {
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col) return;
+      col.shloks = col.shloks.filter(n => n !== num);
+      saveCollections();
+      renderCollections();
+    }
+
+    function saveCollectionPicker(id) {
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col) return;
+      const checks = document.querySelectorAll(`.collection-picker-check[data-col="${id}"]`);
+      col.shloks = Array.from(checks).filter(c => c.checked).map(c => c.value);
+      collectionsPickerOpenId = null;
+      saveCollections();
+      renderCollections();
+    }
+
+    function collectionDotColour(mastery) {
+      if (mastery === 'learnt') return '#3b82f6';
+      if (mastery === 'memorised') return 'var(--green-text)';
+      if (mastery === 'revise') return 'var(--orange-text)';
+      return 'var(--border)';
+    }
+
+    function renderCollectionPicker(col) {
+      if (collectionsPickerOpenId !== col.id) {
+        return `<span class="collection-icon-btn" style="font-size:0.8rem;text-decoration:underline;" onclick="collectionsPickerOpenId='${col.id}';renderCollections();">+ Add shloks</span>`;
+      }
+      const sorted = myShloks.slice().sort((a, b) => parseInt(a.number) - parseInt(b.number));
+      if (!sorted.length) {
+        return `<div style="font-size:0.8rem;color:var(--text-muted);">Add some shloks on this page first, then come back to build your collection.</div>`;
+      }
+      let html = `<div style="max-height:220px;overflow-y:auto;text-align:left;margin-bottom:0.6rem;">`;
+      sorted.forEach(s => {
+        const checked = col.shloks.includes(s.number);
+        html += `
+          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;font-size:0.78rem;color:var(--text-main);cursor:pointer;">
+            <input type="checkbox" value="${s.number}" ${checked ? 'checked' : ''} class="collection-picker-check" data-col="${col.id}">
+            Shlok ${s.number}
+          </label>`;
+      });
+      html += `</div>
+        <div style="display:flex;gap:0.5rem;justify-content:center;">
+          <button type="button" class="game-next-btn" style="padding:0.3rem 0.9rem;font-size:0.75rem;" onclick="saveCollectionPicker('${col.id}')">Save</button>
+          <button type="button" class="game-back-btn" style="padding:0.3rem 0.9rem;font-size:0.75rem;" onclick="collectionsPickerOpenId=null;renderCollections();">Cancel</button>
+        </div>`;
+      return html;
+    }
+
+    function renderCollectionOpen(container, col) {
+      const rows = col.shloks.map(num => {
+        const tracked = myShloks.find(s => s.number === num);
+        const master = allShloks.find(s => s.id === num);
+        if (!tracked || !master) return null;
+        return { num, mastery: tracked.mastery, text: master.line1 };
+      }).filter(Boolean);
+
+      const titleBlock = collectionsRenamingId === col.id
+        ? `<div class="collection-name-input-row" style="margin-top:0;">
+             <input id="renameCollectionInput" type="text" maxlength="30" value="${collectionEscapeHtml(col.name)}" style="max-width:160px;" onkeypress="if(event.key==='Enter')confirmRenameCollection('${col.id}');">
+             <button type="button" class="game-next-btn" style="padding:0.25rem 0.7rem;font-size:0.72rem;" onclick="confirmRenameCollection('${col.id}')">Save</button>
+             <button type="button" class="game-back-btn" style="padding:0.25rem 0.7rem;font-size:0.72rem;" onclick="collectionsRenamingId=null;renderCollections();">Cancel</button>
+           </div>`
+        : `<div class="collection-open-title">${collectionEscapeHtml(col.name)} <span class="collection-icon-btn" onclick="collectionsRenamingId='${col.id}';renderCollections();" title="Rename">✏️</span> <span class="collection-icon-btn" onclick="deleteCollection('${col.id}')" title="Delete collection">🗑️</span></div>
+           <div class="collection-open-count">${rows.length} shlok${rows.length !== 1 ? 's' : ''}</div>`;
+
+      let html = `
+        <div class="collection-open-header">
+          <div style="display:flex;align-items:center;gap:0.7rem;">
+            <button type="button" class="collection-open-back" onclick="closeCollectionsView()" title="Back to collections">←</button>
+            <div>${titleBlock}</div>
+          </div>
+          <button type="button" class="collection-practice-btn" onclick="practiceCollection('${col.id}')" ${!rows.length ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>▶ Practice this collection</button>
+        </div>
+        <div class="collection-open-body">`;
+
+      if (!rows.length) {
+        html += `<div class="collection-empty-msg">No shloks in this collection yet. Add some below!</div>`;
+      } else {
+        rows.forEach(r => {
+          html += `
+            <div class="collection-shlok-row">
+              <div class="collection-shlok-dot" style="background:${collectionDotColour(r.mastery)};"></div>
+              <div class="collection-shlok-num">${r.num}</div>
+              <div class="collection-shlok-text">${collectionEscapeHtml(r.text)}</div>
+              <button type="button" class="collection-shlok-remove" onclick="removeShlokFromCollection('${col.id}','${r.num}')" title="Remove from collection">✕</button>
+            </div>`;
+        });
+      }
+
+      html += `<div class="collection-add-row">${renderCollectionPicker(col)}</div></div>`;
+      container.innerHTML = html;
+      const renameInput = document.getElementById('renameCollectionInput');
+      if (renameInput) renameInput.focus();
+    }
+
     // ── SAVE & RENDER ──
     function save() {
       localStorage.setItem("myShloks", JSON.stringify(myShloks));
@@ -7974,7 +8502,7 @@
       });
       const page = document.getElementById(id);
       if (page) page.classList.add("active");
-      if (id === "myshloks") { render(); }
+      if (id === "myshloks") { render(); renderCollections(); }
       if (id === "learn")    { initLearnPage(); initLearnReviseSection(); }
       if (id === "home")     { renderProgressPage(); updateHomePage(); }
       if (id === "mandal")   { renderMandal(); }
@@ -8384,13 +8912,9 @@
        ------------------------------ */
     /* ── MUKHPATH MANDAL - FIRESTORE ── */
     function getMandalUserId() {
-      if (currentUser) return currentUser.uid;
-      let uid = localStorage.getItem("mandalUserId");
-      if (!uid) {
-        uid = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("mandalUserId", uid);
-      }
-      return uid;
+      // Mandal now requires sign-in, so this is always a real Firebase uid -
+      // no more anonymous local-only ID fallback.
+      return currentUser ? currentUser.uid : null;
     }
 
     // ── GOOGLE SIGN-IN ──
@@ -8402,7 +8926,7 @@
 
     function signOutGoogle() {
       if (!auth) return;
-      auth.signOut().then(() => { updateAuthUI(null); showToast("Signed out."); });
+      auth.signOut().then(() => { updateAuthUI(null); updateHomePage(); showToast("Signed out."); });
     }
 
     function updateAuthUI(user) {
@@ -8410,10 +8934,13 @@
       const info   = document.getElementById("googleUserInfo");
       const banner = document.getElementById("homeSignInBanner");
       const name   = document.getElementById("googleUserName");
+      const resetWrap = document.getElementById("resetPillWrap");
       if (btn)    btn.style.display    = user ? "none" : "flex";
       if (info)   info.style.display   = user ? "flex" : "none";
       if (banner) banner.style.display = user ? "none" : "flex";
       if (name)   name.textContent     = user ? `Signed in as ${user.email || user.displayName}` : "";
+      if (resetWrap) resetWrap.style.display = user ? "block" : "none";
+      if (!user) collapseDangerZone();
     }
 
     // Sync all important data to Firestore under users/{uid}
@@ -8435,6 +8962,7 @@
           dcHistory:       localStorage.getItem("dcHistory") || null,
           motivFavourites: localStorage.getItem("motivFavourites") || null,
           mandalOptOut:    localStorage.getItem("mandalOptOut") || null,
+          shlokCollections: localStorage.getItem("shlokCollections") || null,
           lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch(e) { console.warn("User data sync failed:", e); }
@@ -8457,11 +8985,14 @@
             if (d.dcHistory)        localStorage.setItem("dcHistory", d.dcHistory);
             if (d.motivFavourites)  localStorage.setItem("motivFavourites", d.motivFavourites);
             if (d.mandalOptOut)     localStorage.setItem("mandalOptOut", d.mandalOptOut);
+            if (d.shlokCollections) localStorage.setItem("shlokCollections", d.shlokCollections);
             myShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+            shlokCollections = JSON.parse(localStorage.getItem("shlokCollections") || "[]");
             loadProfile();
             render();
             renderProgressPage();
             updateHomePage();
+            renderCollections();
             showToast("Your progress has been restored! 🎉");
           }
         } catch(e) { console.warn("Data restore failed:", e); }
@@ -8476,6 +9007,14 @@
       auth.onAuthStateChanged(async (user) => {
         currentUser = user;
         updateAuthUI(user);
+        // Refresh the Noticeboard if it's the tab currently on screen, so
+        // signing in/out from the "Sign in to see the Noticeboard" prompt
+        // (or the panel itself) updates immediately without a manual re-click
+        const noticePanel = document.getElementById('noticePanel');
+        if (noticePanel && noticePanel.style.display !== 'none') loadNoticeboard();
+        // Same for the Mandal page - it also requires sign-in now
+        const mandalSection = document.getElementById('mandal');
+        if (mandalSection && mandalSection.classList.contains('active')) renderMandal();
         if (user) {
           await restoreOrSyncUserData(user);
           // Delete old anonymous Mandal document if it exists under a different ID
@@ -8487,6 +9026,7 @@
             } catch(e) { console.warn("Could not delete anon mandal doc:", e); }
           }
           syncToMandal();
+          checkOwnNoteForNewComments();
         }
       });
     }
@@ -8505,6 +9045,7 @@
     }
 
     async function syncToMandal() {
+      if (!currentUser) return;
       if (localStorage.getItem("mandalOptOut") === "true") return;
       const profile = JSON.parse(localStorage.getItem("profile") || "null");
       if (!profile || !profile.name) return;
@@ -8552,7 +9093,10 @@
 
     // ── MANDAL CARD BUILDER ──
     function mandalBuildCard(person) {
-      const known = person.learnt + person.memorised;
+      // Progress bar/fraction shown on the card includes Revise, but ranking
+      // (orderBy totalKnown) and Challenge a Friend eligibility deliberately
+      // keep using person.totalKnown (learnt+memorised only) - unaffected by this.
+      const known = person.learnt + person.memorised + (person.revise || 0);
       const pct = Math.min(100, Math.round((known / 315) * 100));
       const favShlok   = allShloks.find(s => s.id === person.favShlokId);
       const learningNow = allShloks.find(s => s.id === person.learningNowId);
@@ -8738,19 +9282,36 @@
     function noteRelTime(ts) {
       const diff = Date.now() - ts;
       const mins = Math.floor(diff/60000), hours = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
-      if (mins < 1) return 'Just now';
-      if (mins < 60) return mins + 'm ago';
-      if (hours < 24) return hours + 'h ago';
-      return 'Yesterday';
+      let rel;
+      if (mins < 1) rel = 'Just now';
+      else if (mins < 60) rel = mins + 'm ago';
+      else if (hours < 24) rel = hours + 'h ago';
+      else if (days === 1) rel = 'Yesterday';
+      else rel = days + 'd ago';
+
+      const d = new Date(ts);
+      const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      const timeStr = d.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit' });
+      return `${dateStr}, ${timeStr} · ${rel}`;
     }
 
     async function loadNoticeboard() {
       const container = document.getElementById('noticeboardContainer');
       if (!container || !db) return;
+      if (!currentUser) {
+        container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem;">
+          <div style="font-size:0.95rem; color:rgba(80,50,20,0.75); margin-bottom:0.9rem;">🔒 Sign in to see the Noticeboard.</div>
+          <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.4rem 1.1rem; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:16px;height:16px;" alt="">
+            Sign in with Google
+          </button>
+        </div>`;
+        return;
+      }
       try {
         const now = Date.now();
         const snap = await db.collection('noticeboard')
-          .orderBy('timestamp','desc').limit(10).get();
+          .orderBy('timestamp','desc').limit(15).get();
         const valid = snap.docs.filter(d => {
           const ts = d.data().timestamp;
           return ts && (ts.toMillis() + 7 * 24 * 60 * 60 * 1000) > now;
@@ -8774,37 +9335,49 @@
       const isMe = currentUser && d.uid === currentUser.uid;
       const reactions = d.reactions || {};
       const messages = d.messages || {};
-      const myReaction = currentUser && reactions[currentUser.uid];
+      // Reactions are stored as {emoji, name}, but older posts may still have
+      // just a plain emoji string saved - support both formats
+      const reactionEmoji = r => (r && typeof r === 'object') ? r.emoji : r;
+      const reactionName  = r => (r && typeof r === 'object' && r.name) ? r.name : 'Someone';
+      const myReaction = currentUser && reactionEmoji(reactions[currentUser.uid]);
       const myMessage = currentUser && messages[currentUser.uid];
 
       // Group reactions
       const rGroups = {};
-      Object.values(reactions).forEach(e => { rGroups[e] = (rGroups[e]||0)+1; });
+      Object.values(reactions).forEach(r => { const e = reactionEmoji(r); rGroups[e] = (rGroups[e]||0)+1; });
       const reactionHtml = Object.entries(rGroups).map(([e,n]) => {
-        const names = Object.entries(reactions).filter(([,v])=>v===e).map(([uid])=>uid).join(',');
+        const names = Object.entries(reactions).filter(([,v])=>reactionEmoji(v)===e).map(([,v])=>reactionName(v)).join(', ');
         const mine = myReaction === e;
-        return `<span onclick="toggleNoteReaction('${docId}','${e}')" style="cursor:pointer;display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid ${mine?'rgba(0,0,0,0.4)':'rgba(0,0,0,0.15)'};background:${mine?'rgba(0,0,0,0.1)':'transparent'};font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
+        return `<span onclick="toggleNoteReaction('${docId}','${e}')" title="${names}" style="cursor:pointer;display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid ${mine?'rgba(0,0,0,0.4)':'rgba(0,0,0,0.15)'};background:${mine?'rgba(0,0,0,0.1)':'transparent'};font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
       }).join('');
       // Read-only version for your own note - you can see who reacted but can't react to yourself
       const reactionHtmlReadOnly = Object.entries(rGroups).map(([e,n]) => {
-        const names = Object.entries(reactions).filter(([,v])=>v===e).map(([uid])=>uid).join(',');
-        return `<span title="${n} reaction${n>1?'s':''}" style="display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid rgba(0,0,0,0.15);font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
+        const names = Object.entries(reactions).filter(([,v])=>reactionEmoji(v)===e).map(([,v])=>reactionName(v)).join(', ');
+        return `<span title="${names}" style="display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:999px;border:1.5px solid rgba(0,0,0,0.15);font-size:0.78rem;color:#333;">${e} <span style="font-size:0.7rem;font-weight:600;color:#333;">${n}</span></span>`;
       }).join('');
 
-      const messagesHtml = Object.values(messages).map(m =>
-        `<div style="font-size:0.78rem;color:#333;padding:0.3rem 0;border-top:1px dashed rgba(0,0,0,0.15);"><em>"${m.text}"</em> <span style="font-weight:700;">- ${m.name}</span></div>`
-      ).join('');
+      // Your own comment (if any) is pulled out of the list below and shown pre-filled
+      // in the editable box instead, so it's obvious it can be updated or deleted
+      const messagesHtml = Object.entries(messages)
+        .filter(([uid]) => !(currentUser && uid === currentUser.uid))
+        .map(([,m]) =>
+          `<div style="font-size:0.78rem;color:#333;padding:0.3rem 0;border-top:1px dashed rgba(0,0,0,0.15);"><em>"${m.text}"</em> <span style="font-weight:700;">- ${m.name}</span></div>`
+        ).join('');
 
+      const escapeForTextarea = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       const inputHtml = !isMe && currentUser ? `
-        <textarea class="sticky-msg-input" id="msgInput_${docId}" placeholder="Write a message..." rows="2" maxlength="150" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-        <button type="button" class="sticky-send-btn" onclick="sendNoteMessage('${docId}')">Send ✈️</button>` : '';
+        <textarea class="sticky-msg-input" id="msgInput_${docId}" placeholder="Write a message..." rows="2" maxlength="150" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">${escapeForTextarea(myMessage && myMessage.text)}</textarea>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:2px;">
+          <button type="button" class="sticky-send-btn" onclick="sendNoteMessage('${docId}')">${myMessage ? 'Update ✏️' : 'Send ✈️'}</button>
+          ${myMessage ? `<span onclick="deleteNoteMessage('${docId}')" style="cursor:pointer;font-size:0.72rem;color:rgba(0,0,0,0.55);text-decoration:underline;">Delete comment</span>` : ''}
+        </div>` : '';
 
       const reactRow = !isMe && currentUser ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:0.5rem 0 0.3rem;align-items:center;">
         ${reactionHtml}
         <div style="position:relative;display:inline-block;">
           <span onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='flex'?'none':'flex'" style="cursor:pointer;font-size:0.72rem;padding:1px 7px;border-radius:999px;border:1px solid rgba(0,0,0,0.2);background:transparent;color:#333;">+ React</span>
           <div style="display:none;position:absolute;left:0;top:110%;background:white;border:1px solid #ddd;border-radius:8px;padding:4px 8px;gap:6px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-            ${['👏','🎉','❤️','🔥','💪'].map(e=>`<span onclick="toggleNoteReaction('${docId}','${e}');this.closest('div').style.display='none'" style="cursor:pointer;font-size:1.1rem;">${e}</span>`).join('')}
+            ${['👏','🎉','❤️','🔥','💪','🕺'].map(e=>`<span onclick="toggleNoteReaction('${docId}','${e}');this.closest('div').style.display='none'" style="cursor:pointer;font-size:1.1rem;">${e}</span>`).join('')}
           </div>
         </div>
       </div>` : !isMe && !currentUser ? `<div style="font-size:0.72rem;color:rgba(0,0,0,0.45);margin:0.4rem 0;font-style:italic;">Sign in to react or comment</div>` : (isMe && Object.keys(rGroups).length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:0.5rem 0 0.3rem;align-items:center;">${reactionHtmlReadOnly}</div>` : '');
@@ -8825,10 +9398,16 @@
       const ref = db.collection('noticeboard').doc(docId);
       const doc = await ref.get();
       const reactions = (doc.data()||{}).reactions || {};
-      if (reactions[currentUser.uid] === emoji) {
+      const existing = reactions[currentUser.uid];
+      const existingEmoji = (existing && typeof existing === 'object') ? existing.emoji : existing;
+      if (existingEmoji === emoji) {
         await ref.update({ [`reactions.${currentUser.uid}`]: firebase.firestore.FieldValue.delete() });
       } else {
-        await ref.update({ [`reactions.${currentUser.uid}`]: emoji });
+        const prof = JSON.parse(localStorage.getItem('profile') || '{}');
+        const name = prof.name || 'Someone';
+        await ref.update({
+          [`reactions.${currentUser.uid}`]: { emoji, name, timestamp: firebase.firestore.FieldValue.serverTimestamp() }
+        });
       }
       loadNoticeboard();
     }
@@ -8842,8 +9421,83 @@
       const prof = JSON.parse(localStorage.getItem('profile') || '{}');
       const name = prof.name || 'Someone';
       const ref = db.collection('noticeboard').doc(docId);
-      await ref.update({ [`messages.${currentUser.uid}`]: { text, name } });
+      await ref.update({
+        [`messages.${currentUser.uid}`]: { text, name, timestamp: firebase.firestore.FieldValue.serverTimestamp() }
+      });
       loadNoticeboard();
+    }
+
+    async function deleteNoteMessage(docId) {
+      if (!currentUser) return;
+      if (!confirm('Delete your comment on this note?')) return;
+      const ref = db.collection('noticeboard').doc(docId);
+      await ref.update({ [`messages.${currentUser.uid}`]: firebase.firestore.FieldValue.delete() });
+      loadNoticeboard();
+    }
+
+    /* ------------------------------
+       NOTICEBOARD COMMENT NOTIFICATIONS
+       Badge on the My Profile tab + a one-time toast when someone leaves
+       a message on this person's own milestone note since they last
+       opened their profile.
+       ------------------------------ */
+    async function checkOwnNoteForNewComments() {
+      if (!db || !currentUser) return;
+      try {
+        const doc = await db.collection('noticeboard').doc(currentUser.uid).get();
+        if (!doc.exists) return;
+        const data = doc.data();
+        const messages  = data.messages  || {};
+        const reactions = data.reactions || {};
+
+        const msgEntries    = Object.values(messages).filter(m => m && m.timestamp);
+        // Older reactions may be a plain emoji string with no timestamp - those
+        // can't ever count as "new" and are safely ignored here
+        const reactEntries  = Object.values(reactions).filter(r => r && typeof r === 'object' && r.timestamp);
+
+        const latestMsgTs   = msgEntries.length   ? Math.max(...msgEntries.map(m => m.timestamp.toMillis()))   : 0;
+        const latestReactTs = reactEntries.length ? Math.max(...reactEntries.map(r => r.timestamp.toMillis())) : 0;
+        const latestTs = Math.max(latestMsgTs, latestReactTs);
+        if (!latestTs) return;
+
+        const seenUntil = parseInt(localStorage.getItem('noteMsgsSeenUntil') || '0');
+        // Everyone whose comment/reaction arrived since this note was last opened
+        const newMsgs   = msgEntries.filter(m => m.timestamp.toMillis()   > seenUntil);
+        const newReacts = reactEntries.filter(r => r.timestamp.toMillis() > seenUntil);
+        const hasNewMsg   = newMsgs.length   > 0;
+        const hasNewReact = newReacts.length > 0;
+
+        if (hasNewMsg || hasNewReact) {
+          const tab = document.getElementById('slideoutTab');
+          if (tab) tab.classList.add('has-notification');
+          // Only toast once per newly-seen batch (won't repeat until something newer arrives)
+          const toastedFor = parseInt(localStorage.getItem('noteMsgsToastedFor') || '0');
+          if (latestTs > toastedFor) {
+            // Count DISTINCT people, not just entries (one person could comment twice)
+            const newCommenters = [...new Set(newMsgs.map(m => m.name || 'Someone'))];
+            const newReactors   = [...new Set(newReacts.map(r => r.name || 'Someone'))];
+            const describe = (names, verb) => names.length === 1
+              ? `${names[0]} ${verb}`
+              : `${names.length} people ${verb}`;
+            let text;
+            if (hasNewMsg && hasNewReact) {
+              text = `💬👏 ${describe(newCommenters, 'commented')} and ${describe(newReactors, 'reacted')} on your milestone note!`;
+            } else if (hasNewMsg) {
+              text = `💬 ${describe(newCommenters, 'commented')} on your milestone note!`;
+            } else {
+              text = `👏 ${describe(newReactors, 'reacted')} to your milestone note!`;
+            }
+            showToast(text);
+            localStorage.setItem('noteMsgsToastedFor', String(latestTs));
+          }
+        }
+      } catch(e) { console.warn('Comment notification check failed:', e); }
+    }
+
+    function clearNoteCommentBadge() {
+      const tab = document.getElementById('slideoutTab');
+      if (tab) tab.classList.remove('has-notification');
+      localStorage.setItem('noteMsgsSeenUntil', String(Date.now()));
     }
 
     // ── MANDAL PAGE ──
@@ -8876,10 +9530,24 @@
 
     let mandalUnsubscribe = null;
     function renderMandal() {
-      renderMandalOptOutRow();
       const grid = document.getElementById("mandalGrid");
       if (!grid) return;
 
+      if (!currentUser) {
+        if (mandalUnsubscribe) { mandalUnsubscribe(); mandalUnsubscribe = null; }
+        const optOutRow = document.getElementById("mandalOptOutRow");
+        if (optOutRow) optOutRow.innerHTML = "";
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem;">
+          <div style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.9rem;">🔒 Sign in to see the Mukhpath Mandal.</div>
+          <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.4rem 1.1rem; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:16px;height:16px;" alt="">
+            Sign in with Google
+          </button>
+        </div>`;
+        return;
+      }
+
+      renderMandalOptOutRow();
       syncToMandal();
 
       grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">Loading...</div>`;
@@ -8923,6 +9591,34 @@
 
     let lastMilestoneCheck = 0;
 
+    // One noticeboard sticky note per person: keyed by uid so a new milestone
+    // always replaces the previous one (fresh reactions/messages) instead of
+    // piling up a separate note per milestone. Also mops up any leftover
+    // notes from before this was consolidated to one-per-person.
+    async function postOrUpdateNoticeboard(milestone, timestampValue) {
+      if (!db || !currentUser) return;
+      const prof = JSON.parse(localStorage.getItem("profile") || "{}");
+      try {
+        const staleSnap = await db.collection("noticeboard").where("uid", "==", currentUser.uid).get();
+        const stale = staleSnap.docs.filter(doc => doc.id !== currentUser.uid);
+        if (stale.length) {
+          const cleanupBatch = db.batch();
+          stale.forEach(doc => cleanupBatch.delete(doc.ref));
+          await cleanupBatch.commit();
+        }
+      } catch(e) { console.warn("Noticeboard cleanup failed:", e); }
+
+      await db.collection("noticeboard").doc(currentUser.uid).set({
+        uid: currentUser.uid,
+        name: prof.name || "Someone",
+        milestone: milestone,
+        timestamp: timestampValue,
+        messages: {},
+        reactions: {}
+      });
+      localStorage.setItem("noticeboardHandledMilestone", String(milestone));
+    }
+
     function checkMilestone() {
       const memorised = myShloks.filter(s => s.mastery === "memorised").length;
       const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
@@ -8938,18 +9634,9 @@
           localStorage.setItem("lastMilestoneDate", Date.now().toString());
           triggerMilestoneAnimation(highest);
           showMilestoneToast(MILESTONE_MSGS[highest]);
-          if (db && currentUser) {
-            const prof = JSON.parse(localStorage.getItem("profile") || "{}");
-            if (NOTICEBOARD_MILESTONES.includes(highest)) {
-              db.collection("noticeboard").add({
-                uid: currentUser.uid,
-                name: prof.name || "Someone",
-                milestone: highest,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                messages: {},
-                reactions: {}
-              }).catch(e => console.warn("Noticeboard write failed:", e));
-            }
+          if (db && currentUser && NOTICEBOARD_MILESTONES.includes(highest)) {
+            postOrUpdateNoticeboard(highest, firebase.firestore.FieldValue.serverTimestamp())
+              .catch(e => console.warn("Noticeboard write failed:", e));
           }
         }
       }
@@ -9766,6 +10453,15 @@
     }
 
     let frPool = [], frIndex = 0, frKnown = 0, frNotYet = 0;
+    let frCollectionPool = null;
+
+    function practiceCollection(id) {
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col || !col.shloks.length) return;
+      switchTab(document.querySelectorAll('.nav-item')[4], 'games');
+      startGame('fullReview');
+      frShowCollectionPicker(col.id);
+    }
 
     // ── FULL REVIEW ──
     function loadFullReview() { frShowModeSelector(); }
@@ -9776,10 +10472,35 @@
       document.getElementById('frDone').style.display = 'none';
       document.getElementById('frRangePicker').style.display = 'none';
       document.getElementById('frRangeError').textContent = '';
+      document.getElementById('frCollectionPicker').style.display = 'none';
     }
 
     function frShowRangePicker() {
       document.getElementById('frRangePicker').style.display = 'block';
+      document.getElementById('frCollectionPicker').style.display = 'none';
+    }
+
+    function frShowCollectionPicker(highlightId) {
+      document.getElementById('frCollectionPicker').style.display = 'block';
+      document.getElementById('frRangePicker').style.display = 'none';
+      const list = document.getElementById('frCollectionPickerList');
+      if (!shlokCollections.length) {
+        list.innerHTML = `<div style="font-size:0.85rem;color:var(--text-muted);text-align:center;">You haven't made any collections yet - add one from the My Mukhpath page first.</div>`;
+        return;
+      }
+      list.innerHTML = shlokCollections.map(c => `
+        <button class="snap-mode-btn" type="button" onclick="frStartCollectionReview('${c.id}')" style="${c.id === highlightId ? 'border-color:var(--gold);' : ''}">
+          <div class="snap-mode-icon">📁</div>
+          <div><div class="snap-mode-title">${collectionEscapeHtml(c.name)}</div>
+          <div class="snap-mode-sub">${c.shloks.length} shlok${c.shloks.length !== 1 ? 's' : ''}</div></div>
+        </button>`).join('');
+    }
+
+    function frStartCollectionReview(id) {
+      const col = shlokCollections.find(c => c.id === id);
+      if (!col) return;
+      frCollectionPool = col.shloks.slice();
+      frStartMode('collection');
     }
 
     function frStartMode(mode) {
@@ -9797,6 +10518,10 @@
         pool = myShloks.filter(s => parseInt(s.number) >= from && parseInt(s.number) <= to)
                        .sort((a,b) => parseInt(a.number) - parseInt(b.number));
         if (!pool.length) { errEl.textContent = `You haven't added any shloks between ${from} and ${to}.`; return; }
+      } else if (mode === 'collection') {
+        const idsInCollection = new Set(frCollectionPool || []);
+        pool = myShloks.filter(s => idsInCollection.has(s.number))
+                       .sort((a,b) => parseInt(a.number) - parseInt(b.number));
       }
 
       frPool = pool;
@@ -9985,6 +10710,7 @@
       const canvas = document.getElementById("particles-canvas");
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
+      if (!ctx) return;
       let W, H, particles;
 
       function resize() {
@@ -10035,19 +10761,22 @@
        ------------------------------ */
     // ── HOME PAGE ──
     function updateHomePage() {
-      const name = window.userFirstName || "Haribhakta";
+      // Only show the personalised name/greeting when actually signed in -
+      // signed-out visitors always get the generic default, regardless of
+      // whatever name is cached locally from a previous session
+      const name = currentUser ? (window.userFirstName || "Haribhakta") : "Haribhakta";
       updateChallengeBanner();
 
       // Welcome text
       const welcomeEl = document.getElementById("welcomeText");
       if (welcomeEl) {
         const hasVisited = localStorage.getItem("hasVisited");
-        if (!hasVisited) {
+        if (!hasVisited || !currentUser) {
           welcomeEl.innerHTML = `
             <div style="font-size:2.5rem; font-weight:700; color:var(--blue); line-height:1.2;">Jai Swaminarayan, ${name}! 🙏🏽</div>
             <div style="font-size:1.2rem; color:var(--text-muted); margin-top:0.5rem;">Welcome to your Satsang Diksha Mukhpath Tracker - <span style="cursor:pointer; text-decoration:underline; color:var(--blue);" onclick="openTutorial()">click here</span> for a quick guide.</div>
           `;
-          localStorage.setItem("hasVisited", "true");
+          if (!hasVisited) localStorage.setItem("hasVisited", "true");
         } else {
           welcomeEl.innerHTML = `
             <div style="font-size:2.5rem; font-weight:700; color:var(--blue); line-height:1.2;">Jai Swaminarayan, ${name}! 🙏🏽</div>
@@ -10268,32 +10997,19 @@
       renderProgressPage();
       showPage("home");
       initAuth();
-      // Backfill noticeboard: if user hit a milestone in the last 7 days, add it
+      // Backfill noticeboard: if user hit a milestone in the last 7 days, add it.
+      // Skipped entirely once this milestone has already been handled once
+      // (posted live or backfilled) so manually deleting a note in Firebase
+      // doesn't cause it to silently reappear on the next page load.
       setTimeout(() => {
         if (!db || !currentUser) return;
         const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
         const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
         const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-        if (lastMilestone > 0 && lastMilestoneDate > sevenDaysAgo) {
-          // Check if entry already exists for this user + milestone
-          db.collection("noticeboard")
-            .where("uid", "==", currentUser.uid)
-            .where("milestone", "==", lastMilestone)
-            .get().then(snap => {
-              if (snap.empty) {
-                const prof = JSON.parse(localStorage.getItem("profile") || "{}");
-                if (NOTICEBOARD_MILESTONES.includes(lastMilestone)) {
-                  db.collection("noticeboard").add({
-                    uid: currentUser.uid,
-                    name: prof.name || "Someone",
-                    milestone: lastMilestone,
-                    timestamp: firebase.firestore.Timestamp.fromMillis(lastMilestoneDate),
-                    messages: {},
-                    reactions: {}
-                  }).catch(e => console.warn("Backfill failed:", e));
-                }
-              }
-            }).catch(e => console.warn("Backfill check failed:", e));
+        const alreadyHandled = localStorage.getItem("noticeboardHandledMilestone") === String(lastMilestone);
+        if (lastMilestone > 0 && lastMilestoneDate > sevenDaysAgo && !alreadyHandled && NOTICEBOARD_MILESTONES.includes(lastMilestone)) {
+          postOrUpdateNoticeboard(lastMilestone, firebase.firestore.Timestamp.fromMillis(lastMilestoneDate))
+            .catch(e => console.warn("Backfill failed:", e));
         }
       }, 3000);
 
@@ -10341,6 +11057,83 @@
           }).catch(e => console.warn('Milestone clear failed:', e));
         }
       }, 500);
+    }
+
+    /* ------------------------------
+       RESET EVERYTHING (Danger Zone)
+       Wipes local storage, the user's Mandal card, their Firestore
+       users doc, and every Noticeboard post they've made, then signs
+       them out and reloads so the app starts completely from scratch.
+       ------------------------------ */
+    function toggleDangerZone() {
+      const zone = document.getElementById('dangerZoneCollapse');
+      if (!zone) return;
+      const isOpen = zone.style.display === 'block';
+      zone.style.display = isOpen ? 'none' : 'block';
+      if (isOpen) collapseDangerZone();
+    }
+
+    function collapseDangerZone() {
+      const zone = document.getElementById('dangerZoneCollapse');
+      const input = document.getElementById('resetConfirmInput');
+      const resetBtn = document.getElementById('resetEverythingBtn');
+      if (zone) zone.style.display = 'none';
+      if (input) input.value = '';
+      if (resetBtn) { resetBtn.disabled = true; resetBtn.textContent = 'Confirm Reset'; }
+    }
+
+    async function resetEverything() {
+      const input = document.getElementById('resetConfirmInput');
+      if (!input || input.value.trim() !== 'RESET') return;
+
+      const btn = document.getElementById('resetEverythingBtn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Resetting…'; }
+
+      // Delete public-facing Firestore data first, while we still know who the user is
+      try {
+        if (db) {
+          const mandalId = currentUser ? currentUser.uid : localStorage.getItem('mandalUserId');
+          if (mandalId) {
+            await db.collection('mandal').doc(mandalId).delete().catch(e => console.warn('Mandal delete failed:', e));
+          }
+          if (currentUser) {
+            await db.collection('users').doc(currentUser.uid).delete().catch(e => console.warn('Users doc delete failed:', e));
+
+            const noticeSnap = await db.collection('noticeboard').where('uid', '==', currentUser.uid).get().catch(e => { console.warn('Noticeboard lookup failed:', e); return null; });
+            if (noticeSnap && !noticeSnap.empty) {
+              const batch = db.batch();
+              noticeSnap.docs.forEach(doc => batch.delete(doc.ref));
+              await batch.commit().catch(e => console.warn('Noticeboard delete failed:', e));
+            }
+
+            // Clean up every Challenge a Friend record they sent or received
+            const challengeSnap = await db.collection('challenges').where('participants', 'array-contains', currentUser.uid).get().catch(e => { console.warn('Challenges lookup failed:', e); return null; });
+            if (challengeSnap && !challengeSnap.empty) {
+              const cBatch = db.batch();
+              challengeSnap.docs.forEach(doc => cBatch.delete(doc.ref));
+              await cBatch.commit().catch(e => console.warn('Challenges delete failed:', e));
+            }
+          }
+        }
+      } catch(e) {
+        console.warn('Reset Everything: Firestore cleanup error:', e);
+      }
+
+      // Wipe every piece of local data the app stores
+      ['myShloks','profile','lastMilestone','lastMilestoneDate','tutorialSeen','motivFavourites',
+       'mandalUserId','dailyChallenge','dcHistory','mandalOptOut','darkMode','kqBestStreak','hasVisited',
+       'noticeboardHandledMilestone','noteMsgsSeenUntil','noteMsgsToastedFor','shlokCollections']
+        .forEach(k => localStorage.removeItem(k));
+      // Also clear the session-only flag that skips the shlok map's reveal animation,
+      // so it plays again fresh (a page reload alone doesn't clear sessionStorage)
+      sessionStorage.removeItem('mapAnimDone');
+
+      // Sign out so they land back on a completely fresh, signed-out app
+      if (auth && currentUser) {
+        try { await auth.signOut(); } catch(e) { console.warn('Sign out failed:', e); }
+      }
+
+      window.location.reload();
     }
 
     /* ------------------------------
@@ -10441,16 +11234,19 @@
       if (isOpen) {
         panel.classList.remove("open");
         overlay.classList.remove("open");
+        collapseDangerZone();
       } else {
         panel.classList.add("open");
         overlay.classList.add("open");
         loadProfile();
+        clearNoteCommentBadge();
       }
     }
 
     function closePanel() {
       document.getElementById("slideoutPanel").classList.remove("open");
       document.getElementById("slideoutOverlay").classList.remove("open");
+      collapseDangerZone();
     }
 
     /* ------------------------------
@@ -10512,11 +11308,20 @@
       if (!fav)       { showToast("Please select your favourite shlok - this is shown on the Friends page!"); return; }
       if (fav && !allShloks.some(s => s.id === fav)) { showToast("Favourite shlok not found in list."); return; }
 
+      // Target Shloks is optional, but if entered it must be a whole number 1-315
+      let goalTargetValue = "";
+      if (goalTarget) {
+        if (!/^\d+$/.test(goalTarget)) { showToast("Target Shloks must be a number, no letters or symbols."); return; }
+        const n = parseInt(goalTarget, 10);
+        if (n < 1 || n > 315) { showToast("Target Shloks must be between 1 and 315."); return; }
+        goalTargetValue = n;
+      }
+
       saveProfile(name, mandalName, start, fav);
       // Save custom goal into profile
       const profile = JSON.parse(localStorage.getItem("profile")) || {};
       profile.goalName   = goalName;
-      profile.goalTarget = goalTarget ? parseInt(goalTarget) : "";
+      profile.goalTarget = goalTargetValue;
       profile.goalDate   = goalDate;
       localStorage.setItem("profile", JSON.stringify(profile));
       syncToMandal();
