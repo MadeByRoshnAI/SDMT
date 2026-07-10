@@ -258,6 +258,7 @@
     }
 
     .mobile-nav-item {
+      position: relative;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 12px;
@@ -268,6 +269,21 @@
       cursor: pointer;
       text-align: left;
       transition: 0.2s ease;
+    }
+    /* Small "something new" dot, added only to specific nav items via JS -
+       absolutely positioned so it never affects the item's own width or
+       pushes neighbouring nav items around */
+    .nav-item.has-notification::after,
+    .mobile-nav-item.has-notification::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #dc2626;
+      border: 1.5px solid var(--blue);
     }
     .mobile-nav-item:hover { background: rgba(255,255,255,0.16); }
 
@@ -2617,18 +2633,6 @@
       background: var(--blue-mid);
       padding: 1.1rem 0.85rem;
     }
-    .slideout-tab.has-notification::after {
-      content: '';
-      position: absolute;
-      top: 8px;
-      right: 6px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #dc2626;
-      border: 2px solid var(--blue);
-    }
-
     /* Slideout overlay */
     .slideout-overlay {
       position: fixed;
@@ -2674,7 +2678,7 @@
       -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
     }
 
     .panel-accent {
@@ -2845,56 +2849,16 @@
     .panel-reset-btn:hover { background: rgba(220,38,38,0.15); transform: translateY(-1px); }
 
     /* Edit panel inside slideout */
-    .edit-panel {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, var(--blue) 0%, var(--blue-dark) 100%);
-      display: flex;
-      flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-y: auto;
-    }
-    .edit-panel.open { transform: translateX(0); }
-
-    .edit-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1.4rem 1.5rem 1rem;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
-    .edit-back-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .edit-back-btn:hover { background: rgba(255,255,255,0.2); }
-    .edit-header-title {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
     .edit-body {
       padding: 1rem 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      flex: 1;
     }
     .edit-avatar-row {
       display: flex;
       justify-content: center;
+      padding-top: 1.4rem;
       margin-bottom: 0.2rem;
     }
     .edit-avatar-ring {
@@ -2936,9 +2900,17 @@
       box-sizing: border-box;
     }
     .edit-input::placeholder { color: rgba(255,255,255,0.35); }
+    .edit-input:disabled, #goalToggleName:disabled, #goalToggleDate:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
     .edit-input:focus {
       border-color: var(--gold);
       background: rgba(255,255,255,0.13);
+    }
+    .edit-input-error {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 1px rgba(220,38,38,0.4);
     }
     .edit-input-note {
       font-size: 0.72rem;
@@ -3561,7 +3533,7 @@
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15);
       border: 3px solid #a07840;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2.5rem 2rem;
       align-items: start;
       min-height: 250px;
@@ -3758,7 +3730,7 @@
       <button class="nav-item" data-page="learn" onclick="switchTab(this, 'learn')">Learn</button>
       <button class="nav-item" data-page="motivation" onclick="switchTab(this, 'motivation')">Motivation</button>
       <button class="nav-item" data-page="games" onclick="if(document.querySelector('.game-screen[style*=block]')){switchTab(this,'games');backToHub();}else{switchTab(this,'games');}">Games</button>
-      <button class="nav-item" data-page="mandal" onclick="switchTab(this, 'mandal')">Mukhpath Mandal</button>
+      <button class="nav-item" id="mandalNavItem" data-page="mandal" onclick="switchTab(this, 'mandal')">Mukhpath Mandal</button>
       <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">☰</button>
@@ -3773,7 +3745,7 @@
     <button class="mobile-nav-item" data-page="learn" onclick="switchTabMobile(this, 'learn')">📚 Learn</button>
     <button class="mobile-nav-item" data-page="motivation" onclick="switchTabMobile(this, 'motivation')">✨ Motivation</button>
     <button class="mobile-nav-item" data-page="games" onclick="if(document.querySelector('.game-screen[style*=block]')){switchTabMobile(this,'games');backToHub();}else{switchTabMobile(this,'games');}">🎮 Games</button>
-    <button class="mobile-nav-item" data-page="mandal" onclick="switchTabMobile(this, 'mandal')">Mukhpath Mandal</button>
+    <button class="mobile-nav-item" id="mandalNavItemMobile" data-page="mandal" onclick="switchTabMobile(this, 'mandal')">Mukhpath Mandal</button>
     <button class="mobile-nav-item" id="mobileDarkToggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
   </div>
 
@@ -3796,26 +3768,16 @@
         </button>
       </div>
 
-      <!-- JOURNEY TO RAJIPO + CARDS CONTAINER -->
-      <div class="home-content-wrap">
-
-        <!-- CHALLENGE BANNER -->
-        <div id="challengeBanner" style="display:none; border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>{ startGame('challengeFriend'); setTimeout(()=>cfSwitchTab('mine'),150); },200);">
-          <div style="font-size:0.72rem; font-weight:700; color:#F4C95D; margin-bottom:0.3rem; letter-spacing:0.06em;">⚔️ CHALLENGE</div>
-          <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.5rem;"></div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <div style="flex:1; background:rgba(255,255,255,0.15); border-radius:999px; height:5px; overflow:hidden;">
-              <div id="challengeBannerBar" style="height:100%; border-radius:999px; transition:width 0.3s;"></div>
-            </div>
-            <div id="challengeBannerTime" style="font-size:0.72rem; color:rgba(255,255,255,0.7); white-space:nowrap;"></div>
-          </div>
-        </div>
-
-        <!-- WEEKLY SUMMARY (Sundays only) -->
-      <!-- SUNDAY PARIS CARD (above weekly summary) -->
+      <!-- TOP PRIORITY: day-specific cards (Mukhpath Monday / Summary Sunday / Weekly Summary) -->
+      <!-- These take priority over the challenge banner below, and only show on their relevant day(s).
+           This wrapper is collapsed to display:none via JS whenever none of its cards are showing,
+           so it doesn't leave an empty gap (e.g. when signed out, or on a day with no special card). -->
+      <div id="dayPriorityCardsWrap" class="home-content-wrap" style="margin-bottom:0;display:none;">
+        <!-- SUNDAY PARIS CARD -->
         <div id="sundayParisCard" style="display:none;margin-bottom:1rem;"></div>
 
-        <div id="weeklySummaryCard" class="home-card home-progress-card" style="display:none;padding:0;overflow:hidden;min-height:0;">
+        <!-- WEEKLY SUMMARY (Sundays only) -->
+        <div id="weeklySummaryCard" class="home-card home-progress-card" style="display:none;padding:0;overflow:hidden;min-height:0;margin-bottom:1rem;">
           <div onclick="
             const b=document.getElementById('weeklySummaryBody');
             const a=document.getElementById('weeklySummaryArrow');
@@ -3864,8 +3826,30 @@
           </div>
         </div>
 
-        <!-- MONDAY PARIS CARD (above My Mukhpath Journey) -->
+        <!-- MONDAY PARIS CARD -->
         <div id="mondayParisCard" style="display:none;margin-bottom:1rem;"></div>
+
+        <!-- WEDNESDAY PARIS CARD -->
+        <div id="wednesdayParisCard" style="display:none;margin-bottom:1rem;"></div>
+
+        <!-- FRIDAY PARIS CARD -->
+        <div id="fridayParisCard" style="display:none;margin-bottom:1rem;"></div>
+      </div>
+
+      <!-- JOURNEY TO RAJIPO + CARDS CONTAINER -->
+      <div class="home-content-wrap">
+
+        <!-- CHALLENGE BANNER -->
+        <div id="challengeBanner" style="display:none; border-radius:14px; padding:1rem 1.2rem; margin-bottom:1rem; cursor:pointer;" onclick="switchTab(document.querySelector('[data-page=games]'), 'games'); setTimeout(()=>{ startGame('challengeFriend'); setTimeout(()=>cfSwitchTab('mine'),150); },200);">
+          <div style="font-size:0.72rem; font-weight:700; color:#F4C95D; margin-bottom:0.3rem; letter-spacing:0.06em;">⚔️ CHALLENGE</div>
+          <div id="challengeBannerText" style="font-size:0.88rem; color:white; font-weight:600; margin-bottom:0.5rem;"></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; background:rgba(255,255,255,0.15); border-radius:999px; height:5px; overflow:hidden;">
+              <div id="challengeBannerBar" style="height:100%; border-radius:999px; transition:width 0.3s;"></div>
+            </div>
+            <div id="challengeBannerTime" style="font-size:0.72rem; color:rgba(255,255,255,0.7); white-space:nowrap;"></div>
+          </div>
+        </div>
 
         <!-- JOURNEY TO RAJIPO PROGRESS BAR -->
         <div class="home-card home-progress-card">
@@ -4423,7 +4407,7 @@
       <div id="gameHub">
         <div class="card">
           <h2>🎮 Games</h2>
-          <p style="color:var(--text-muted); font-size:0.9rem;">Choose a game - all games use your memorised shloks. You need at least 4 memorised shloks to play.</p>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Choose a game - all games use your memorised shloks. You need at least 4 memorised shloks to play. You can try one game for free without signing in - after that, sign in with Google to keep playing and save your progress.</p>
         </div>
         <div class="game-grid">
           <div class="game-card" onclick="startGame('dailyChallenge')">
@@ -4781,6 +4765,23 @@
         <div id="cfMain"></div>
       </div>
 
+      <!-- Shown once someone's used their one free game without signing in -->
+      <div id="gameSignInGate" class="game-screen" style="display:none;">
+        <div class="game-topbar">
+          <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          <div class="game-score-label">🔒 Sign in</div>
+        </div>
+        <div class="card game-play-card" style="text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.8rem;">🔒</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">Sign in to keep playing</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">You've had a free game to try things out - sign in with Google so your progress is saved and you can keep practising.</div>
+          <button class="google-signin-btn" onclick="signInWithGoogle()" style="margin:0 auto;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+
     </section>
 
     <section id="mandal" class="page-section">
@@ -4847,157 +4848,132 @@
           <div style="flex:1;height:1px;background:var(--border);"></div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+        <div style="display:flex;flex-direction:column;gap:0.6rem;">
 
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">⚙️ General</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Reset Everything</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Permanently erase all data.</div>
+          <!-- HOME PAGE -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('home')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🏠 Home</div>
+              <span id="wnArrow-home" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-home" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">A card for every day of the week</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Mukhpath Monday, Wisdom Wednesday, Focus Friday and Summary Sunday each bring their own card to the top of your home page on their day - tap to jump straight into the relevant activity.</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
+                </div>
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Simpler profile</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">'My Profile' is now one screen with a single save button. Sign in with Google to unlock editing - your card also only appears on 'Mukhpath Mandal' once you've added at least one shlok.</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🏠 Home Page</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mukhpath Monday</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Monday encouraging you to learn - tap it to go straight to the Learn page.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Summary Sunday</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A card appears every Sunday encouraging you to review - tap it to go straight to Full Review.</div>
+          <!-- MY MUKHPATH & LEARN -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('learn')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">📘 My Mukhpath & Learn</div>
+              <span id="wnArrow-learn" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-learn" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily aim guidance</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to meet your aim!</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">📖 Learn & My Mukhpath</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Paris Mandir Mahotsav motivation</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to hit your aim by Paris Mandir Mahotsav.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">My Collections</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Create up to 5 named collections of shloks (like 'my hardest ones') from the My Mukhpath page, and practise just that set.</div>
+          <!-- GAMES -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('games')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🎮 Games</div>
+              <span id="wnArrow-games" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-games" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
+                </div>
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🪧 Noticeboard</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Celebrate milestones together</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new Noticeboard tab on the Mandal page shows everyone's milestone achievements as sticky notes on a corkboard.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">React to milestones</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 🕺 - hover to see who reacted.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Write a message</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 7 days.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Comment & reaction notifications</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Get a badge and a toast when someone comments on or reacts to your milestone note - names them individually, or by count for a group.</div>
+          <!-- MUKHPATH MANDAL -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('mandal')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🏛️ Mukhpath Mandal</div>
+              <span id="wnArrow-mandal" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-mandal" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Celebrate milestones together</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new noticeboard tab shows everyone's milestone achievements as sticky notes on a corkboard.</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">React to milestones</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 🕺</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Write a message</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 7 days.</div>
+                </div>
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Comment & reaction notifications</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A little red dot appears on 'Mukhpath Mandal' in the nav bar when someone comments on or reacts to your milestone note - it disappears once you check the noticeboard.</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🎮 Games</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - My Collection mode</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Practise just the shloks in one of your saved collections, picked right from the mode selector.</div>
+          <!-- GENERAL -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('general')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">⚙️ General</div>
+              <span id="wnArrow-general" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-general" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
+                </div>
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Reset Everything</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Permanently erase all data.</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style="height:1.5px;background:var(--border-strong);"></div>
-
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.7rem;">🐛 Bug Fixes</div>
-            <div style="display:flex;flex-direction:column;gap:0;padding-left:0.8rem;border-left:2px solid rgba(244,201,93,0.3);">
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok data - duplicates fixed</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shloks 173 and 231 had incorrect text - now corrected.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Clear All resets Mandal card</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Clearing your shloks now also resets your progress and milestone badge on the Mandal page.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend - multiple fixes</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Chain challenge count, button responses and score saving all fixed.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - Specific Range</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text was invisible when typing a range - now fixed.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily streak restoring correctly</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Streak was showing as 0 after the website updated - now restores correctly.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode sticky notes</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Text on Noticeboard sticky notes now stays black in dark mode, matching light mode.</div>
-              </div>
-              <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Target Shloks validation</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Target Shloks now only accepts numbers 1-315, blocking letters and symbols.</div>
-              </div>
-              <div style="padding:0.5rem 0;">
-                <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Sign-out greeting</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Signing out now correctly resets the home page greeting instead of still showing your name.</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -5260,38 +5236,72 @@
   <div class="slideout-panel" id="slideoutPanel">
     <div class="panel-accent"></div>
 
-    <div class="panel-scroll">
-    <div class="panel-hero">
-      <div class="avatar-ring" id="avatarInitials">YN</div>
-      <div class="panel-name" id="pmFullName">Your Name</div>
-      <div class="panel-sub" id="pmStart">Started Mukhpath on: --</div>
-      <div class="panel-fav" id="pmFav">Favourite Shlok: --</div>
+    <div class="panel-scroll" id="profileScrollArea">
+    <div class="edit-avatar-row">
+      <div class="edit-avatar-ring" id="avatarInitials">YN</div>
     </div>
 
-    <div class="panel-stats">
-      <div class="panel-section-label">My Mukhpath</div>
-      <div class="stats-row">
-        <div class="stat-row-item">
-          <div class="stat-label"><span class="stat-icon">📘</span> Learnt</div>
-          <span class="stat-count" id="statLearnt">0</span>
+    <div id="profileLockedBanner" style="display:none; background:rgba(244,201,93,0.08); border:1.5px solid rgba(244,201,93,0.3); border-radius:10px; padding:0.8rem 1rem; margin:0.8rem 1.5rem 1rem; text-align:center;">
+      <div style="font-weight:700; font-size:0.85rem; color:var(--gold); margin-bottom:0.2rem;">🔒 Sign in to add your details</div>
+      <div style="font-size:0.78rem; color:rgba(255,255,255,0.6);">Your profile is locked until you sign in with Google below - this keeps your progress saved and synced across devices.</div>
+    </div>
+
+    <div class="edit-body">
+      <div style="font-size:0.7rem; color:rgba(255,200,50,0.9); margin-bottom:0.5rem; text-align:center;">⚠️ The information entered below will be visible on the Mukhpath Mandal page for others to see.</div>
+      <div style="font-size:0.72rem; color:#dc2626; margin-bottom:1rem; text-align:center;">* Required fields</div>
+
+      <div class="edit-field">
+        <div class="edit-label">Full Name <span style="color:#dc2626;">*</span></div>
+        <input id="editName" class="edit-input" type="text" placeholder="Enter your full name" oninput="this.classList.remove('edit-input-error'); updateAvatarInitialsLive();">
+      </div>
+
+      <div class="edit-field">
+        <div class="edit-label">Your Centre <span style="color:#dc2626;">*</span></div>
+        <input id="editMandal" class="edit-input" type="text" placeholder="e.g. Harrow, Wellingborough, South London" oninput="this.classList.remove('edit-input-error');">
+      </div>
+
+      <div class="edit-field">
+        <div class="edit-label">Started Mukhpath <span style="color:#dc2626;">*</span></div>
+        <input id="editStart" class="edit-input" type="date" oninput="this.classList.remove('edit-input-error');">
+      </div>
+
+      <div class="edit-field">
+        <div class="edit-label">Favourite Shlok <span style="color:#dc2626;">*</span></div>
+        <select id="editFav" class="edit-input" onchange="this.classList.remove('edit-input-error');">
+          <option value="">Select</option>
+        </select>
+        <div class="edit-input-note">Choose from the Satsang Diksha shloks you’re learning.</div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.15); margin:0.3rem 0 0.6rem;"></div>
+      <div style="font-size:1rem; font-weight:800; color:white; margin-bottom:0.2rem; text-align:center; letter-spacing:0.01em;">Personal Aim</div>
+      <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:0.4rem; text-align:center;">Set a personal aim to work towards!</div>
+      <div class="edit-field">
+        <div class="edit-label">Target Shloks <span style="color:#dc2626;">*</span></div>
+        <input id="editGoalTarget" class="edit-input" type="number" min="1" max="315" step="1" inputmode="numeric" placeholder="e.g. 75" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,3); this.classList.remove('edit-input-error');">
+      </div>
+      <div class="edit-field">
+        <div class="edit-label">Label it by <span style="color:#dc2626;">*</span></div>
+        <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+          <button type="button" id="goalToggleName" onclick="goalToggle('name')"
+            style="flex:1; padding:0.35rem; border-radius:8px; border:1.5px solid var(--gold); background:var(--gold); color:var(--blue-dark); font-size:0.78rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;">
+            Name
+          </button>
+          <button type="button" id="goalToggleDate" onclick="goalToggle('date')"
+            style="flex:1; padding:0.35rem; border-radius:8px; border:1.5px solid rgba(255,255,255,0.2); background:transparent; color:rgba(255,255,255,0.5); font-size:0.78rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;">
+            Date
+          </button>
         </div>
-        <div class="stat-row-item">
-          <div class="stat-label"><span class="stat-icon">🏆</span> Memorised</div>
-          <span class="stat-count" id="statMemorised">0</span>
-        </div>
-        <div class="stat-row-item">
-          <div class="stat-label"><span class="stat-icon">🔁</span> To Revise</div>
-          <span class="stat-count" id="statRevise">0</span>
-        </div>
+        <input id="editGoalName" class="edit-input" type="text" placeholder="e.g. Paris Mandir Mahotsav, Diwali" oninput="this.classList.remove('edit-input-error');">
+        <input id="editGoalDate" class="edit-input" type="date" style="display:none;" oninput="this.classList.remove('edit-input-error');">
       </div>
     </div>
 
-    <div class="panel-progress">
-      <div class="panel-section-label">🎯 Next Milestone</div>
-      <div id="nextMilestoneContent" style="margin-bottom:1rem;">
-        <div class="daily-shlok-empty">Add some shloks to see your next milestone!</div>
-      </div>
+    <div id="profileSaveBtnWrap" style="padding:0 1.5rem; margin:0.3rem 0 1rem;">
+      <button id="profileSaveBtn" class="edit-save-btn" style="display:block; width:100%; margin:0;" onclick="saveProfileFromEditPanel()">Save</button>
+    </div>
 
+    <div class="panel-progress" style="padding-top:0;">
       <div class="auth-section">
         <button id="googleSignInBtn" class="google-signin-btn" onclick="signInWithGoogle()">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
@@ -5303,12 +5313,8 @@
         </div>
       </div>
 
-      <div style="text-align:center; padding-bottom:0.5rem;">
-        <button class="panel-edit-btn" onclick="openProfileEditor()">Edit Profile</button>
-      </div>
-
-      <div id="resetPillWrap" style="text-align:center; padding-bottom:0.5rem; display:none;">
-        <button class="panel-reset-btn" id="resetPillBtn" onclick="toggleDangerZone()">Reset Everything</button>
+      <div id="resetPillWrap" style="padding-bottom:0.5rem; display:none;">
+        <button class="panel-reset-btn" id="resetPillBtn" onclick="toggleDangerZone()" style="display:block; width:100%; box-sizing:border-box;">Reset Everything</button>
       </div>
 
       <div id="dangerZoneCollapse" class="danger-zone" style="display:none;">
@@ -5318,70 +5324,6 @@
         <button type="button" id="resetEverythingBtn" class="danger-zone-btn" onclick="resetEverything()" disabled>Confirm Reset</button>
       </div>
     </div>
-    </div>
-
-    <!-- Edit panel inside slideout -->
-    <div class="edit-panel" id="editPanel">
-      <div class="edit-header">
-        <button class="edit-back-btn" onclick="closeEditPanel()">←</button>
-        <div class="edit-header-title">Edit Profile</div>
-      </div>
-      <div class="edit-body">
-        <div class="edit-avatar-row">
-          <div class="edit-avatar-ring" id="editAvatarInitials">YN</div>
-        </div>
-
-        <div style="font-size:0.7rem; color:rgba(255,200,50,0.9); margin-bottom:0.5rem; text-align:center;">⚠️ The information entered below will be visible on the Mukhpath Mandal page for others to see.</div>
-        <div style="font-size:0.72rem; color:#dc2626; margin-bottom:1rem; text-align:center;">* Required fields</div>
-
-        <div class="edit-field">
-          <div class="edit-label">Full Name <span style="color:#dc2626;">*</span></div>
-          <input id="editName" class="edit-input" type="text" placeholder="Enter your full name">
-        </div>
-
-        <div class="edit-field">
-          <div class="edit-label">Your Centre <span style="color:#dc2626;">*</span></div>
-          <input id="editMandal" class="edit-input" type="text" placeholder="e.g. Harrow, Wellingborough, South London">
-        </div>
-
-        <div class="edit-field">
-          <div class="edit-label">Started Mukhpath <span style="color:#dc2626;">*</span></div>
-          <input id="editStart" class="edit-input" type="date">
-        </div>
-
-        <div class="edit-field">
-          <div class="edit-label">Favourite Shlok <span style="color:#dc2626;">*</span></div>
-          <select id="editFav" class="edit-input">
-            <option value="">Select</option>
-          </select>
-          <div class="edit-input-note">Choose from the Satsang Diksha shloks you’re learning.</div>
-        </div>
-
-        <div style="border-top:1px solid rgba(255,255,255,0.15); margin:0.3rem 0 0.6rem;"></div>
-        <div style="font-size:1rem; font-weight:800; color:white; margin-bottom:0.2rem; text-align:center; letter-spacing:0.01em;">Personal Aim</div>
-        <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:0.4rem; text-align:center;">Set a personal aim to work towards!</div>
-        <div class="edit-field">
-          <div class="edit-label">Target Shloks</div>
-          <input id="editGoalTarget" class="edit-input" type="number" min="1" max="315" step="1" inputmode="numeric" placeholder="e.g. 75" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,3);">
-        </div>
-        <div class="edit-field">
-          <div class="edit-label">Label it by</div>
-          <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-            <button type="button" id="goalToggleName" onclick="goalToggle('name')"
-              style="flex:1; padding:0.35rem; border-radius:8px; border:1.5px solid var(--gold); background:var(--gold); color:var(--blue-dark); font-size:0.78rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;">
-              Name
-            </button>
-            <button type="button" id="goalToggleDate" onclick="goalToggle('date')"
-              style="flex:1; padding:0.35rem; border-radius:8px; border:1.5px solid rgba(255,255,255,0.2); background:transparent; color:rgba(255,255,255,0.5); font-size:0.78rem; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;">
-              Date
-            </button>
-          </div>
-          <input id="editGoalName" class="edit-input" type="text" placeholder="e.g. Paris Mandir Mahotsav, Diwali">
-          <input id="editGoalDate" class="edit-input" type="date" style="display:none;">
-        </div>
-      </div>
-
-      <button class="edit-save-btn" onclick="saveProfileFromEditPanel()">Save Profile</button>
     </div>
   </div>
 
@@ -7983,9 +7925,15 @@
       document.getElementById("memorisedCount").innerText = memorised;
       document.getElementById("reviseCount").innerText = revise;
 
-      document.getElementById("statLearnt").innerText = learnt;
-      document.getElementById("statMemorised").innerText = memorised;
-      document.getElementById("statRevise").innerText = revise;
+      // Profile panel no longer has its own stats (removed with the Overview
+      // tab - stats live on the Home/My Mukhpath/Mandal pages instead), but
+      // guard with null-checks in case these ids are reintroduced later.
+      const statLearntEl = document.getElementById("statLearnt");
+      const statMemorisedEl = document.getElementById("statMemorised");
+      const statReviseEl = document.getElementById("statRevise");
+      if (statLearntEl) statLearntEl.innerText = learnt;
+      if (statMemorisedEl) statMemorisedEl.innerText = memorised;
+      if (statReviseEl) statReviseEl.innerText = revise;
     }
 
     function updateDashboard() {
@@ -8024,11 +7972,38 @@
       return false;
     }
 
+    // Collapses the #dayPriorityCardsWrap container (Monday/Wednesday/Friday/
+    // Sunday/Weekly Summary cards) to display:none whenever none of its cards
+    // are showing, so it doesn't leave an empty gap on the home page.
+    function updateDayPriorityWrapVisibility() {
+      const wrap = document.getElementById('dayPriorityCardsWrap');
+      if (!wrap) return;
+      const anyVisible = ['sundayParisCard', 'weeklySummaryCard', 'mondayParisCard', 'wednesdayParisCard', 'fridayParisCard']
+        .some(id => {
+          const el = document.getElementById(id);
+          return el && el.style.display === 'block';
+        });
+      wrap.style.display = anyVisible ? 'flex' : 'none';
+    }
+
     function updateParisCards() {
-      const day = new Date().getDay(); // 0=Sun, 1=Mon
+      const day = new Date().getDay(); // 0=Sun, 1=Mon, 3=Wed, 5=Fri
       const mondayEl = document.getElementById('mondayParisCard');
       const sundayEl = document.getElementById('sundayParisCard');
-      if (!mondayEl || !sundayEl) return;
+      const wednesdayEl = document.getElementById('wednesdayParisCard');
+      const fridayEl = document.getElementById('fridayParisCard');
+      if (!mondayEl || !sundayEl || !wednesdayEl || !fridayEl) return;
+
+      // These day-specific cards are a signed-in perk - signed-out visitors
+      // see the sign-in banner instead.
+      if (!currentUser) {
+        mondayEl.style.display = 'none';
+        sundayEl.style.display = 'none';
+        wednesdayEl.style.display = 'none';
+        fridayEl.style.display = 'none';
+        updateDayPriorityWrapVisibility();
+        return;
+      }
 
       const dark = document.body.classList.contains('dark-mode');
       const bg = dark ? '#1e2130' : '#ffffff';
@@ -8057,20 +8032,46 @@
         mondayEl.innerHTML = parisCard(
           "It's Mukhpath Monday - time to learn some shloks!",
           "switchTab(document.querySelector('[data-page=learn]'),'learn')",
-          "Mukhpath Monday"
+          "📖 Mukhpath Monday"
         );
         sundayEl.style.display = 'none';
+        wednesdayEl.style.display = 'none';
+        fridayEl.style.display = 'none';
       } else if (day === 0) {
         sundayEl.style.display = 'block';
         sundayEl.innerHTML = parisCard(
           "It's Summary Sunday! Take some time today to review all the shloks you've learnt so far.",
           "switchTab(document.querySelector('[data-page=games]'),'games');setTimeout(()=>startGame('fullReview'),200)",
-          "Summary Sunday"
+          "🧠 Summary Sunday"
         );
         mondayEl.style.display = 'none';
+        wednesdayEl.style.display = 'none';
+        fridayEl.style.display = 'none';
+      } else if (day === 3) {
+        wednesdayEl.style.display = 'block';
+        wednesdayEl.innerHTML = parisCard(
+          "Swamishri says, “By doing mukhpath while understanding its meaning, the mukhpath is easily completed.” Take some time today to reflect on the meanings behind the shloks you've learnt!",
+          "switchTab(document.querySelector('[data-page=myshloks]'),'myshloks')",
+          "💡 Wisdom Wednesday"
+        );
+        mondayEl.style.display = 'none';
+        sundayEl.style.display = 'none';
+        fridayEl.style.display = 'none';
+      } else if (day === 5) {
+        fridayEl.style.display = 'block';
+        fridayEl.innerHTML = parisCard(
+          "Time to lock in! 🔒 Set a 10-minute timer and challenge yourself to learn as many shloks as you can before it ends!",
+          "switchTab(document.querySelector('[data-page=learn]'),'learn')",
+          "🎯 Focus Friday"
+        );
+        mondayEl.style.display = 'none';
+        sundayEl.style.display = 'none';
+        wednesdayEl.style.display = 'none';
       } else {
         mondayEl.style.display = 'none';
         sundayEl.style.display = 'none';
+        wednesdayEl.style.display = 'none';
+        fridayEl.style.display = 'none';
       }
     }
     function updateMotivationMsg() {
@@ -8144,7 +8145,15 @@
     }
 
     // ── GAMES HUB ──
+    // Anyone can try ONE game for free without signing in (tracked by
+    // 'gamesFreePlayUsed' in localStorage); after that, every game routes to
+    // a sign-in gate instead. Challenge a Friend is exempt from this - it's
+    // always sign-in-required since it's inherently a two-person feature.
     function startGame(game) {
+      if (game !== "challengeFriend" && !currentUser && localStorage.getItem("gamesFreePlayUsed") === "true") {
+        showGameSignInGate();
+        return;
+      }
       if (game === "fullReview") {
         if (myShloks.length < 4) {
           showToast("You need at least 4 added shloks to play Full Review!");
@@ -8152,6 +8161,9 @@
         }
       } else if (game !== "challengeFriend" && needMoreShloks()) {
         return;
+      }
+      if (game !== "challengeFriend" && !currentUser) {
+        localStorage.setItem("gamesFreePlayUsed", "true");
       }
       gameScore = 0;
       document.getElementById("gameHub").style.display = "none";
@@ -8166,6 +8178,13 @@
       if (game === "shlokSequence") { document.getElementById("gameShlokSequence").style.display = "block"; loadShlokSequence(); }
       if (game === "challengeFriend") { document.getElementById("gameChallengeFriend").style.display = "block"; loadChallengeFriend(); }
 
+    }
+
+    function showGameSignInGate() {
+      gameScore = 0;
+      document.getElementById("gameHub").style.display = "none";
+      document.querySelectorAll(".game-screen").forEach(s => s.style.display = "none");
+      document.getElementById("gameSignInGate").style.display = "block";
     }
 
     function shuffle(arr) {
@@ -8473,10 +8492,11 @@
       document.getElementById("tutorialBox")?.classList.remove("visible");
     }
 
-    window.addEventListener("load", () => {
-      const seen = localStorage.getItem("tutorialSeen");
-      if (!seen) openTutorial();
-    });
+    // Quick Guide no longer auto-opens on first visit - it only opens when
+    // the user actually clicks the "click here" link or the help icon.
+    // The Home page's "Welcome to..." vs "Welcome back..." text (driven by
+    // the separate `hasVisited` key) already tells first-time visitors it's
+    // there without forcing the modal open on them.
 
     /* ------------------------------
        MOTIVATION
@@ -9122,6 +9142,28 @@
       if (name)   name.textContent     = user ? `Signed in as ${user.email || user.displayName}` : "";
       if (resetWrap) resetWrap.style.display = user ? "block" : "none";
       if (!user) collapseDangerZone();
+      updateProfileFieldsLockState(user);
+    }
+
+    // Profile fields (name, centre, start date, fav shlok, personal aim) only
+    // matter once you're signed in - the Mandal card and personalised home
+    // greeting are both gated on currentUser, so there's nothing signed-out
+    // visitors gain by filling them in. Show them locked with a sign-in
+    // prompt instead of letting people fill out a form that goes nowhere.
+    function updateProfileFieldsLockState(user) {
+      const locked = !user;
+      const banner = document.getElementById("profileLockedBanner");
+      if (banner) banner.style.display = locked ? "block" : "none";
+
+      ["editName", "editMandal", "editStart", "editFav", "editGoalTarget",
+       "editGoalName", "editGoalDate", "goalToggleName", "goalToggleDate"]
+        .forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.disabled = locked;
+        });
+
+      const saveBtnWrap = document.getElementById("profileSaveBtnWrap");
+      if (saveBtnWrap) saveBtnWrap.style.display = locked ? "none" : "block";
     }
 
     // Sync all important data to Firestore under users/{uid}
@@ -9149,37 +9191,122 @@
       } catch(e) { console.warn("User data sync failed:", e); }
     }
 
-    // On sign-in: restore from Firestore if localStorage is empty
+    // ── CROSS-DEVICE MERGE HELPERS ──
+    // Combines two shlok lists (this device's local copy and the cloud copy)
+    // so switching between devices never silently loses progress. For any
+    // shlok tracked on both sides, "memorised" always wins since it's the
+    // clear high-water mark; otherwise we keep whichever side was touched
+    // more recently.
+    function mergeShlokLists(localList, cloudList) {
+      const byNumber = new Map();
+      (localList || []).forEach(s => byNumber.set(s.number, s));
+      (cloudList || []).forEach(cloudShlok => {
+        const localShlok = byNumber.get(cloudShlok.number);
+        if (!localShlok) { byNumber.set(cloudShlok.number, cloudShlok); return; }
+        if (localShlok.mastery === 'memorised' || cloudShlok.mastery === 'memorised') {
+          byNumber.set(cloudShlok.number, localShlok.mastery === 'memorised' ? localShlok : cloudShlok);
+        } else {
+          const localDate = localShlok.memorisedDate || localShlok.addedDate || '';
+          const cloudDate = cloudShlok.memorisedDate || cloudShlok.addedDate || '';
+          byNumber.set(cloudShlok.number, cloudDate > localDate ? cloudShlok : localShlok);
+        }
+      });
+      return Array.from(byNumber.values()).sort((a, b) => a.number - b.number);
+    }
+    // Simple set-union for history-style arrays (daily challenge dates,
+    // favourited motivational messages) - nothing to reconcile, just combine.
+    function mergeArraysUnique(a, b) {
+      return Array.from(new Set([...(Array.isArray(a) ? a : []), ...(Array.isArray(b) ? b : [])]));
+    }
+    // Fills gaps in one profile with values from the other - local wins
+    // when both sides have a value set.
+    function mergeProfiles(localProfile, cloudProfile) {
+      if (!localProfile) return cloudProfile || null;
+      if (!cloudProfile) return localProfile;
+      const merged = { ...cloudProfile, ...localProfile };
+      Object.keys(cloudProfile).forEach(key => {
+        if (merged[key] === undefined || merged[key] === null || merged[key] === '') merged[key] = cloudProfile[key];
+      });
+      return merged;
+    }
+
+    // On sign-in: merge this device's local progress with the cloud copy,
+    // rather than only pulling from the cloud when local storage happens to
+    // be empty. That old "empty-check" approach meant that once a device had
+    // any local data of its own (e.g. someone using both an iPad and a
+    // laptop), it would just push its own copy up and overwrite whatever the
+    // other device had saved - so progress from one device would randomly
+    // vanish. Merging every time means both devices' progress is always
+    // combined, and the reconciled result is written straight back to the
+    // cloud so the next device to sign in sees the full picture too.
     async function restoreOrSyncUserData(user) {
       if (!db) return;
-      const localShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
-      if (localShloks.length === 0) {
-        try {
-          const doc = await db.collection("users").doc(user.uid).get();
-          if (doc.exists) {
-            const d = doc.data();
-            if (d.myShloks)         localStorage.setItem("myShloks", JSON.stringify(d.myShloks));
-            if (d.profile)          localStorage.setItem("profile", JSON.stringify(d.profile));
-            if (d.lastMilestone)    localStorage.setItem("lastMilestone", d.lastMilestone);
-            if (d.lastMilestoneDate) localStorage.setItem("lastMilestoneDate", d.lastMilestoneDate);
-            if (d.dailyChallenge)   localStorage.setItem("dailyChallenge", d.dailyChallenge);
-            if (d.dcHistory)        localStorage.setItem("dcHistory", d.dcHistory);
-            if (d.motivFavourites)  localStorage.setItem("motivFavourites", d.motivFavourites);
-            if (d.mandalOptOut)     localStorage.setItem("mandalOptOut", d.mandalOptOut);
-            if (d.shlokCollections) localStorage.setItem("shlokCollections", d.shlokCollections);
-            myShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
-            shlokCollections = JSON.parse(localStorage.getItem("shlokCollections") || "[]");
-            loadProfile();
-            render();
-            renderProgressPage();
-            updateHomePage();
-            renderCollections();
-            showToast("Your progress has been restored! 🎉");
-          }
-        } catch(e) { console.warn("Data restore failed:", e); }
-      } else {
-        syncUserData();
-      }
+      try {
+        const doc = await db.collection("users").doc(user.uid).get();
+        if (!doc.exists) {
+          // Nothing saved in the cloud yet for this account - just push
+          // whatever's on this device up, nothing to merge with.
+          await syncUserData();
+          return;
+        }
+        const cloud = doc.data();
+        const localShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+        const localProfile = JSON.parse(localStorage.getItem("profile") || "null");
+        const hadAnyLocalData = localShloks.length > 0 || !!localProfile;
+
+        const mergedShloks = mergeShlokLists(localShloks, cloud.myShloks || []);
+        const mergedProfile = mergeProfiles(localProfile, cloud.profile || null);
+
+        const localMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
+        const cloudMilestone = parseInt(cloud.lastMilestone || "0");
+        const milestoneFromCloud = cloudMilestone > localMilestone;
+        const mergedMilestone = milestoneFromCloud ? cloudMilestone : localMilestone;
+        const mergedMilestoneDate = milestoneFromCloud
+          ? (cloud.lastMilestoneDate || "0")
+          : (localStorage.getItem("lastMilestoneDate") || "0");
+
+        const mergedDcHistory = mergeArraysUnique(
+          JSON.parse(localStorage.getItem("dcHistory") || "[]"),
+          JSON.parse(cloud.dcHistory || "[]")
+        );
+        const mergedMotiv = mergeArraysUnique(
+          JSON.parse(localStorage.getItem("motivFavourites") || "[]"),
+          JSON.parse(cloud.motivFavourites || "[]")
+        );
+
+        const collectionMap = new Map();
+        (cloud.shlokCollections ? JSON.parse(cloud.shlokCollections) : []).forEach(c => collectionMap.set(c.id, c));
+        JSON.parse(localStorage.getItem("shlokCollections") || "[]").forEach(c => collectionMap.set(c.id, c));
+        const mergedCollections = Array.from(collectionMap.values());
+
+        const mergedDailyChallenge = localStorage.getItem("dailyChallenge") || cloud.dailyChallenge || null;
+        const localMandalOptOut = localStorage.getItem("mandalOptOut");
+        const mergedMandalOptOut = localMandalOptOut !== null ? localMandalOptOut : (cloud.mandalOptOut || null);
+
+        localStorage.setItem("myShloks", JSON.stringify(mergedShloks));
+        if (mergedProfile) localStorage.setItem("profile", JSON.stringify(mergedProfile));
+        localStorage.setItem("lastMilestone", String(mergedMilestone));
+        localStorage.setItem("lastMilestoneDate", mergedMilestoneDate);
+        localStorage.setItem("dcHistory", JSON.stringify(mergedDcHistory));
+        localStorage.setItem("motivFavourites", JSON.stringify(mergedMotiv));
+        localStorage.setItem("shlokCollections", JSON.stringify(mergedCollections));
+        if (mergedDailyChallenge) localStorage.setItem("dailyChallenge", mergedDailyChallenge);
+        if (mergedMandalOptOut !== null) localStorage.setItem("mandalOptOut", mergedMandalOptOut);
+
+        myShloks = mergedShloks;
+        shlokCollections = mergedCollections;
+        loadProfile();
+        render();
+        renderProgressPage();
+        updateHomePage();
+        renderCollections();
+
+        // Push the reconciled result back up so the next device to sign in
+        // sees everything that's been merged here too.
+        await syncUserData();
+
+        showToast(hadAnyLocalData ? "Your progress has been synced across devices! 🎉" : "Your progress has been restored! 🎉");
+      } catch(e) { console.warn("Data restore/merge failed:", e); }
     }
 
     // Listen for auth state changes
@@ -9189,13 +9316,17 @@
         currentUser = user;
         updateAuthUI(user);
         // Refresh the Noticeboard if it's the tab currently on screen, so
-        // signing in/out from the "Sign in to see the Noticeboard" prompt
+        // signing in/out from the "Sign in to see the noticeboard" prompt
         // (or the panel itself) updates immediately without a manual re-click
         const noticePanel = document.getElementById('noticePanel');
         if (noticePanel && noticePanel.style.display !== 'none') loadNoticeboard();
         // Same for the Mandal page - it also requires sign-in now
         const mandalSection = document.getElementById('mandal');
         if (mandalSection && mandalSection.classList.contains('active')) renderMandal();
+        // If they just signed in from the "one free game used" gate, send
+        // them back to the hub so they can jump straight into a game
+        const signInGate = document.getElementById('gameSignInGate');
+        if (user && signInGate && signInGate.style.display !== 'none') backToHub();
         if (user) {
           await restoreOrSyncUserData(user);
           // Delete old anonymous Mandal document if it exists under a different ID
@@ -9235,6 +9366,10 @@
       const learnt    = freshShloks.filter(s => s.mastery === "learnt").length;
       const memorised = freshShloks.filter(s => s.mastery === "memorised").length;
       const revise    = freshShloks.filter(s => s.mastery === "revise").length;
+      // Don't create a Mandal card just from having a profile - wait until
+      // they've actually added at least one shlok, so people who've only
+      // filled in their name/aim etc. don't show up on the leaderboard yet
+      if (learnt + memorised + revise === 0) return;
       const lastMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
       const lastMilestoneDate = parseInt(localStorage.getItem("lastMilestoneDate") || "0");
       const isRecent = (Date.now() - lastMilestoneDate) < 48 * 60 * 60 * 1000;
@@ -9270,6 +9405,48 @@
 
     function mandalInitials(name) {
       return name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
+    }
+
+    // Opens the profile slideout (if it isn't already open) - used by the
+    // blank Mandal placeholder card and anywhere else outside the slideout
+    // itself that wants to jump straight to editing the profile fields
+    function jumpToEditProfile() {
+      const panel = document.getElementById("slideoutPanel");
+      const overlay = document.getElementById("slideoutOverlay");
+      if (panel && !panel.classList.contains("open")) {
+        panel.classList.add("open");
+        if (overlay) overlay.classList.add("open");
+        loadProfile();
+      }
+      // Fields are disabled (and can't receive focus) while signed out - in
+      // that case scroll to the sign-in prompt instead of the name field
+      const target = currentUser
+        ? document.getElementById("editName")
+        : document.getElementById("profileLockedBanner");
+      if (target) {
+        if (currentUser) target.focus();
+        else if (typeof target.scrollIntoView === "function") target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    // A same-sized stand-in for the signed-in user's own card, shown in their
+    // spot on the Mandal grid when they haven't set a name yet (so nothing
+    // has been synced to Firestore for them) - swaps out for their real card
+    // automatically once they save a name, via the existing onSnapshot listener.
+    function mandalBuildPlaceholderCard() {
+      const card = document.createElement("div");
+      card.className = "mandal-card my-card";
+      card.style.alignItems = "center";
+      card.style.justifyContent = "center";
+      card.style.textAlign = "center";
+      card.style.gap = "0.6rem";
+      card.innerHTML = `
+        <div style="font-size:1.8rem;">👤</div>
+        <div style="font-weight:700;color:var(--text-main);">This is your spot!</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);max-width:220px;line-height:1.5;">To appear here, fill in all your details in 'My Profile', then add the shloks you've learnt.</div>
+        <button onclick="jumpToEditProfile()" style="background:var(--gold);color:var(--blue-dark);border:none;border-radius:999px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.3rem;">Edit Profile</button>
+      `;
+      return card;
     }
 
     // ── MANDAL CARD BUILDER ──
@@ -9442,6 +9619,7 @@
         mandalBtn.classList.remove('active');
         noticeBtn.classList.add('active');
         loadNoticeboard();
+        clearMandalNotificationDot();
       }
     }
 
@@ -9485,12 +9663,39 @@
       loadNoticeboard();
     }
 
+    // Keeps the signed-in user's own noticeboard note in sync with their
+    // current profile name, and mops up any leftover non-canonical docs
+    // under their uid. Runs every time they open the Noticeboard, rather
+    // than only the next time they hit a brand-new milestone - so a note
+    // that was created before they'd filled in "My Profile" (showing as
+    // "Someone") fixes itself the next time they check the Noticeboard,
+    // without needing another milestone to trigger it.
+    async function syncOwnNoticeboardNote() {
+      if (!db || !currentUser) return;
+      try {
+        const prof = JSON.parse(localStorage.getItem('profile') || '{}');
+        if (!prof.name) return;
+        const ownRef = db.collection('noticeboard').doc(currentUser.uid);
+        const ownDoc = await ownRef.get();
+        if (ownDoc.exists && ownDoc.data().name !== prof.name) {
+          await ownRef.update({ name: prof.name });
+        }
+        const staleSnap = await db.collection('noticeboard').where('uid', '==', currentUser.uid).get();
+        const stale = staleSnap.docs.filter(doc => doc.id !== currentUser.uid);
+        if (stale.length) {
+          const batch = db.batch();
+          stale.forEach(doc => batch.delete(doc.ref));
+          await batch.commit();
+        }
+      } catch(e) { console.warn('Noticeboard self-sync failed:', e); }
+    }
+
     async function loadNoticeboard() {
       const container = document.getElementById('noticeboardContainer');
       if (!container || !db) return;
       if (!currentUser) {
         container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem;">
-          <div style="font-size:0.95rem; color:rgba(80,50,20,0.75); margin-bottom:0.9rem;">🔒 Sign in to see the Noticeboard.</div>
+          <div style="font-size:0.95rem; color:rgba(80,50,20,0.75); margin-bottom:0.9rem;">🔒 Sign in to see the noticeboard.</div>
           <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.4rem 1.1rem; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:16px;height:16px;" alt="">
             Sign in with Google
@@ -9498,6 +9703,7 @@
         </div>`;
         return;
       }
+      await syncOwnNoticeboardNote();
       try {
         const now = Date.now();
         const snap = await db.collection('noticeboard')
@@ -9567,9 +9773,11 @@
           ${myMessage ? `<span onclick="noteEditingCommentId=null;loadNoticeboard();" style="cursor:pointer;font-size:0.72rem;color:#555 !important;text-decoration:underline;">Cancel</span>` : ''}
         </div>` : '';
       const myCommentReadOnlyHtml = (!isMe && currentUser && myMessage) ? `
-        <div style="font-size:0.78rem;color:#333 !important;padding:0.3rem 0;border-top:1px dashed rgba(0,0,0,0.15);display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;">
-          <div><em>"${myMessage.text}"</em> <span style="font-weight:700;">- You</span></div>
-          <div style="display:flex;gap:6px;flex-shrink:0;">
+        <div style="font-size:0.78rem;color:#1a1a1a !important;padding:0.3rem 0;border-top:1px dashed rgba(0,0,0,0.15);">
+          <div style="color:#1a1a1a !important;">
+            <em style="color:#1a1a1a !important;">"${myMessage.text}"</em> <span style="font-weight:700;color:#1a1a1a !important;">- You</span>
+          </div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px;">
             <span onclick="startEditNoteMessage('${docId}')" style="cursor:pointer;" title="Edit your comment">✏️</span>
             <span onclick="deleteNoteMessage('${docId}')" style="cursor:pointer;" title="Delete your comment">🗑️</span>
           </div>
@@ -9645,9 +9853,10 @@
 
     /* ------------------------------
        NOTICEBOARD COMMENT NOTIFICATIONS
-       Badge on the My Profile tab + a one-time toast when someone leaves
-       a message on this person's own milestone note since they last
-       opened their profile.
+       A small red dot on the "Mukhpath Mandal" nav item (desktop + mobile)
+       when someone comments on or reacts to this person's own milestone
+       note since they last checked - stays put until they actually visit
+       the Noticeboard sub-tab, however they get there.
        ------------------------------ */
     async function checkOwnNoteForNewComments() {
       if (!db || !currentUser) return;
@@ -9669,42 +9878,24 @@
         if (!latestTs) return;
 
         const seenUntil = parseInt(localStorage.getItem('noteMsgsSeenUntil') || '0');
-        // Everyone whose comment/reaction arrived since this note was last opened
-        const newMsgs   = msgEntries.filter(m => m.timestamp.toMillis()   > seenUntil);
-        const newReacts = reactEntries.filter(r => r.timestamp.toMillis() > seenUntil);
-        const hasNewMsg   = newMsgs.length   > 0;
-        const hasNewReact = newReacts.length > 0;
+        const hasNewMsg   = msgEntries.some(m => m.timestamp.toMillis()   > seenUntil);
+        const hasNewReact = reactEntries.some(r => r.timestamp.toMillis() > seenUntil);
 
-        if (hasNewMsg || hasNewReact) {
-          const tab = document.getElementById('slideoutTab');
-          if (tab) tab.classList.add('has-notification');
-          // Only toast once per newly-seen batch (won't repeat until something newer arrives)
-          const toastedFor = parseInt(localStorage.getItem('noteMsgsToastedFor') || '0');
-          if (latestTs > toastedFor) {
-            // Count DISTINCT people, not just entries (one person could comment twice)
-            const newCommenters = [...new Set(newMsgs.map(m => m.name || 'Someone'))];
-            const newReactors   = [...new Set(newReacts.map(r => r.name || 'Someone'))];
-            const describe = (names, verb) => names.length === 1
-              ? `${names[0]} ${verb}`
-              : `${names.length} people ${verb}`;
-            let text;
-            if (hasNewMsg && hasNewReact) {
-              text = `💬👏 ${describe(newCommenters, 'commented')} and ${describe(newReactors, 'reacted')} on your milestone note!`;
-            } else if (hasNewMsg) {
-              text = `💬 ${describe(newCommenters, 'commented')} on your milestone note!`;
-            } else {
-              text = `👏 ${describe(newReactors, 'reacted')} to your milestone note!`;
-            }
-            showToast(text);
-            localStorage.setItem('noteMsgsToastedFor', String(latestTs));
-          }
-        }
+        if (hasNewMsg || hasNewReact) showMandalNotificationDot();
       } catch(e) { console.warn('Comment notification check failed:', e); }
     }
 
-    function clearNoteCommentBadge() {
-      const tab = document.getElementById('slideoutTab');
-      if (tab) tab.classList.remove('has-notification');
+    function showMandalNotificationDot() {
+      document.getElementById('mandalNavItem')?.classList.add('has-notification');
+      document.getElementById('mandalNavItemMobile')?.classList.add('has-notification');
+    }
+
+    // Called once the user actually visits the Noticeboard (however they got
+    // there) - clears the dot and marks everything as seen so it won't
+    // reappear until something new comes in
+    function clearMandalNotificationDot() {
+      document.getElementById('mandalNavItem')?.classList.remove('has-notification');
+      document.getElementById('mandalNavItemMobile')?.classList.remove('has-notification');
       localStorage.setItem('noteMsgsSeenUntil', String(Date.now()));
     }
 
@@ -9729,6 +9920,17 @@
         return (a.name || "").localeCompare(b.name || "");
       });
       grid.innerHTML = "";
+
+      // If they're signed in, haven't opted out, but don't have a real card
+      // yet (no name set in My Profile so nothing's ever been synced), show
+      // a blank placeholder in their spot instead of just silently not
+      // appearing. Skip it while they're searching, so it doesn't clutter results.
+      const hasRealCard = mandalAllData.some(p => p.uid === myId);
+      const optedOut = localStorage.getItem("mandalOptOut") === "true";
+      if (currentUser && !hasRealCard && !optedOut && !mandalFilterQuery.trim()) {
+        grid.appendChild(mandalBuildPlaceholderCard());
+      }
+
       filtered.forEach(person => {
         const card = mandalBuildCard(person);
         if (person.uid === myId) card.classList.add("my-card");
@@ -9746,7 +9948,7 @@
         const optOutRow = document.getElementById("mandalOptOutRow");
         if (optOutRow) optOutRow.innerHTML = "";
         grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem;">
-          <div style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.9rem;">🔒 Sign in to see the Mukhpath Mandal.</div>
+          <div style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.9rem;">🔒 Sign in to see the mukhpath mandal.</div>
           <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.4rem 1.1rem; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:16px;height:16px;" alt="">
             Sign in with Google
@@ -10975,16 +11177,20 @@
       const name = currentUser ? (window.userFirstName || "Haribhakta") : "Haribhakta";
       updateChallengeBanner();
 
-      // Welcome text
+      // Welcome text - purely based on whether this is their first-ever visit
+      // (hasVisited), completely independent of sign-in state, so someone
+      // who stays signed in (or signs out) between visits still correctly
+      // gets "Welcome back" from their second visit onward. The name itself
+      // still falls back to the generic default whenever signed out.
       const welcomeEl = document.getElementById("welcomeText");
       if (welcomeEl) {
         const hasVisited = localStorage.getItem("hasVisited");
-        if (!hasVisited || !currentUser) {
+        if (!hasVisited) {
           welcomeEl.innerHTML = `
             <div style="font-size:2.5rem; font-weight:700; color:var(--blue); line-height:1.2;">Jai Swaminarayan, ${name}! 🙏🏽</div>
             <div style="font-size:1.2rem; color:var(--text-muted); margin-top:0.5rem;">Welcome to your Satsang Diksha Mukhpath Tracker - <span style="cursor:pointer; text-decoration:underline; color:var(--blue);" onclick="openTutorial()">click here</span> for a quick guide.</div>
           `;
-          if (!hasVisited) localStorage.setItem("hasVisited", "true");
+          localStorage.setItem("hasVisited", "true");
         } else {
           welcomeEl.innerHTML = `
             <div style="font-size:2.5rem; font-weight:700; color:var(--blue); line-height:1.2;">Jai Swaminarayan, ${name}! 🙏🏽</div>
@@ -10992,6 +11198,7 @@
           `;
         }
       }
+
       const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
       const memorised = myShloks.filter(s => s.mastery === "memorised").length;
       const revise    = myShloks.filter(s => s.mastery === "revise").length;
@@ -11043,10 +11250,10 @@
       updateMotivationMsg();
       updateParisCards();
 
-      // ── WEEKLY SUMMARY (Sundays only) ──
+      // ── WEEKLY SUMMARY (Sundays only, signed-in users only) ──
       const wsDay = new Date().getDay();
       const wsCard = document.getElementById('weeklySummaryCard');
-      if (wsCard && wsDay === 0) {
+      if (wsCard && currentUser && wsDay === 0) {
         wsCard.style.display = 'block';
         // Expand after content is populated
         const wsBody = document.getElementById('weeklySummaryBody');
@@ -11089,7 +11296,10 @@
           wsAimBar.style.width = '0%';
           wsAimText.textContent = '';
         }
+      } else if (wsCard) {
+        wsCard.style.display = 'none';
       }
+      updateDayPriorityWrapVisibility();
 
       // Revise Now
       loadReviseNow();
@@ -11273,12 +11483,36 @@
        users doc, and every Noticeboard post they've made, then signs
        them out and reloads so the app starts completely from scratch.
        ------------------------------ */
+    // Accordion for the What's New modal - each page section is collapsed
+    // by default and expands independently when its header is clicked.
+    function toggleWhatsNewSection(id) {
+      const body = document.getElementById('wnBody-' + id);
+      const arrow = document.getElementById('wnArrow-' + id);
+      if (!body) return;
+      const open = body.style.maxHeight && body.style.maxHeight !== '0px';
+      if (open) {
+        body.style.maxHeight = '0px';
+        if (arrow) arrow.textContent = '↓';
+      } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        if (arrow) arrow.textContent = '↑';
+      }
+    }
+
     function toggleDangerZone() {
       const zone = document.getElementById('dangerZoneCollapse');
       if (!zone) return;
       const isOpen = zone.style.display === 'block';
       zone.style.display = isOpen ? 'none' : 'block';
-      if (isOpen) collapseDangerZone();
+      if (isOpen) {
+        collapseDangerZone();
+      } else {
+        // The box renders below the fold on most screens - bring it into
+        // view within the profile panel's own scroll area once it's shown
+        requestAnimationFrame(() => {
+          zone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
     }
 
     function collapseDangerZone() {
@@ -11330,7 +11564,7 @@
       // Wipe every piece of local data the app stores
       ['myShloks','profile','lastMilestone','lastMilestoneDate','tutorialSeen','motivFavourites',
        'mandalUserId','dailyChallenge','dcHistory','mandalOptOut','darkMode','kqBestStreak','hasVisited',
-       'noticeboardHandledMilestone','noteMsgsSeenUntil','noteMsgsToastedFor','shlokCollections']
+       'noticeboardHandledMilestone','noteMsgsSeenUntil','noteMsgsToastedFor','shlokCollections','gamesFreePlayUsed']
         .forEach(k => localStorage.removeItem(k));
       // Also clear the session-only flag that skips the shlok map's reveal animation,
       // so it plays again fresh (a page reload alone doesn't clear sessionStorage)
@@ -11373,39 +11607,52 @@
     }
 
     // ── PROFILE ──
+    // Populates the profile panel's editable fields directly from storage
+    // (there's no separate read-only view or edit sub-screen anymore - the
+    // form fields ARE the profile display) and keeps the avatar initials +
+    // home page greeting in sync.
     function loadProfile() {
-      const profile = JSON.parse(localStorage.getItem("profile"));
-      if (!profile) return;
+      const profile = JSON.parse(localStorage.getItem("profile")) || {};
 
-      document.getElementById("pmFullName").textContent = profile.name || "Your Name";
-      document.getElementById("pmStart").textContent =
-        profile.startDate
-          ? "Started Mukhpath on: " + profile.startDate
-          : "Started Mukhpath on: --";
+      const nameEl = document.getElementById("editName");
+      const mandalEl = document.getElementById("editMandal");
+      const startEl = document.getElementById("editStart");
+      const favEl = document.getElementById("editFav");
+      const goalTargetEl = document.getElementById("editGoalTarget");
+      const goalNameEl = document.getElementById("editGoalName");
+      const goalDateEl = document.getElementById("editGoalDate");
+      if (nameEl) nameEl.value = profile.name || "";
+      if (mandalEl) mandalEl.value = profile.mandalName || "";
+      if (startEl) startEl.value = profile.startDate || "";
+      if (favEl) favEl.value = profile.favShlok || "";
+      if (goalTargetEl) goalTargetEl.value = profile.goalTarget || "";
+      if (goalNameEl) goalNameEl.value = profile.goalName || "";
+      if (goalDateEl) goalDateEl.value = profile.goalDate || "";
 
-      // Avatar initials
-      const initials = profile.name
-        ? profile.name.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2)
-        : "YN";
-      const avatar = document.getElementById("avatarInitials");
-      const editAvatar = document.getElementById("editAvatarInitials");
-      if (avatar) avatar.textContent = initials;
-      if (editAvatar) editAvatar.textContent = initials;
+      // Clear any red-border highlights left over from a previous attempt
+      document.querySelectorAll("#profileScrollArea .edit-input-error").forEach(el => el.classList.remove("edit-input-error"));
+      // Restore the Personal Aim "Label it by" toggle state
+      if (goalNameEl && goalDateEl) goalToggle(profile.goalDate && !profile.goalName ? "date" : "name");
 
-      if (profile.favShlok) {
-        const sh = allShloks.find(s => s.id === profile.favShlok);
-        if (sh) {
-          document.getElementById("pmFav").innerHTML =
-            `Favourite Shlok:<br><span>${sh.line1}</span><span>${sh.line2} | ${sh.id}</span>`;
-        } else {
-          document.getElementById("pmFav").textContent = "Favourite Shlok: --";
-        }
-      } else {
-        document.getElementById("pmFav").textContent = "Favourite Shlok: --";
-      }
+      updateAvatarInitialsLive();
+      updateProfileFieldsLockState(currentUser);
 
       window.userFirstName = profile.firstName;
       updateHomePage();
+    }
+
+    // Live-updates the avatar-initials circle as the user types their name,
+    // falling back to the saved profile name (or "YN") when the field is empty.
+    function updateAvatarInitialsLive() {
+      const nameEl = document.getElementById("editName");
+      const typed = nameEl ? nameEl.value.trim() : "";
+      const profile = JSON.parse(localStorage.getItem("profile")) || {};
+      const source = typed || profile.name || "";
+      const initials = source
+        ? source.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2)
+        : "YN";
+      const avatar = document.getElementById("avatarInitials");
+      if (avatar) avatar.textContent = initials;
     }
 
     /* ------------------------------
@@ -11447,7 +11694,6 @@
         panel.classList.add("open");
         overlay.classList.add("open");
         loadProfile();
-        clearNoteCommentBadge();
       }
     }
 
@@ -11468,6 +11714,8 @@
       const dateBtn   = document.getElementById("goalToggleDate");
       const active    = "border:1.5px solid var(--gold); background:var(--gold); color:var(--blue-dark);";
       const inactive  = "border:1.5px solid rgba(255,255,255,0.2); background:transparent; color:rgba(255,255,255,0.5);";
+      nameInput.classList.remove("edit-input-error");
+      dateInput.classList.remove("edit-input-error");
       if (mode === "name") {
         nameInput.style.display = "block";
         dateInput.style.display = "none";
@@ -11483,46 +11731,67 @@
       }
     }
 
-    function openProfileEditor() {
-      const profile = JSON.parse(localStorage.getItem("profile")) || {};
-      document.getElementById("editName").value = profile.name || "";
-      document.getElementById("editMandal").value = profile.mandalName || "";
-      document.getElementById("editStart").value = profile.startDate || "";
-      document.getElementById("editFav").value = profile.favShlok || "";
-      document.getElementById("editGoalTarget").value = profile.goalTarget || "";
-      document.getElementById("editGoalName").value = profile.goalName || "";
-      document.getElementById("editGoalDate").value = profile.goalDate || "";
-      // Restore toggle state
-      goalToggle(profile.goalDate && !profile.goalName ? "date" : "name");
-      document.getElementById("editPanel").classList.add("open");
-    }
-
-    function closeEditPanel() {
-      document.getElementById("editPanel").classList.remove("open");
-    }
-
     function saveProfileFromEditPanel() {
-      const name = document.getElementById("editName").value.trim();
-      const mandalName = document.getElementById("editMandal").value.trim();
-      const start = document.getElementById("editStart").value;
-      const fav = document.getElementById("editFav").value;
-      const goalName   = document.getElementById("editGoalName").value.trim();
-      const goalTarget = document.getElementById("editGoalTarget").value.trim();
-      const goalDate   = document.getElementById("editGoalDate").value;
+      // Belt-and-braces: the Save button is hidden and the fields are
+      // disabled while signed out, but guard here too in case this is ever
+      // triggered some other way.
+      if (!currentUser) { showToast("Sign in with Google to save your profile."); return; }
+      const nameEl        = document.getElementById("editName");
+      const mandalEl       = document.getElementById("editMandal");
+      const startEl        = document.getElementById("editStart");
+      const favEl          = document.getElementById("editFav");
+      const goalTargetEl   = document.getElementById("editGoalTarget");
+      const goalNameEl     = document.getElementById("editGoalName");
+      const goalDateEl     = document.getElementById("editGoalDate");
 
-      if (!name)      { showToast("Please enter your full name."); return; }
-      if (!mandalName){ showToast("Please enter your centre (e.g. Harrow, South London)."); return; }
-      if (!start)     { showToast("Please enter the date you started your mukhpath."); return; }
-      if (!fav)       { showToast("Please select your favourite shlok - this is shown on the Friends page!"); return; }
-      if (fav && !allShloks.some(s => s.id === fav)) { showToast("Favourite shlok not found in list."); return; }
+      const name       = nameEl.value.trim();
+      const mandalName = mandalEl.value.trim();
+      const start      = startEl.value;
+      const fav        = favEl.value;
+      const goalTarget = goalTargetEl.value.trim();
+      // Only whichever "Label it by" sub-field is currently visible counts -
+      // the hidden one is always kept empty by goalToggle()
+      const goalByDate = goalDateEl.style.display !== "none";
+      const goalName   = goalNameEl.value.trim();
+      const goalDate    = goalDateEl.value;
 
-      // Target Shloks is optional, but if entered it must be a whole number 1-315
-      let goalTargetValue = "";
-      if (goalTarget) {
-        if (!/^\d+$/.test(goalTarget)) { showToast("Target Shloks must be a number, no letters or symbols."); return; }
-        const n = parseInt(goalTarget, 10);
-        if (n < 1 || n > 315) { showToast("Target Shloks must be between 1 and 315."); return; }
-        goalTargetValue = n;
+      // Clear any previous red-border highlights before re-checking
+      [nameEl, mandalEl, startEl, favEl, goalTargetEl, goalNameEl, goalDateEl]
+        .forEach(el => el.classList.remove("edit-input-error"));
+
+      const invalidFields = [];
+      if (!name)        invalidFields.push(nameEl);
+      if (!mandalName)  invalidFields.push(mandalEl);
+      if (!start)       invalidFields.push(startEl);
+      if (!fav)         invalidFields.push(favEl);
+      if (!goalTarget)  invalidFields.push(goalTargetEl);
+      if (goalByDate) { if (!goalDate) invalidFields.push(goalDateEl); }
+      else            { if (!goalName) invalidFields.push(goalNameEl); }
+
+      if (invalidFields.length) {
+        invalidFields.forEach(el => el.classList.add("edit-input-error"));
+        invalidFields[0].focus();
+        showToast("Please fill in the highlighted fields.");
+        return;
+      }
+
+      if (!allShloks.some(s => s.id === fav)) {
+        favEl.classList.add("edit-input-error");
+        showToast("Favourite shlok not found in list.");
+        return;
+      }
+
+      // Target Shloks must be a whole number 1-315
+      if (!/^\d+$/.test(goalTarget)) {
+        goalTargetEl.classList.add("edit-input-error");
+        showToast("Target Shloks must be a number, no letters or symbols.");
+        return;
+      }
+      const goalTargetValue = parseInt(goalTarget, 10);
+      if (goalTargetValue < 1 || goalTargetValue > 315) {
+        goalTargetEl.classList.add("edit-input-error");
+        showToast("Target Shloks must be between 1 and 315.");
+        return;
       }
 
       saveProfile(name, mandalName, start, fav);
@@ -11535,7 +11804,6 @@
       syncToMandal();
       scheduleUserSync();
       updateHomePage();
-      closeEditPanel();
       showToast("Profile saved!");
     }
     // ── SHLOK QUIZ (KAHOOT STYLE) ──
