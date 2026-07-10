@@ -2909,8 +2909,8 @@
       background: rgba(255,255,255,0.13);
     }
     .edit-input-error {
-      border-color: #dc2626 !important;
-      box-shadow: 0 0 0 1px rgba(220,38,38,0.4);
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 0 1px rgba(244,201,93,0.5);
     }
     .edit-input-note {
       font-size: 0.72rem;
@@ -5274,11 +5274,11 @@
       </div>
 
       <div style="border-top:1px solid rgba(255,255,255,0.15); margin:0.3rem 0 0.6rem;"></div>
-      <div style="font-size:1rem; font-weight:800; color:white; margin-bottom:0.2rem; text-align:center; letter-spacing:0.01em;">Personal Aim</div>
-      <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:0.4rem; text-align:center;">Set a personal aim to work towards!</div>
+
       <div class="edit-field">
         <div class="edit-label">Target Shloks <span style="color:#dc2626;">*</span></div>
         <input id="editGoalTarget" class="edit-input" type="number" min="1" max="315" step="1" inputmode="numeric" placeholder="e.g. 75" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,3); this.classList.remove('edit-input-error');">
+        <div class="edit-input-note">Set a personal aim to work towards!</div>
       </div>
       <div class="edit-field">
         <div class="edit-label">Label it by <span style="color:#dc2626;">*</span></div>
@@ -9254,10 +9254,22 @@
         const localProfile = JSON.parse(localStorage.getItem("profile") || "null");
         const hadAnyLocalData = localShloks.length > 0 || !!localProfile;
 
+        // Snapshot everything as it was on this device BEFORE merging, so we
+        // can tell afterwards whether the cloud actually contributed
+        // anything new - otherwise this toast would fire on every single
+        // sign-in/page refresh, even when there was nothing to reconcile.
+        const originalDcHistory = localStorage.getItem("dcHistory") || "[]";
+        const originalMotiv = localStorage.getItem("motivFavourites") || "[]";
+        const originalCollections = localStorage.getItem("shlokCollections") || "[]";
+        const originalDailyChallenge = localStorage.getItem("dailyChallenge") || null;
+        const originalMandalOptOut = localStorage.getItem("mandalOptOut");
+        const originalMilestone = localStorage.getItem("lastMilestone") || "0";
+        const sortedLocalShloks = [...localShloks].sort((a, b) => a.number - b.number);
+
         const mergedShloks = mergeShlokLists(localShloks, cloud.myShloks || []);
         const mergedProfile = mergeProfiles(localProfile, cloud.profile || null);
 
-        const localMilestone = parseInt(localStorage.getItem("lastMilestone") || "0");
+        const localMilestone = parseInt(originalMilestone || "0");
         const cloudMilestone = parseInt(cloud.lastMilestone || "0");
         const milestoneFromCloud = cloudMilestone > localMilestone;
         const mergedMilestone = milestoneFromCloud ? cloudMilestone : localMilestone;
@@ -9266,22 +9278,33 @@
           : (localStorage.getItem("lastMilestoneDate") || "0");
 
         const mergedDcHistory = mergeArraysUnique(
-          JSON.parse(localStorage.getItem("dcHistory") || "[]"),
+          JSON.parse(originalDcHistory),
           JSON.parse(cloud.dcHistory || "[]")
         );
         const mergedMotiv = mergeArraysUnique(
-          JSON.parse(localStorage.getItem("motivFavourites") || "[]"),
+          JSON.parse(originalMotiv),
           JSON.parse(cloud.motivFavourites || "[]")
         );
 
         const collectionMap = new Map();
         (cloud.shlokCollections ? JSON.parse(cloud.shlokCollections) : []).forEach(c => collectionMap.set(c.id, c));
-        JSON.parse(localStorage.getItem("shlokCollections") || "[]").forEach(c => collectionMap.set(c.id, c));
+        JSON.parse(originalCollections).forEach(c => collectionMap.set(c.id, c));
         const mergedCollections = Array.from(collectionMap.values());
 
-        const mergedDailyChallenge = localStorage.getItem("dailyChallenge") || cloud.dailyChallenge || null;
-        const localMandalOptOut = localStorage.getItem("mandalOptOut");
-        const mergedMandalOptOut = localMandalOptOut !== null ? localMandalOptOut : (cloud.mandalOptOut || null);
+        const mergedDailyChallenge = originalDailyChallenge || cloud.dailyChallenge || null;
+        const mergedMandalOptOut = originalMandalOptOut !== null ? originalMandalOptOut : (cloud.mandalOptOut || null);
+
+        // Did the merge actually change anything on this device? Compare
+        // each merged value back against its pre-merge snapshot above.
+        const somethingChanged =
+          JSON.stringify(mergedShloks) !== JSON.stringify(sortedLocalShloks) ||
+          JSON.stringify(mergedProfile) !== JSON.stringify(localProfile) ||
+          String(mergedMilestone) !== originalMilestone ||
+          JSON.stringify(mergedDcHistory.slice().sort()) !== JSON.stringify(JSON.parse(originalDcHistory).slice().sort()) ||
+          JSON.stringify(mergedMotiv.slice().sort()) !== JSON.stringify(JSON.parse(originalMotiv).slice().sort()) ||
+          mergedCollections.length !== JSON.parse(originalCollections).length ||
+          mergedDailyChallenge !== originalDailyChallenge ||
+          mergedMandalOptOut !== originalMandalOptOut;
 
         localStorage.setItem("myShloks", JSON.stringify(mergedShloks));
         if (mergedProfile) localStorage.setItem("profile", JSON.stringify(mergedProfile));
@@ -9305,7 +9328,14 @@
         // sees everything that's been merged here too.
         await syncUserData();
 
-        showToast(hadAnyLocalData ? "Your progress has been synced across devices! 🎉" : "Your progress has been restored! 🎉");
+        // Only toast when the cloud actually contributed something new to
+        // this device - a plain sign-in/refresh with nothing to reconcile
+        // stays silent instead of showing this every time.
+        if (!hadAnyLocalData && (mergedShloks.length > 0 || mergedProfile)) {
+          showToast("Your progress has been restored! 🎉");
+        } else if (hadAnyLocalData && somethingChanged) {
+          showToast("Your progress has been synced across devices! 🎉");
+        }
       } catch(e) { console.warn("Data restore/merge failed:", e); }
     }
 
@@ -9434,6 +9464,23 @@
     // has been synced to Firestore for them) - swaps out for their real card
     // automatically once they save a name, via the existing onSnapshot listener.
     function mandalBuildPlaceholderCard() {
+      const profile = JSON.parse(localStorage.getItem("profile") || "null");
+      const profileDone = !!(profile && profile.name);
+      const freshShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
+      const shlokDone = freshShloks.length > 0;
+
+      const checklistRow = (done, label) => `
+        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:${done ? "var(--text-main)" : "var(--text-muted)"};">
+          <span style="font-size:0.95rem;">${done ? "✅" : "⬜"}</span>
+          <span style="${done ? "text-decoration:line-through;opacity:0.6;" : ""}">${label}</span>
+        </div>`;
+
+      const actionBtn = !profileDone
+        ? `<button onclick="jumpToEditProfile()" style="background:var(--gold);color:var(--blue-dark);border:none;border-radius:999px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.3rem;">Edit Profile</button>`
+        : !shlokDone
+        ? `<button onclick="switchTab(document.querySelectorAll('.nav-item')[2], 'learn'); initLearnPage();" style="background:var(--gold);color:var(--blue-dark);border:none;border-radius:999px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.3rem;">Add a Shlok</button>`
+        : "";
+
       const card = document.createElement("div");
       card.className = "mandal-card my-card";
       card.style.alignItems = "center";
@@ -9443,8 +9490,11 @@
       card.innerHTML = `
         <div style="font-size:1.8rem;">👤</div>
         <div style="font-weight:700;color:var(--text-main);">This is your spot!</div>
-        <div style="font-size:0.8rem;color:var(--text-muted);max-width:220px;line-height:1.5;">To appear here, fill in all your details in 'My Profile', then add the shloks you've learnt.</div>
-        <button onclick="jumpToEditProfile()" style="background:var(--gold);color:var(--blue-dark);border:none;border-radius:999px;padding:0.45rem 1.1rem;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.3rem;">Edit Profile</button>
+        <div style="display:inline-flex;flex-direction:column;align-items:flex-start;gap:0.4rem;margin:0.2rem 0;">
+          ${checklistRow(profileDone, "Fill in your profile details")}
+          ${checklistRow(shlokDone, "Add a shlok to your Mukhpath")}
+        </div>
+        ${actionBtn}
       `;
       return card;
     }
