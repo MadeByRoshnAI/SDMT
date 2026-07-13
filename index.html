@@ -27,6 +27,7 @@
       --border: #d9d9d9;
       --green: #dcfce7;
       --green-text: #166534;
+      --green-map: var(--green-text);
       --orange: #fde68a;
       --orange-text: #92400e;
     }
@@ -43,6 +44,15 @@
       --cream: #1e2130;
       --green: #0a2e1a;
       --green-text: #4ade80;
+      /* Slightly darker than --green-text, used ONLY for the Shlok Map's
+         memorised cells and the "Memorised" mastery-pill outline/text in
+         dark mode - the bright --green-text was making the white shlok
+         numbers hard to read against the map cell background. Kept as a
+         separate variable (rather than darkening --green-text itself) so
+         other dark-mode uses of --green-text - e.g. the Snap game's
+         matched-card text, which needs to stay bright against a much
+         darker green background - are unaffected. */
+      --green-map: #22c55e;
       --orange: #2a1800;
       --orange-text: #d97706;
     }
@@ -602,7 +612,7 @@
       display: inline-block;
     }
     .map-learnt    { background: #3b82f6; }
-    .map-memorised { background: var(--green-text); }
+    .map-memorised { background: var(--green-map); }
     .map-revise    { background: var(--orange-text); }
     .map-empty     { background: var(--border); }
 
@@ -628,7 +638,7 @@
     }
     .map-cell:hover { transform: scale(1.3); z-index: 1; }
     .map-cell.learnt:hover    { box-shadow: 0 0 0 2px #3b82f6, 0 0 8px rgba(59,130,246,0.5); }
-    .map-cell.memorised:hover { box-shadow: 0 0 0 2px var(--green-text), 0 0 8px rgba(22,101,52,0.4); }
+    .map-cell.memorised:hover { box-shadow: 0 0 0 2px var(--green-map), 0 0 8px rgba(22,101,52,0.4); }
     .map-cell.revise:hover    { box-shadow: 0 0 0 2px var(--orange-text), 0 0 8px rgba(146,64,14,0.4); }
 
     /* ── MY COLLECTIONS (folders) ── */
@@ -640,7 +650,7 @@
     .collection-folder {
       position: relative;
       width: 100%;
-      height: 130px;
+      height: 155px;
       cursor: pointer;
       border: none;
       background: none;
@@ -671,8 +681,8 @@
     }
     .collection-folder:hover .collection-folder-front { filter: brightness(1.12); }
     .collection-folder-name {
-      font-size: 0.82rem; font-weight: 700; color: #ffffff;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 0.74rem; font-weight: 700; color: #ffffff;
+      line-height: 1.25; white-space: normal; word-break: break-word; overflow-wrap: break-word;
     }
     .collection-folder-count { font-size: 0.72rem; color: var(--gold); margin-top: 0.15rem; }
     .collection-folder-new {
@@ -696,6 +706,9 @@
       padding: 0.9rem 1.1rem;
       display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
       flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 6;
     }
     .collection-open-title { font-size: 0.92rem; font-weight: 700; color: #ffffff; }
     .collection-open-count { font-size: 0.72rem; color: var(--gold); margin-top: 0.1rem; }
@@ -716,16 +729,23 @@
       border: 1px solid var(--border);
       border-top: none;
       border-radius: 0 0 12px 12px;
-      max-height: 640px;
-      overflow-y: auto;
     }
     .collection-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 1.2rem;
       padding: 1rem 1.1rem;
     }
-    .collection-card { position: relative; }
+    @media (max-width: 900px) { .collection-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .collection-cards-grid { grid-template-columns: 1fr; } }
+    /* Same card as the Shlok Map's carousel (.shlok-card is fixed at 240px
+       there since its content is always collapsed the same way) - but here
+       the meaning is always shown and a note can be added, so the card needs
+       to grow with its content instead of clipping/overflowing at 240px.
+       !important is needed because .shlok-card's own height:240px rule is
+       declared later in the stylesheet and would otherwise win the cascade
+       tie (both are single-class selectors of equal specificity). */
+    .collection-card { position: relative; height: auto !important; min-height: 240px; overflow: visible; }
     .collection-card-remove {
       position: absolute; top: 0.6rem; right: 0.6rem;
       width: 22px; height: 22px; border-radius: 50%;
@@ -737,7 +757,7 @@
     .collection-card-remove:hover { background: #dc2626; color: white; }
     body.dark-mode .collection-card-remove { background: rgba(255,255,255,0.1); }
     .collection-empty-msg { padding: 1.5rem 1.1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
-    .collection-add-row { padding: 0.7rem 1.1rem; text-align: center; border-top: 1px solid var(--border); }
+    .collection-add-row { padding: 0.7rem 1.1rem 1.1rem; text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 0.9rem; }
     .collection-map-cell-added {
       box-shadow: 0 0 0 2px var(--gold);
     }
@@ -753,9 +773,12 @@
     body.dark-mode .collection-folder-front {
       background: var(--gold);
     }
+    /* !important needed here - the generic "force white text on all divs"
+       dark-mode rule near the top of the stylesheet also targets these
+       (since they're plain divs) and would otherwise win the cascade tie. */
     body.dark-mode .collection-folder-name,
     body.dark-mode .collection-folder-count {
-      color: var(--blue-dark);
+      color: var(--blue) !important;
     }
     body.dark-mode .collection-open-header {
       background: #8a6d2f;
@@ -772,7 +795,7 @@
     }
     .map-cell.anim-in { animation: mapCellFadeIn 0.35s ease forwards; opacity: 0; }
     .map-cell.learnt    { background: #3b82f6; color: white; cursor: pointer; }
-    .map-cell.memorised { background: var(--green-text); color: white; cursor: pointer; }
+    .map-cell.memorised { background: var(--green-map); color: white; cursor: pointer; }
     .map-cell.revise    { background: var(--orange-text); color: white; cursor: pointer; }
 
     @media (max-width: 700px) {
@@ -792,6 +815,81 @@
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
+
+    /* ── VIDVAN WALL OF FAME ── */
+    @keyframes vwTwinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%      { opacity: 1;   transform: scale(1.15); }
+    }
+    @keyframes vwGlowPulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(244,201,93,0.3), inset 0 1px 0 rgba(255,255,255,0.1); border-color: rgba(244,201,93,0.75); }
+      50%      { box-shadow: 0 0 58px rgba(244,201,93,0.55), inset 0 1px 0 rgba(255,255,255,0.15); border-color: rgba(244,201,93,1); }
+    }
+    @keyframes vwCrownGlow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(244,201,93,0.7)); }
+      50%      { filter: drop-shadow(0 0 18px rgba(244,201,93,1)); }
+    }
+    @keyframes vwBeamShimmer {
+      0%, 100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+    @keyframes vwRiseIn {
+      0%   { opacity: 0; transform: translateY(24px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .vw-bg {
+      position: relative;
+      background: radial-gradient(ellipse at 50% 0%, #b8241f 0%, #7a1616 50%, #350808 100%);
+      min-height: 420px;
+      padding: 2.5rem 1.5rem;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+    .vw-star { position: absolute; animation: vwTwinkle 3s ease-in-out infinite; }
+    .vw-beam {
+      position: absolute; top: -60px; width: 200px; height: 480px;
+      background: linear-gradient(180deg, rgba(244,201,93,0.28), rgba(244,201,93,0) 65%);
+      filter: blur(3px); animation: vwBeamShimmer 4s ease-in-out infinite;
+    }
+    .vw-orb {
+      position: absolute; border-radius: 50%; filter: blur(4px);
+      background: radial-gradient(circle, rgba(244,201,93,0.25), rgba(244,201,93,0) 70%);
+    }
+    .vw-header { position: relative; text-align: center; margin-bottom: 2.4rem; }
+    .vw-eyebrow { font-size: 0.75rem; letter-spacing: 0.3em; color: rgba(244,201,93,0.95); font-weight: 700; margin-bottom: 0.5rem; }
+    .vw-title {
+      font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: 0.02em;
+      text-shadow: 0 0 24px rgba(244,201,93,0.6), 0 0 4px rgba(0,0,0,0.4);
+    }
+    .vw-subtitle { font-size: 0.84rem; color: rgba(255,255,255,0.75); margin-top: 0.6rem; white-space: nowrap; }
+    @media (max-width: 640px) {
+      .vw-subtitle { white-space: normal; max-width: 340px; margin-left: auto; margin-right: auto; }
+    }
+    .vw-grid {
+      position: relative; display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.4rem; margin: 0 auto;
+    }
+    .vw-plaque {
+      position: relative;
+      background: linear-gradient(160deg, rgba(244,201,93,0.2), rgba(150,25,25,0.7));
+      border: 2px solid rgba(244,201,93,0.75);
+      border-radius: 14px;
+      padding: 1.8rem 1.2rem 1.5rem;
+      text-align: center;
+      animation: vwRiseIn 0.7s ease-out both, vwGlowPulse 3.5s ease-in-out infinite;
+    }
+    .vw-crown { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 1.9rem; animation: vwCrownGlow 2.4s ease-in-out infinite; }
+    .vw-name { font-size: 1.1rem; font-weight: 800; color: #F4C95D; letter-spacing: 0.02em; margin-top: 2.6rem; text-shadow: 0 0 12px rgba(244,201,93,0.4); }
+    .vw-divider { width: 40px; height: 1.5px; background: linear-gradient(90deg, transparent, rgba(244,201,93,0.7), transparent); margin: 0.7rem auto; }
+    .vw-label { font-size: 0.72rem; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.09em; }
+    .vw-value { font-size: 0.87rem; color: #fff; margin-bottom: 0.55rem; }
+    .vw-advice {
+      font-size: 0.8rem; font-style: italic; color: rgba(255,255,255,0.85);
+      margin-top: 0.7rem; padding-top: 0.7rem; line-height: 1.45;
+      border-top: 1px dashed rgba(244,201,93,0.4);
+    }
+    .vw-footer { position: relative; text-align: center; margin-top: 2.2rem; font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; }
 
     /* 100 - Starburst: symbols flying outward from center */
     .starburst-piece {
@@ -2515,6 +2613,110 @@
     body.dark-mode .add-mode-radio:hover span { background: rgba(255,255,255,0.08); }
     body.dark-mode .add-mode-radio input:checked + span { background: var(--blue-mid); border-color: var(--blue-mid); }
 
+    /* On narrower screens, shrink the Add One/Add Range/Add All/Shlok Map
+       row so all pills stay on one line instead of wrapping. */
+    @media (max-width: 700px) {
+      .collection-add-mode-row { gap: 0.4rem; }
+      .collection-add-mode-row .add-mode-radio span {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.78rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .collection-add-mode-row { gap: 0.3rem; }
+      .collection-add-mode-row .add-mode-radio span {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.68rem;
+      }
+    }
+    @media (max-width: 360px) {
+      .collection-add-mode-row .add-mode-radio span { font-size: 0.6rem; padding: 0.38rem 0.4rem; }
+    }
+    /* With up to 5 pills (One/Range/All/Map/Remove), a very narrow phone
+       can run out of room even at the smallest readable font - let the
+       row wrap onto a 2nd line there rather than clipping/squishing text. */
+    @media (max-width: 340px) {
+      .collection-add-mode-row { flex-wrap: wrap !important; }
+    }
+
+    /* Collection "add shloks" picker - one cohesive card instead of loose
+       floating text/links, with consistent muted section labels and
+       dividers between the 3 ways of adding a shlok. */
+    .collection-picker-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem 1.1rem 1.2rem;
+      text-align: left;
+    }
+    .picker-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 0.9rem;
+      line-height: 1.5;
+    }
+    /* .add-label had no rule of its own before, so it fell back to the
+       browser's default 16px label size - noticeably bigger than every
+       other bit of text around it (buttons, inputs, pills all use rem
+       sizes well under 1rem). Used by both the main "Add Shloks" section
+       and the collection picker's Add One/Range/All/Remove boxes. */
+    .add-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .picker-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+    .picker-section-divider {
+      border-top: 1px solid var(--border);
+      margin: 1.1rem 0;
+    }
+    .collection-add-toggle-btn {
+      display: inline-block;
+      padding: 0.5rem 1.1rem;
+      border-radius: 999px;
+      border: 2px solid var(--blue);
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: var(--card-bg);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .collection-add-toggle-btn:hover { background: rgba(10,42,102,0.06); }
+    body.dark-mode .collection-add-toggle-btn { color: white; border-color: rgba(255,255,255,0.35); background: transparent; }
+    body.dark-mode .collection-add-toggle-btn:hover { background: rgba(255,255,255,0.08); }
+
+    /* "What's New" modal - badge marking the most recently added item(s)
+       in each page section, so returning users can tell new entries apart
+       from ones they've already seen announced before. !important on the
+       color is needed here because the broad "force white text on every
+       span in dark mode" rule near the top of this stylesheet would
+       otherwise win and wash out the badge text on a gold background. */
+    .wn-new-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--blue-dark) !important;
+      background: var(--gold);
+      border-radius: 999px;
+      padding: 0.12rem 0.5rem;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+
     body.dark-mode #cfTabSend,
     body.dark-mode #cfTabMine,
     body.dark-mode #cfTabSent {
@@ -3834,6 +4036,35 @@
 
         <!-- FRIDAY PARIS CARD -->
         <div id="fridayParisCard" style="display:none;margin-bottom:1rem;"></div>
+
+        <!-- VIDVAN TEST STATUS CARD (300+ shloks, until they've passed) -->
+        <div id="vidvanTestCard" class="home-card" style="display:none;margin-bottom:1rem;border:1.5px solid rgba(244,201,93,0.4);">
+          <div style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin-bottom:0.6rem;">🎓 Have you taken your Satsang Diksha (all 315 shloks) test?</div>
+          <div id="vidvanTestQuestion" style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+            <button onclick="vidvanShowForm()" style="flex:1;min-width:120px;padding:0.5rem 1rem;border-radius:999px;border:none;background:var(--gold);color:var(--blue-dark);font-size:0.85rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;">Yes, I've taken it</button>
+            <button onclick="vidvanNotYet()" style="flex:1;min-width:120px;padding:0.5rem 1rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--text-main);font-size:0.85rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">Not yet</button>
+          </div>
+          <div id="vidvanTestForm" style="display:none;margin-top:0.9rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">When was your test?</div>
+            <input id="vidvanTestDate" type="date" style="width:100%;padding:0.55rem 0.8rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);font-family:'Poppins',sans-serif;font-size:0.85rem;margin-bottom:0.8rem;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Did you pass?</div>
+            <div style="display:flex;gap:0.6rem;margin-bottom:0.9rem;">
+              <button id="vidvanPassBtn" onclick="vidvanSelectResult(true)" style="flex:1;padding:0.5rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--text-main);font-size:0.85rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">✅ Passed</button>
+              <button id="vidvanFailBtn" onclick="vidvanSelectResult(false)" style="flex:1;padding:0.5rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--text-main);font-size:0.85rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">🫡 Not yet</button>
+            </div>
+            <div id="vidvanAdviceWrap" style="display:none;margin-bottom:0.9rem;">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;">Any advice for someone starting or on their Mukhpath journey? (optional)</div>
+              <textarea id="vidvanAdviceInput" maxlength="500" rows="3" placeholder="Share a few words of encouragement or advice..." oninput="document.getElementById('vidvanAdviceCount').textContent = this.value.length + '/500';" style="width:100%;padding:0.55rem 0.8rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);font-family:'Poppins',sans-serif;font-size:0.85rem;resize:vertical;box-sizing:border-box;"></textarea>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:0.35rem;gap:0.5rem;">
+                <div style="font-size:0.72rem;color:var(--text-muted);">📢 This is visible to everyone who uses the website, so please be mindful of what you write and put sensible advice. It can't be edited once you submit.</div>
+                <div id="vidvanAdviceCount" style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;">0/500</div>
+              </div>
+            </div>
+            <div id="vidvanEncourageNote" style="display:none;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.9rem;">You've got this, keep going! 💪</div>
+            <button onclick="vidvanSubmit()" style="width:100%;padding:0.55rem;border-radius:999px;border:none;background:var(--gold);color:var(--blue-dark);font-size:0.85rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;">Submit</button>
+          </div>
+          <div id="vidvanTestNote" style="display:none;font-size:0.8rem;color:var(--text-muted);margin-top:0.4rem;">No rush! Come back and update this anytime once you've taken your test.</div>
+        </div>
       </div>
 
       <!-- JOURNEY TO RAJIPO + CARDS CONTAINER -->
@@ -4428,6 +4659,12 @@
             <div class="game-card-desc">Go through every shlok you've added - learnt, memorised and revise - and test yourself on all of them.</div>
             <div class="game-card-tag">Everything</div>
           </div>
+          <div class="game-card" onclick="startGame('mockTest')">
+            <div class="game-card-icon">🎓</div>
+            <div class="game-card-title">Mock Test</div>
+            <div class="game-card-desc">2 random questions from every 10 shloks, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
+            <div class="game-card-tag">Milestone</div>
+          </div>
           <div class="game-card" onclick="startGame('spotMistake')">
             <div class="game-card-icon">🔍</div>
             <div class="game-card-title">Spot the Mistake</div>
@@ -4545,6 +4782,7 @@
           <div class="game-instruction">Say the full shlok aloud, then reveal to check. ✅ moves it to Memorised, ✗ keeps it in Revise.</div>
           <div id="rmCurrentHint" class="rm-current-hint"></div>
           <div id="rmPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
+          <div id="rmMeaning" style="display:none; font-size:0.88rem; font-style:italic; color:var(--text-muted); margin-top:0.6rem;"></div>
           <div id="rmRevealSection" style="display:none;">
             <div id="rmFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
             <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
@@ -4552,7 +4790,10 @@
               <button class="game-next-btn" style="background:#dc2626;" onclick="rmResult(false)">✗ Not yet - keep in revise</button>
             </div>
           </div>
-          <button id="rmRevealBtn" class="game-submit-btn" onclick="rmReveal()" style="margin-top:1.5rem;">👁️ Reveal Shlok</button>
+          <div style="display:flex; gap:0.8rem; margin-top:1.5rem; flex-wrap:wrap;">
+            <button id="rmMeaningBtn" class="game-submit-btn" onclick="rmShowMeaning()">💭 See Meaning</button>
+            <button id="rmRevealBtn" class="game-submit-btn" onclick="rmReveal()">👁️ Reveal Shlok</button>
+          </div>
           <div id="rmFeedback" class="game-feedback"></div>
           <div id="rmHintPanel" class="rm-hint-panel">
             <div class="rm-hint-question">Which part of the shlok couldn't you remember?</div>
@@ -4636,6 +4877,7 @@
           <div class="game-instruction">Recall it fully, reveal to check, then mark how it went.</div>
           <div id="frPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
           <div id="frClue" style="display:none; font-size:1rem; font-style:italic; color:var(--text-muted); margin-top:0.6rem;"></div>
+          <div id="frMeaning" style="display:none; font-size:0.88rem; font-style:italic; color:var(--text-muted); margin-top:0.6rem;"></div>
           <div id="frRevealSection" style="display:none;">
             <div id="frFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
             <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
@@ -4645,6 +4887,7 @@
           </div>
           <div style="display:flex; gap:0.8rem; margin-top:1.5rem; flex-wrap:wrap;">
             <button id="frClueBtn" class="game-submit-btn" style="background:var(--gold); color:var(--blue-dark);" onclick="frShowClue()">💡 Need a clue?</button>
+            <button id="frMeaningBtn" class="game-submit-btn" onclick="frShowMeaning()">💭 See Meaning</button>
             <button id="frRevealBtn" class="game-submit-btn" onclick="frReveal()">👁️ Reveal Shlok</button>
           </div>
           <div id="frFeedback" class="game-feedback"></div>
@@ -4653,6 +4896,45 @@
       <div id="frDone" style="display:none; text-align:center; padding:2rem;">
         <div id="frDoneMsg"></div>
         <button class="game-next-btn" onclick="frShowModeSelector()" style="margin-top:1.2rem;">🔄 Try Again</button>
+      </div>
+
+      <!-- MOCK TEST -->
+      <div id="gameMockTest" class="game-screen" style="display:none;">
+        <div class="game-topbar">
+          <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          <div class="game-score-label">🎓 <span id="mtCurrent">1</span> / <span id="mtTotal">0</span> &nbsp; ✅ <span id="mtKnownCount">0</span></div>
+        </div>
+
+        <!-- MILESTONE SELECTOR -->
+        <div id="mtModeSelector">
+          <div class="card game-play-card" style="text-align:center;">
+            <div class="game-title-row">🎓 Mock Test</div>
+            <div class="game-instruction" style="margin-bottom:1.2rem;">2 random shloks from every 10, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
+            <div id="mtMilestoneList" style="display:flex;flex-direction:column;gap:0.8rem;max-width:360px;margin:0 auto;"></div>
+            <div id="mtLockedNote" style="font-size:0.82rem;color:var(--text-muted);margin-top:1.2rem;"></div>
+          </div>
+        </div>
+
+        <div class="card game-play-card" id="mtPlayCard" style="display:none;">
+          <div class="game-title-row">🎓 Mock Test</div>
+          <div class="game-instruction">Recall the full shlok from the clues below, then reveal to check.</div>
+          <div id="mtPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700; text-align:center;"></div>
+          <div id="mtClues"></div>
+          <div id="mtRevealSection" style="display:none;">
+            <div id="mtFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
+            <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
+              <button class="game-next-btn" style="background:var(--green-text);" onclick="mtResult(true)">✅ I got it!</button>
+              <button class="game-next-btn" style="background:#dc2626;" onclick="mtResult(false)">✗ Missed it</button>
+            </div>
+          </div>
+          <button id="mtRevealBtn" class="game-submit-btn" onclick="mtReveal()" style="margin-top:1.5rem;">👁️ Reveal Shlok</button>
+          <div id="mtFeedback" class="game-feedback"></div>
+        </div>
+
+        <div id="mtDone" style="display:none; text-align:center; padding:2rem;">
+          <div id="mtDoneMsg"></div>
+          <button class="game-next-btn" onclick="mtShowModeSelector()" style="margin-top:1.2rem;">🔄 Try Again</button>
+        </div>
       </div>
 
       <div id="gameSpotMistake" class="game-screen" style="display:none;">
@@ -4804,10 +5086,11 @@
         </div>
       </div>
 
-      <!-- MANDAL / NOTICEBOARD TABS -->
-      <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;">
+      <!-- MANDAL / NOTICEBOARD / VIDVAN WALL TABS -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap;">
         <button id="mandalTabBtn" class="cf-tab-btn active" onclick="switchMandalTab('mandal')">👥 My Mukhpath Mandal</button>
         <button id="noticeTabBtn" class="cf-tab-btn" onclick="switchMandalTab('noticeboard')">🪧 Noticeboard</button>
+        <button id="vidvanTabBtn" class="cf-tab-btn" onclick="switchMandalTab('vidvan')">👑 Vidvan Wall</button>
       </div>
 
       <!-- MANDAL PANEL -->
@@ -4823,6 +5106,11 @@
         <div class="corkboard" id="noticeboardContainer">
           <div style="color:rgba(80,50,20,0.5);font-size:0.9rem;text-align:center;padding:2rem;">Loading noticeboard...</div>
         </div>
+      </div>
+
+      <!-- VIDVAN WALL PANEL -->
+      <div id="vidvanPanel" style="display:none;">
+        <div id="vidvanWallContainer"></div>
       </div>
     </section>
 
@@ -4882,6 +5170,10 @@
             </div>
             <div id="wnBody-learn" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">My Collections - Favourites &amp; Wishlist <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Organise your shloks into folders. Two are already there for you - "My Favourite Shloks" and "Shloks I Want to Learn" - and both let you add any of the 315, even ones you haven't started learning yet. You can also add a short note on why you've added that shlok, then use "Learn from this folder" or "Review these shloks" to practise straight from it.</div>
+                </div>
                 <div style="padding:0.5rem 0;">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily aim guidance</div>
                   <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to meet your aim!</div>
@@ -4898,6 +5190,14 @@
             </div>
             <div id="wnBody-games" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mock Test <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A practice run for your tests. Learn shloks 1-50, then 1-100, then 1-150 (and so on) in order to unlock each milestone test - it takes 2 random shloks from every 10. If you get stuck, you can reveal clue 1 (the start of the shlok) or clue 2 (the end of the shlok) - only if you need them!</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">See Meaning in Full Review &amp; Revision Mode <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Tap "💭 See Meaning" mid-game if you want a reminder of what a shlok means before you answer.</div>
+                </div>
                 <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
                   <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
@@ -4926,6 +5226,10 @@
             </div>
             <div id="wnBody-mandal" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Vidvan Wall <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A page for everyone who's passed their exam - once you get to around 300 shloks, a pop-up will appear on the homepage where you can add your test date, the result and a short piece of advice for others still learning.</div>
+                </div>
                 <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Celebrate milestones together</div>
                   <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new noticeboard tab shows everyone's milestone achievements as sticky notes on a corkboard.</div>
@@ -7265,13 +7569,31 @@
        MY COLLECTIONS (up to 3 named
        folders of shloks to practise)
        ------------------------------ */
-    const MAX_COLLECTIONS = 5;
+    const MAX_COLLECTIONS = 8; // custom (user-created) collections only - the two default folders below don't count against this, so 8 + 2 = 10 folders total
     let shlokCollections = JSON.parse(localStorage.getItem("shlokCollections") || "[]");
     let collectionsOpenId = null;
     let collectionsCreating = false;
     let collectionsRenamingId = null;
     let collectionsPickerOpenId = null;
     let collectionsPickerAddMode = null;
+    let collectionsNoteEditingKey = null;
+
+    const DEFAULT_COLLECTION_IDS = { FAVOURITES: 'col_favourites', WISHLIST: 'col_wishlist' };
+
+    // Makes sure the two permanent folders always exist - runs on load and
+    // again after any cloud merge, since a merge could otherwise clobber
+    // shlokCollections with a cloud copy from before this feature existed.
+    function ensureDefaultCollections() {
+      if (!shlokCollections.some(c => c.id === DEFAULT_COLLECTION_IDS.FAVOURITES)) {
+        shlokCollections.unshift({ id: DEFAULT_COLLECTION_IDS.FAVOURITES, name: 'My Favourite Shloks', shloks: [], notes: {}, isDefault: true });
+      }
+      if (!shlokCollections.some(c => c.id === DEFAULT_COLLECTION_IDS.WISHLIST)) {
+        const favIdx = shlokCollections.findIndex(c => c.id === DEFAULT_COLLECTION_IDS.FAVOURITES);
+        shlokCollections.splice(favIdx + 1, 0, { id: DEFAULT_COLLECTION_IDS.WISHLIST, name: 'Shloks I Want to Learn', shloks: [], notes: {}, isDefault: true, type: 'wishlist' });
+      }
+      shlokCollections.forEach(c => { if (!c.notes) c.notes = {}; });
+    }
+    ensureDefaultCollections();
 
     function openCollectionPicker(id) {
       collectionsPickerOpenId = id;
@@ -7309,9 +7631,9 @@
       return div.innerHTML;
     }
 
-    // TEMP: Collections is still being polished - show a preview/under-construction
-    // card instead of the real feature. Flip this to false to bring it back.
-    const COLLECTIONS_UNDER_CONSTRUCTION = true;
+    // Collections is live. Keeping this flag (rather than deleting the
+    // plumbing) in case we ever need to pull the feature back for more work.
+    const COLLECTIONS_UNDER_CONSTRUCTION = false;
 
     function renderCollections() {
       const container = document.getElementById("collectionsContainer");
@@ -7320,6 +7642,7 @@
         container.innerHTML = renderCollectionsComingSoon();
         return;
       }
+      ensureDefaultCollections();
       if (collectionsOpenId) {
         const col = shlokCollections.find(c => c.id === collectionsOpenId);
         if (!col) { collectionsOpenId = null; renderCollections(); return; }
@@ -7343,17 +7666,19 @@
     function renderCollectionsGrid(container) {
       let html = `<div class="collections-grid">`;
       shlokCollections.forEach(col => {
+        const icon = col.id === DEFAULT_COLLECTION_IDS.FAVOURITES ? '⭐ ' : col.id === DEFAULT_COLLECTION_IDS.WISHLIST ? '🎯 ' : '';
         html += `
           <button type="button" class="collection-folder" onclick="openCollection('${col.id}')">
             <div class="collection-folder-tab"></div>
             <div class="collection-folder-back"></div>
             <div class="collection-folder-front">
-              <div class="collection-folder-name">${collectionEscapeHtml(col.name)}</div>
+              <div class="collection-folder-name">${icon}${collectionEscapeHtml(col.name)}</div>
               <div class="collection-folder-count">${col.shloks.length} shlok${col.shloks.length !== 1 ? 's' : ''}</div>
             </div>
           </button>`;
       });
-      if (shlokCollections.length < MAX_COLLECTIONS) {
+      const customCount = shlokCollections.filter(c => !c.isDefault).length;
+      if (customCount < MAX_COLLECTIONS) {
         if (collectionsCreating) {
           html += `
             <div class="collection-folder-new" style="border-style:solid;">
@@ -7370,7 +7695,7 @@
             <button type="button" class="collection-folder-new" onclick="collectionsCreating=true;renderCollections();">
               <div class="cfn-icon">📁</div>
               <div class="cfn-label">New collection</div>
-              <div class="cfn-sub">${shlokCollections.length} of ${MAX_COLLECTIONS} used</div>
+              <div class="cfn-sub">${customCount} of ${MAX_COLLECTIONS} used</div>
             </button>`;
         }
       }
@@ -7385,11 +7710,13 @@
       if (!input) return;
       const name = input.value.trim();
       if (!name) { showToast('Give your collection a name first.'); return; }
-      if (shlokCollections.length >= MAX_COLLECTIONS) { showToast(`You can only have ${MAX_COLLECTIONS} collections.`); return; }
+      const customCount = shlokCollections.filter(c => !c.isDefault).length;
+      if (customCount >= MAX_COLLECTIONS) { showToast(`You can only have ${MAX_COLLECTIONS} collections.`); return; }
       shlokCollections.push({
         id: 'col_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
         name: name.slice(0, 30),
-        shloks: []
+        shloks: [],
+        notes: {}
       });
       collectionsCreating = false;
       saveCollections();
@@ -7415,6 +7742,7 @@
     function deleteCollection(id) {
       const col = shlokCollections.find(c => c.id === id);
       if (!col) return;
+      if (col.isDefault) { showToast("This is a default folder and can't be deleted."); return; }
       if (!confirm(`Delete the collection "${col.name}"? The shloks themselves won't be affected.`)) return;
       shlokCollections = shlokCollections.filter(c => c.id !== id);
       collectionsOpenId = null;
@@ -7429,6 +7757,7 @@
       if (!name) { showToast('Give your collection a name first.'); return; }
       const col = shlokCollections.find(c => c.id === id);
       if (!col) return;
+      if (col.isDefault) { collectionsRenamingId = null; renderCollections(); return; }
       col.name = name.slice(0, 30);
       collectionsRenamingId = null;
       saveCollections();
@@ -7439,6 +7768,7 @@
       const col = shlokCollections.find(c => c.id === id);
       if (!col) return;
       col.shloks = col.shloks.filter(n => n !== num);
+      if (col.notes) delete col.notes[num];
       saveCollections();
       renderCollections();
     }
@@ -7448,41 +7778,83 @@
       renderCollections();
     }
 
+    function saveCollectionNote(colId, num) {
+      const input = document.getElementById(`collectionNoteInput_${colId}_${num}`);
+      if (!input) return;
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      if (!col.notes) col.notes = {};
+      const val = input.value.trim().slice(0, 80);
+      if (val) col.notes[num] = val; else delete col.notes[num];
+      collectionsNoteEditingKey = null;
+      saveCollections();
+      renderCollections();
+    }
+
+    // Jumps to the Learn page and drops the user straight into learning a
+    // specific shlok - used by the "Start Learning" button that shows up on
+    // not-yet-tracked shloks inside the Wishlist folder.
+    function startLearnShlokFromCollection(num) {
+      learnFolderQueueId = null; // this is a single-shlok jump, not a folder queue
+      switchTab(document.querySelectorAll('.nav-item')[2], 'learn');
+      initLearnPage();
+      startLearnShlok(num);
+    }
+
     // Add-shlok picker deliberately mirrors the "Add Shloks" section on this
     // same page (radio toggle + a couple of number inputs) rather than a
     // bigger browse/search UI - simple and familiar beats another list to manage.
     function renderCollectionPicker(col) {
       if (collectionsPickerOpenId !== col.id) {
-        return `<span class="collection-icon-btn" style="font-size:0.8rem;text-decoration:underline;" onclick="openCollectionPicker('${col.id}')">+ Add shloks</span>`;
+        return `<button type="button" class="collection-add-toggle-btn" onclick="openCollectionPicker('${col.id}')">➕ Add shloks</button>`;
       }
-      if (!myShloks.length) {
-        return `<div style="font-size:0.8rem;color:var(--text-muted);">Add some shloks on this page first, then come back to build your collection.</div>`;
+      // The 2 default folders (Favourites + Wishlist) let you pick ANY of
+      // the 315 shloks, not just ones you've already added - custom
+      // collections stay restricted to already-added shloks.
+      const anyShlok = !!col.isDefault;
+      if (!anyShlok && !myShloks.length) {
+        return `<div class="collection-picker-card" style="text-align:center;color:var(--text-muted);font-size:0.85rem;">Add some shloks on this page first, then come back to build your collection.</div>`;
       }
       return `
-        <div style="text-align:left;">
-          <div style="max-width:360px;margin:0 auto;">
-            <div class="add-mode-radio-group">
+        <div class="collection-picker-card">
+          ${anyShlok ? `<div class="picker-hint">Any of the 315 shloks can go here - not just ones you've started learning.</div>` : ''}
+          <div style="max-width:680px;margin:0 auto;">
+            <div class="add-mode-radio-group collection-add-mode-row" style="justify-content:center;flex-wrap:nowrap;">
               <label class="add-mode-radio">
                 <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'one' ? 'checked' : ''} onclick="collectionAddModeClick(this,'one')">
-                <span>➕ Add One</span>
+                <span style="white-space:nowrap;">➕ Add One</span>
               </label>
               <label class="add-mode-radio">
                 <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'range' ? 'checked' : ''} onclick="collectionAddModeClick(this,'range')">
-                <span>📚 Add Range</span>
+                <span style="white-space:nowrap;">📚 Add Range</span>
               </label>
+              ${myShloks.length ? `
+              <label class="add-mode-radio">
+                <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'all' ? 'checked' : ''} onclick="collectionAddModeClick(this,'all')">
+                <span style="white-space:nowrap;">🗂️ Add All</span>
+              </label>` : ''}
+              <label class="add-mode-radio">
+                <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'map' ? 'checked' : ''} onclick="collectionAddModeClick(this,'map')">
+                <span style="white-space:nowrap;">🗺️ Shlok Map</span>
+              </label>
+              ${col.shloks.length ? `
+              <label class="add-mode-radio">
+                <input type="radio" name="collectionAddMode" ${collectionsPickerAddMode === 'remove' ? 'checked' : ''} onclick="collectionAddModeClick(this,'remove')">
+                <span style="white-space:nowrap;color:#dc2626;">❌ Remove</span>
+              </label>` : ''}
             </div>
 
-            <div id="collectionAddOneBox" class="add-box" style="display:${collectionsPickerAddMode === 'one' ? 'block' : 'none'};">
-              <label class="add-label">Add shlok number</label>
-              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center;">
+            <div id="collectionAddOneBox" class="add-box" style="display:${collectionsPickerAddMode === 'one' ? 'block' : 'none'};text-align:center;">
+              <label class="add-label">Add shlok number${anyShlok ? ' (1-315)' : ''}</label>
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center; justify-content:center;">
                 <input id="collectionAddOneInput" type="number" placeholder="Shlok number" style="max-width:140px;" onkeypress="if(event.key==='Enter')collectionAddOne('${col.id}');">
                 <button onclick="collectionAddOne('${col.id}')">Add</button>
               </div>
             </div>
 
-            <div id="collectionAddRangeBox" class="add-box" style="display:${collectionsPickerAddMode === 'range' ? 'block' : 'none'};">
+            <div id="collectionAddRangeBox" class="add-box" style="display:${collectionsPickerAddMode === 'range' ? 'block' : 'none'};text-align:center;">
               <label class="add-label">Add shloks from</label>
-              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center;">
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center; justify-content:center;">
                 <input id="collectionAddRangeFrom" type="number" placeholder="Start" style="max-width:90px;">
                 <span>to</span>
                 <input id="collectionAddRangeTo" type="number" placeholder="End" style="max-width:90px;">
@@ -7490,30 +7862,51 @@
               </div>
             </div>
 
-            <div style="margin-top:0.8rem;">
-              <div class="add-label" style="margin-bottom:0.4rem;">Or add all at once</div>
-              <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
-                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','learnt')">+ All Learnt</span>
-                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','memorised')">+ All Memorised</span>
-                <span class="collection-icon-btn" style="text-decoration:underline;font-size:0.78rem;" onclick="collectionAddAllByMastery('${col.id}','revise')">+ All Revise</span>
+            ${myShloks.length ? `
+            <div id="collectionAddAllBox" class="add-box" style="display:${collectionsPickerAddMode === 'all' ? 'block' : 'none'};text-align:center;">
+              <label class="add-label">Add all shloks with a status</label>
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center; justify-content:center;">
+                <select id="collectionAddAllSelect" style="max-width:160px;">
+                  <option value="learnt">Learnt</option>
+                  <option value="memorised">Memorised</option>
+                  <option value="revise">Revise</option>
+                </select>
+                <button onclick="collectionAddAllByMasterySelect('${col.id}')">Add</button>
               </div>
-            </div>
+            </div>` : ''}
+
+            ${col.shloks.length ? `
+            <div id="collectionRemoveBox" class="add-box" style="display:${collectionsPickerAddMode === 'remove' ? 'block' : 'none'};text-align:center;">
+              <label class="add-label">Remove shlok number (or a range)</label>
+              <div class="add-row" style="display:flex; gap:0.5rem; align-items:center; justify-content:center; flex-wrap:wrap;">
+                <input id="collectionRemoveFrom" type="number" placeholder="Shlok number" style="max-width:120px;">
+                <span>to (optional)</span>
+                <input id="collectionRemoveTo" type="number" placeholder="End" style="max-width:90px;">
+                <button onclick="collectionRemoveRange('${col.id}')" style="background:#dc2626; border-color:#dc2626; color:white;">Remove</button>
+              </div>
+            </div>` : ''}
           </div>
 
-          <div class="add-label" style="margin-top:1.2rem;margin-bottom:0.5rem;text-align:center;">Or tap a shlok number below to add it - tap again to remove it</div>
+          ${collectionsPickerAddMode === 'map' ? `
+          <div class="picker-section-divider"></div>
+          <div class="picker-label">Tap a shlok number below to add it - tap again to remove it</div>
           ${renderCollectionPickerMap(col)}
+          ` : ''}
 
-          <div style="text-align:center;margin-top:0.8rem;">
-            <span class="collection-icon-btn" style="font-size:0.78rem;text-decoration:underline;" onclick="collectionsPickerOpenId=null;collectionsPickerAddMode=null;renderCollections();">Done</span>
+          <div style="text-align:center;margin-top:1rem;">
+            <button type="button" class="game-back-btn" onclick="collectionsPickerOpenId=null;collectionsPickerAddMode=null;renderCollections();">Done</button>
           </div>
         </div>`;
     }
 
     // Mirrors the compact numbered Shlok Map used elsewhere on this page -
     // same colour coding (blue/green/orange = learnt/memorised/revise, dark
-    // = not tracked yet), but tapping a tracked number toggles it in/out of
-    // this collection instead of jumping to it.
+    // = not tracked yet). For custom collections, tapping only works on
+    // numbers you've already added to your Mukhpath; the 2 default folders
+    // (Favourites + Wishlist) let you tap ANY of the 315, since you might
+    // want to favourite or queue a shlok before you've started learning it.
     function renderCollectionPickerMap(col) {
+      const anyShlok = !!col.isDefault;
       const byNumber = {};
       myShloks.forEach(s => { byNumber[s.number] = s.mastery; });
       let cells = '';
@@ -7521,11 +7914,12 @@
         const num = String(i);
         const mastery = byNumber[num];
         const inCollection = col.shloks.includes(num);
+        const tappable = anyShlok || !!mastery;
         let cls = 'map-cell';
         if (mastery) cls += ` ${mastery}`;
         if (inCollection) cls += ' collection-map-cell-added';
-        const clickAttr = mastery ? ` onclick="toggleCollectionCard('${col.id}','${num}')"` : '';
-        const title = mastery
+        const clickAttr = tappable ? ` onclick="toggleCollectionCard('${col.id}','${num}')"` : '';
+        const title = tappable
           ? `Shlok ${i} - ${inCollection ? 'In this collection (tap to remove)' : 'Tap to add'}`
           : `Shlok ${i} - not added to your Mukhpath yet`;
         cells += `<div class="${cls}" title="${title}"${clickAttr}>${i}</div>`;
@@ -7553,10 +7947,20 @@
       if (!input) return;
       const num = input.value.trim();
       if (!num) return;
-      const tracked = myShloks.find(s => s.number === num);
-      if (!tracked) { showToast(`You haven't added Shlok ${num} to your Mukhpath yet.`); return; }
       const col = shlokCollections.find(c => c.id === colId);
       if (!col) return;
+      if (col.isDefault) {
+        const n = parseInt(num, 10);
+        if (isNaN(n) || n < 1 || n > 315) { showToast('Please enter a shlok number between 1 and 315.'); return; }
+        const canonical = String(n);
+        if (!col.shloks.includes(canonical)) col.shloks.push(canonical);
+        saveCollections();
+        renderCollections();
+        showToast('Added to your list!');
+        return;
+      }
+      const tracked = myShloks.find(s => s.number === num);
+      if (!tracked) { showToast(`You haven't added Shlok ${num} to your Mukhpath yet.`); return; }
       if (!col.shloks.includes(num)) col.shloks.push(num);
       saveCollections();
       renderCollections();
@@ -7573,6 +7977,19 @@
       const lo = Math.min(from, to), hi = Math.max(from, to);
       const col = shlokCollections.find(c => c.id === colId);
       if (!col) return;
+      if (col.isDefault) {
+        const clampedLo = Math.max(1, lo), clampedHi = Math.min(315, hi);
+        if (clampedLo > clampedHi) { showToast('Please enter a valid range between 1 and 315.'); return; }
+        let added = 0;
+        for (let n = clampedLo; n <= clampedHi; n++) {
+          const num = String(n);
+          if (!col.shloks.includes(num)) { col.shloks.push(num); added++; }
+        }
+        saveCollections();
+        renderCollections();
+        showToast(added ? `Added ${added} shlok${added !== 1 ? 's' : ''}!` : 'Already all in your list!');
+        return;
+      }
       const matches = myShloks.filter(s => { const n = parseInt(s.number, 10); return n >= lo && n <= hi; });
       if (!matches.length) { showToast(`You haven't added any shloks between ${lo} and ${hi}.`); return; }
       matches.forEach(s => { if (!col.shloks.includes(s.number)) col.shloks.push(s.number); });
@@ -7593,12 +8010,59 @@
       showToast(added ? `Added ${added} shlok${added !== 1 ? 's' : ''}!` : 'Already all in this collection!');
     }
 
+    // Reads the mastery dropdown in the "Add All" tab of the picker and
+    // reuses the same logic as collectionAddAllByMastery.
+    function collectionAddAllByMasterySelect(colId) {
+      const select = document.getElementById('collectionAddAllSelect');
+      if (!select) return;
+      collectionAddAllByMastery(colId, select.value);
+    }
+
+    // Lets you remove one shlok (leave "to" blank) or a whole range at once
+    // from a collection, from inside the same add-shlok picker.
+    function collectionRemoveRange(colId) {
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      const fromEl = document.getElementById('collectionRemoveFrom');
+      const toEl = document.getElementById('collectionRemoveTo');
+      if (!fromEl) return;
+      const from = parseInt(fromEl.value, 10);
+      if (!from) { showToast("Please enter a shlok number."); return; }
+      const to = toEl.value.trim() ? parseInt(toEl.value, 10) : from;
+      if (isNaN(to) || to < from) { showToast("End must be the same as or after the start."); return; }
+      let removed = 0;
+      for (let i = from; i <= to; i++) {
+        const num = String(i);
+        const idx = col.shloks.indexOf(num);
+        if (idx !== -1) {
+          col.shloks.splice(idx, 1);
+          if (col.notes) delete col.notes[num];
+          removed++;
+        }
+      }
+      saveCollections();
+      fromEl.value = "";
+      toEl.value = "";
+      renderCollections();
+      showToast(removed ? `Removed ${removed} shlok${removed !== 1 ? "s" : ""} from "${col.name}".` : `No shloks in that range were in "${col.name}".`);
+    }
+
     function renderCollectionOpen(container, col) {
+      const anyShlok = !!col.isDefault;
+      const notes = col.notes || {};
       const rows = col.shloks.map(num => {
         const tracked = myShloks.find(s => s.number === num);
         const master = allShloks.find(s => s.id === num);
-        if (!tracked || !master) return null;
-        return { num, mastery: tracked.mastery, line1: tracked.line1, line2: tracked.line2, meaning: master.meaning || "" };
+        if (!master) return null;
+        if (!anyShlok && !tracked) return null;
+        return {
+          num,
+          mastery: tracked ? tracked.mastery : null,
+          line1: tracked ? tracked.line1 : master.line1,
+          line2: tracked ? tracked.line2 : master.line2,
+          meaning: master.meaning || "",
+          note: notes[num] || ""
+        };
       }).filter(Boolean);
 
       const titleBlock = collectionsRenamingId === col.id
@@ -7607,51 +8071,70 @@
              <button type="button" class="game-next-btn" style="margin-top:0;padding:0.25rem 0.7rem;font-size:0.72rem;min-width:70px;" onclick="confirmRenameCollection('${col.id}')">Save</button>
              <button type="button" class="game-back-btn" style="margin-top:0;padding:0.25rem 0.7rem;font-size:0.72rem;min-width:70px;" onclick="collectionsRenamingId=null;renderCollections();">Cancel</button>
            </div>`
-        : `<div class="collection-open-title">${collectionEscapeHtml(col.name)} <span class="collection-icon-btn" onclick="collectionsRenamingId='${col.id}';renderCollections();" title="Rename">✏️</span> <span class="collection-icon-btn" onclick="deleteCollection('${col.id}')" title="Delete collection">🗑️</span></div>
+        : `<div class="collection-open-title">${collectionEscapeHtml(col.name)}${col.isDefault ? '' : ` <span class="collection-icon-btn" onclick="collectionsRenamingId='${col.id}';renderCollections();" title="Rename">✏️</span> <span class="collection-icon-btn" onclick="deleteCollection('${col.id}')" title="Delete collection">🗑️</span>`}</div>
            <div class="collection-open-count">${rows.length} shlok${rows.length !== 1 ? 's' : ''}</div>`;
 
+      const practiceableCount = rows.filter(r => r.mastery).length;
+      const untrackedCount = rows.filter(r => !r.mastery).length;
       let html = `
-        <div class="collection-open-header">
+        <div class="collection-open-header" style="flex-wrap:wrap; gap:0.6rem;">
           <div style="display:flex;align-items:center;gap:0.7rem;">
             <button type="button" class="collection-open-back" onclick="closeCollectionsView()" title="Back to collections">←</button>
             <div>${titleBlock}</div>
           </div>
-          <button type="button" class="collection-practice-btn" onclick="practiceCollection('${col.id}')" ${!rows.length ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>▶ Practice this collection</button>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            ${col.isDefault ? `
+            <button type="button" class="collection-practice-btn" onclick="startLearnFolder('${col.id}')" ${!untrackedCount ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>📖 Learn from this folder${untrackedCount ? ` (${untrackedCount})` : ''}</button>` : ''}
+            <button type="button" class="collection-practice-btn" onclick="practiceCollection('${col.id}')" ${!practiceableCount ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>▶ Review these shloks (${practiceableCount} shlok${practiceableCount !== 1 ? 's' : ''} ready to review)</button>
+          </div>
         </div>
-        <div class="collection-open-body">`;
+        <div class="collection-open-body">
+          <div class="collection-add-row">${renderCollectionPicker(col)}</div>`;
 
       if (!rows.length) {
-        html += `<div class="collection-empty-msg">No shloks in this collection yet. Add some below!</div>`;
+        html += `<div class="collection-empty-msg">${anyShlok ? "No shloks in here yet. Add any of the 315 below - it doesn't matter if you haven't started learning them!" : "No shloks in this collection yet. Add some below!"}</div>`;
       } else {
         const masteryClassOf = m => m === "learnt" ? "learnt-card" : m === "memorised" ? "memorised-card" : m === "revise" ? "revise-card" : "";
         html += `<div class="collection-cards-grid">`;
         rows.forEach(r => {
+          const noteKey = `${col.id}::${r.num}`;
+          const editingNote = collectionsNoteEditingKey === noteKey;
           html += `
             <div class="shlok-card collection-card ${masteryClassOf(r.mastery)}">
               <button type="button" class="collection-card-remove" onclick="removeShlokFromCollection('${col.id}','${r.num}')" title="Remove from collection">✕</button>
               <div style="font-weight:700; font-size:0.82rem; color:var(--blue); margin-bottom:0.5rem;">Shlok ${r.num}</div>
-              <div class="shlok-line1" style="font-size:0.8rem; line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${r.line1}</div>
-              <div class="shlok-line2" style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-top:0.35rem;">${r.line2}</div>
-              ${r.meaning ? `<div class="shlok-meaning-bar" onclick="toggleMeaning(this, event)" style="margin-top:0.5rem;">
-                <span class="shlok-meaning-hint">📖 Tap to see meaning</span>
-                <div class="shlok-meaning-text" style="display:none;">${r.meaning}</div>
-              </div>` : ""}
+              <div class="shlok-line1" style="font-size:0.8rem; line-height:1.5;">${r.line1}</div>
+              <div class="shlok-line2" style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; margin-top:0.35rem;">${r.line2}</div>
+              ${r.meaning ? `<div style="font-size:0.78rem; font-style:italic; color:var(--text-muted); line-height:1.5; margin-top:0.5rem;">💭 ${r.meaning}</div>` : ""}
+              ${editingNote ? `
+                <div style="margin-top:0.6rem;">
+                  <input id="collectionNoteInput_${col.id}_${r.num}" type="text" maxlength="80" value="${collectionEscapeHtml(r.note)}" placeholder="e.g. why it's a favourite, or who recommended it" style="width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:0.78rem;" onkeypress="if(event.key==='Enter')saveCollectionNote('${col.id}','${r.num}');">
+                  <div style="display:flex;gap:0.4rem;margin-top:0.35rem;">
+                    <button type="button" class="game-next-btn" style="margin-top:0;padding:0.2rem 0.6rem;font-size:0.7rem;min-width:60px;" onclick="saveCollectionNote('${col.id}','${r.num}')">Save</button>
+                    <button type="button" class="game-back-btn" style="margin-top:0;padding:0.2rem 0.6rem;font-size:0.7rem;min-width:60px;" onclick="collectionsNoteEditingKey=null;renderCollections();">Cancel</button>
+                  </div>
+                </div>`
+              : r.note
+                ? `<div style="margin-top:0.55rem;font-size:0.76rem;font-style:italic;color:var(--text-muted);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" onclick="collectionsNoteEditingKey='${noteKey}';renderCollections();" title="${collectionEscapeHtml(r.note)} (tap to edit)">📝 ${collectionEscapeHtml(r.note)}</div>`
+                : `<div style="margin-top:0.55rem;"><span class="collection-icon-btn" style="font-size:0.74rem;text-decoration:underline;" onclick="collectionsNoteEditingKey='${noteKey}';renderCollections();">+ Add note</span></div>`
+              }
               <div class="shlok-controls" style="margin-top:0.6rem;">
-                <button class="mastery-pill"
-                  style="border-color:${getBorder(r.mastery)}; color:${getBorder(r.mastery)};"
-                  onclick="collectionChangeMastery('${r.num}')">
-                  ${r.mastery === "learnt" ? "Learnt" : r.mastery === "memorised" ? "Memorised" : "Revise"}
-                </button>
+                ${r.mastery
+                  ? `<button class="mastery-pill" style="border-color:${getBorder(r.mastery)}; color:${getBorder(r.mastery)};" onclick="collectionChangeMastery('${r.num}')">${r.mastery === "learnt" ? "Learnt" : r.mastery === "memorised" ? "Memorised" : "Revise"}</button>`
+                  : `<span style="font-size:0.72rem;color:var(--text-muted);margin-right:0.5rem;">Not started yet</span><button class="mastery-pill" style="border-color:var(--blue); color:var(--blue); width:168px;" onclick="startLearnShlokFromCollection('${r.num}')">Start Learning →</button>`
+                }
               </div>
             </div>`;
         });
         html += `</div>`;
       }
 
-      html += `<div class="collection-add-row">${renderCollectionPicker(col)}</div></div>`;
+      html += `</div>`;
       container.innerHTML = html;
       const renameInput = document.getElementById('renameCollectionInput');
       if (renameInput) renameInput.focus();
+      const noteInput = container.querySelector('input[id^="collectionNoteInput_"]');
+      if (noteInput) { noteInput.focus(); noteInput.setSelectionRange(noteInput.value.length, noteInput.value.length); }
     }
 
     // ── SAVE & RENDER ──
@@ -7795,7 +8278,11 @@
 
     function getBorder(status) {
       if (status === "learnt") return "#1e40af";
-      if (status === "memorised") return "var(--green-text)";
+      // Uses --green-map (not --green-text) so the "Memorised" pill's
+      // outline/text match the same slightly-darker green used on the
+      // Shlok Map in dark mode - in light mode --green-map is just an
+      // alias for --green-text, so nothing changes there.
+      if (status === "memorised") return "var(--green-map)";
       if (status === "revise") return "var(--orange-text)";
       return "#333";
     }
@@ -7978,7 +8465,7 @@
     function updateDayPriorityWrapVisibility() {
       const wrap = document.getElementById('dayPriorityCardsWrap');
       if (!wrap) return;
-      const anyVisible = ['sundayParisCard', 'weeklySummaryCard', 'mondayParisCard', 'wednesdayParisCard', 'fridayParisCard']
+      const anyVisible = ['sundayParisCard', 'weeklySummaryCard', 'mondayParisCard', 'wednesdayParisCard', 'fridayParisCard', 'vidvanTestCard']
         .some(id => {
           const el = document.getElementById(id);
           return el && el.style.display === 'block';
@@ -8074,6 +8561,158 @@
         fridayEl.style.display = 'none';
       }
     }
+
+    // ── VIDVAN TEST STATUS CARD ──
+    // Appears once someone has learnt/memorised 300+ shloks, asking whether
+    // they've taken their Satsang Diksha test yet. Stays on the home page
+    // (editable anytime) until they confirm they've passed, at which point
+    // it disappears and they're added to the Vidvan Wall on Mukhpath Mandal.
+    let vidvanSelectedResult = null;
+    function updateVidvanTestCard() {
+      const card = document.getElementById('vidvanTestCard');
+      if (!card) return;
+      if (!currentUser) { card.style.display = 'none'; return; }
+      const profile = JSON.parse(localStorage.getItem('profile') || 'null');
+      if (profile && profile.mukhpathTestPassed === true) { card.style.display = 'none'; return; }
+      const totalKnown = myShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised').length;
+      if (totalKnown < 300) { card.style.display = 'none'; return; }
+
+      card.style.display = 'block';
+      // Reset to the initial question each time the card is (re)shown
+      const question = document.getElementById('vidvanTestQuestion');
+      const form = document.getElementById('vidvanTestForm');
+      const note = document.getElementById('vidvanTestNote');
+      const encourageNote = document.getElementById('vidvanEncourageNote');
+      const adviceWrap = document.getElementById('vidvanAdviceWrap');
+      const adviceInput = document.getElementById('vidvanAdviceInput');
+      const adviceCount = document.getElementById('vidvanAdviceCount');
+      if (question) question.style.display = 'flex';
+      if (form) form.style.display = 'none';
+      if (note) note.style.display = 'none';
+      if (encourageNote) encourageNote.style.display = 'none';
+      if (adviceWrap) adviceWrap.style.display = 'none';
+      if (adviceInput) adviceInput.value = '';
+      if (adviceCount) adviceCount.textContent = '0/500';
+      vidvanSelectedResult = null;
+      const dateInput = document.getElementById('vidvanTestDate');
+      if (dateInput) dateInput.value = (profile && profile.mukhpathTestDate) || '';
+      const passBtn = document.getElementById('vidvanPassBtn');
+      const failBtn = document.getElementById('vidvanFailBtn');
+      if (passBtn) { passBtn.style.borderColor = 'var(--border)'; passBtn.style.background = 'transparent'; }
+      if (failBtn) { failBtn.style.borderColor = 'var(--border)'; failBtn.style.background = 'transparent'; }
+    }
+
+    function vidvanNotYet() {
+      const question = document.getElementById('vidvanTestQuestion');
+      const note = document.getElementById('vidvanTestNote');
+      if (question) question.style.display = 'none';
+      if (note) note.style.display = 'block';
+      showToast("No rush - come back and update this anytime!");
+    }
+
+    function vidvanShowForm() {
+      const question = document.getElementById('vidvanTestQuestion');
+      const form = document.getElementById('vidvanTestForm');
+      if (question) question.style.display = 'none';
+      if (form) form.style.display = 'block';
+    }
+
+    function vidvanSelectResult(passed) {
+      vidvanSelectedResult = passed;
+      const passBtn = document.getElementById('vidvanPassBtn');
+      const failBtn = document.getElementById('vidvanFailBtn');
+      const encourageNote = document.getElementById('vidvanEncourageNote');
+      if (passBtn) {
+        passBtn.style.borderColor = passed ? 'var(--gold)' : 'var(--border)';
+        passBtn.style.background = passed ? 'rgba(244,201,93,0.15)' : 'transparent';
+      }
+      if (failBtn) {
+        failBtn.style.borderColor = !passed ? 'var(--gold)' : 'var(--border)';
+        failBtn.style.background = !passed ? 'rgba(244,201,93,0.15)' : 'transparent';
+      }
+      if (encourageNote) encourageNote.style.display = passed ? 'none' : 'block';
+      const adviceWrap = document.getElementById('vidvanAdviceWrap');
+      if (adviceWrap) adviceWrap.style.display = passed ? 'block' : 'none';
+    }
+
+    function vidvanSubmit() {
+      const dateInput = document.getElementById('vidvanTestDate');
+      const date = dateInput ? dateInput.value : '';
+      if (!date) { showToast('Please select the date of your test.'); return; }
+      if (vidvanSelectedResult === null) { showToast('Please select whether you passed.'); return; }
+
+      const profile = JSON.parse(localStorage.getItem('profile') || '{}') || {};
+      profile.mukhpathTestDate = date;
+      profile.mukhpathTestPassed = vidvanSelectedResult;
+      if (vidvanSelectedResult) {
+        const adviceInput = document.getElementById('vidvanAdviceInput');
+        const advice = adviceInput ? adviceInput.value.trim().slice(0, 500) : '';
+        profile.mukhpathAdvice = advice || null;
+      }
+      localStorage.setItem('profile', JSON.stringify(profile));
+
+      scheduleUserSync();
+      syncToMandal();
+
+      if (vidvanSelectedResult) {
+        triggerVidvanCelebration();
+        showToast("🎉 Congratulations! You've been added to the Vidvan Wall!");
+      } else {
+        showToast("You've got this, keep going! 💪 Come back and update this once you retake.");
+      }
+
+      updateHomePage();
+    }
+
+    // Full-screen celebration for passing the Satsang Diksha test - mirrors
+    // the existing 315-shlok grand finale treatment (backdrop + swapping
+    // gold text + confetti/starburst) since this is an even bigger milestone.
+    function triggerVidvanCelebration() {
+      triggerConfetti();
+      setTimeout(triggerStarburst, 400);
+
+      const backdrop = document.createElement("div");
+      backdrop.style.cssText = `
+        position:fixed; inset:0; background:rgba(0,0,0,0.85);
+        pointer-events:none; z-index:9998; opacity:0;
+        transition:opacity 0.4s ease;
+      `;
+      document.body.appendChild(backdrop);
+      requestAnimationFrame(() => backdrop.style.opacity = "1");
+
+      const text = document.createElement("div");
+      text.style.cssText = `
+        position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+        font-size:4.5rem; font-weight:900; color:var(--gold);
+        text-align:center; pointer-events:none; z-index:10000;
+        text-shadow:0 0 40px rgba(244,201,93,0.9), 0 0 80px rgba(244,201,93,0.5);
+        line-height:1.3; opacity:0; transition:opacity 0.4s ease;
+        width:90vw;
+      `;
+      text.innerHTML = "🎉 Congratulations on<br>passing your test!";
+      document.body.appendChild(text);
+      requestAnimationFrame(() => text.style.opacity = "1");
+
+      setTimeout(() => {
+        text.style.opacity = "0";
+        setTimeout(() => {
+          text.innerHTML = "You've been added to<br>the Vidvan Wall! 👑";
+          text.style.opacity = "1";
+        }, 400);
+      }, 5000);
+
+      setTimeout(() => {
+        backdrop.style.opacity = "0";
+        text.style.opacity = "0";
+        setTimeout(() => {
+          backdrop.remove(); text.remove();
+          // Land them straight on the Vidvan Wall so they can see themselves on it
+          switchTab(document.querySelectorAll('.nav-item')[5], 'mandal');
+          switchMandalTab('vidvan');
+        }, 500);
+      }, 10000);
+    }
+
     function updateMotivationMsg() {
       const learnEl = document.getElementById('learnMotivationMsg');
       const mukhpathEl = document.getElementById('mukhpathMotivationMsg');
@@ -8159,6 +8798,9 @@
           showToast("You need at least 4 added shloks to play Full Review!");
           return;
         }
+      } else if (game === "mockTest") {
+        // No generic shlok-count gate here - the milestone selector screen
+        // handles its own messaging based on how many shloks you know
       } else if (game !== "challengeFriend" && needMoreShloks()) {
         return;
       }
@@ -8174,6 +8816,7 @@
       if (game === "dailyChallenge"){ document.getElementById("gameDailyChallenge").style.display = "block"; loadDailyChallenge(); }
       if (game === "revisionMode")  { document.getElementById("gameRevisionMode").style.display = "block";  loadRevisionMode(); }
       if (game === "fullReview")    { document.getElementById("gameFullReview").style.display = "block";    loadFullReview(); }
+      if (game === "mockTest")      { document.getElementById("gameMockTest").style.display = "block";      loadMockTest(); }
       if (game === "kahootQuiz")    { document.getElementById("gameKahootQuiz").style.display = "block";    showKahootModeSelector(); }
       if (game === "shlokSequence") { document.getElementById("gameShlokSequence").style.display = "block"; loadShlokSequence(); }
       if (game === "challengeFriend") { document.getElementById("gameChallengeFriend").style.display = "block"; loadChallengeFriend(); }
@@ -9318,6 +9961,8 @@
 
         myShloks = mergedShloks;
         shlokCollections = mergedCollections;
+        ensureDefaultCollections();
+        localStorage.setItem("shlokCollections", JSON.stringify(shlokCollections));
         loadProfile();
         render();
         renderProgressPage();
@@ -9327,6 +9972,23 @@
         // Push the reconciled result back up so the next device to sign in
         // sees everything that's been merged here too.
         await syncUserData();
+
+        // If this merge brought in a milestone that hasn't reached the
+        // Noticeboard yet - whether it came from another device, or was hit
+        // on this device but the tab closed before the live post finished -
+        // post it now, right away, instead of relying solely on the 3-second
+        // "backfill" check on next load. That backfill only runs once per
+        // page load and only within a 7-day window, so anyone who doesn't
+        // reopen the app again soon after hitting a milestone was seeing
+        // their Noticeboard post show up days late.
+        if (mergedMilestone > lastMilestoneCheck) lastMilestoneCheck = mergedMilestone;
+        if (db && mergedMilestone > 0 && NOTICEBOARD_MILESTONES.includes(mergedMilestone)) {
+          const alreadyHandled = localStorage.getItem("noticeboardHandledMilestone") === String(mergedMilestone);
+          if (!alreadyHandled) {
+            postOrUpdateNoticeboard(mergedMilestone, firebase.firestore.Timestamp.fromMillis(parseInt(mergedMilestoneDate) || Date.now()))
+              .catch(e => console.warn("Noticeboard catch-up post failed:", e));
+          }
+        }
 
         // Only toast when the cloud actually contributed something new to
         // this device - a plain sign-in/refresh with nothing to reconcile
@@ -9353,6 +10015,9 @@
         // Same for the Mandal page - it also requires sign-in now
         const mandalSection = document.getElementById('mandal');
         if (mandalSection && mandalSection.classList.contains('active')) renderMandal();
+        // Same for the Vidvan Wall - also requires sign-in now
+        const vidvanPanel = document.getElementById('vidvanPanel');
+        if (vidvanPanel && vidvanPanel.style.display !== 'none') renderVidvanWall();
         // If they just signed in from the "one free game used" gate, send
         // them back to the hub so they can jump straight into a game
         const signInGate = document.getElementById('gameSignInGate');
@@ -9416,10 +10081,14 @@
           favShlokId:      profile.favShlok || null,
           learningNowId:   getNextShlokId(),
           recentMilestone: (isRecent && lastMilestone > 0) ? lastMilestone : null,
+          recentMilestoneDate: (isRecent && lastMilestone > 0) ? lastMilestoneDate : null,
           goalName:        profile.goalName || null,
           goalTarget:      profile.goalTarget || null,
           goalDate:        profile.goalDate || null,
           shlokList:       freshShloks.filter(s => s.mastery === 'learnt' || s.mastery === 'memorised' || s.mastery === 'revise').map(s => s.number),
+          testDate:        profile.mukhpathTestDate || null,
+          testPassed:      profile.mukhpathTestPassed === true,
+          advice:          profile.mukhpathAdvice || null,
           lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch (e) {
@@ -9512,10 +10181,16 @@
         ? new Date(person.startDate).toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" })
         : null;
       const colour = mandalCentreColour(person.mandalName);
+      // Re-check the 48h "recent" window ourselves at render time, rather than
+      // trusting whatever isRecent was baked in whenever the person's device
+      // last synced - otherwise the badge sticks around forever for anyone
+      // who doesn't reopen the app again after hitting their milestone.
+      const milestoneIsFresh = !!(person.recentMilestone && person.recentMilestoneDate &&
+        (Date.now() - person.recentMilestoneDate) < 48 * 60 * 60 * 1000);
       const card = document.createElement("div");
       card.className = "mandal-card";
       card.innerHTML = `
-        ${person.recentMilestone ? `<div class="mandal-milestone-badge">🎉 Just hit ${person.recentMilestone}!</div>` : ""}
+        ${milestoneIsFresh ? `<div class="mandal-milestone-badge">🎉 Just hit ${person.recentMilestone}!</div>` : ""}
 
         <!-- Mini profile -->
         <div class="mandal-card-header">
@@ -9656,20 +10331,24 @@
     function switchMandalTab(tab) {
       const mandalPanel = document.getElementById('mandalPanel');
       const noticePanel = document.getElementById('noticePanel');
+      const vidvanPanel = document.getElementById('vidvanPanel');
       const mandalBtn   = document.getElementById('mandalTabBtn');
       const noticeBtn   = document.getElementById('noticeTabBtn');
-      if (tab === 'mandal') {
-        mandalPanel.style.display = 'block';
-        noticePanel.style.display = 'none';
-        mandalBtn.classList.add('active');
-        noticeBtn.classList.remove('active');
-      } else {
-        mandalPanel.style.display = 'none';
-        noticePanel.style.display = 'block';
-        mandalBtn.classList.remove('active');
-        noticeBtn.classList.add('active');
+      const vidvanBtn   = document.getElementById('vidvanTabBtn');
+
+      mandalPanel.style.display = tab === 'mandal' ? 'block' : 'none';
+      noticePanel.style.display = tab === 'noticeboard' ? 'block' : 'none';
+      if (vidvanPanel) vidvanPanel.style.display = tab === 'vidvan' ? 'block' : 'none';
+
+      mandalBtn.classList.toggle('active', tab === 'mandal');
+      noticeBtn.classList.toggle('active', tab === 'noticeboard');
+      if (vidvanBtn) vidvanBtn.classList.toggle('active', tab === 'vidvan');
+
+      if (tab === 'noticeboard') {
         loadNoticeboard();
         clearMandalNotificationDot();
+      } else if (tab === 'vidvan') {
+        renderVidvanWall();
       }
     }
 
@@ -10028,10 +10707,117 @@
           mandalAllData = [];
           snapshot.forEach(docSnap => mandalAllData.push(docSnap.data()));
           mandalApplyFilter();
+          updateVidvanTabVisibility();
         }, err => {
           console.error("Mandal error:", err);
           grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#dc2626;">Couldn't load the mandal - check your connection and try again.</div>`;
         });
+    }
+
+    // ── VIDVAN WALL OF FAME ──
+    // Only appears (tab shown) once at least one person has learnt all 315
+    // shloks AND confirmed they've passed their Satsang Diksha test.
+    function updateVidvanTabVisibility() {
+      const vidvanBtn = document.getElementById('vidvanTabBtn');
+      if (!vidvanBtn) return;
+      // Always visible to everyone, whether or not anyone's qualified yet -
+      // renderVidvanWall() shows a "be the first" placeholder until then
+      vidvanBtn.style.display = 'inline-block';
+    }
+
+    function renderVidvanWall() {
+      const container = document.getElementById('vidvanWallContainer');
+      if (!container) return;
+
+      if (!currentUser) {
+        container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem;">
+          <div style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.9rem;">🔒 Sign in to see the Vidvan Wall.</div>
+          <button onclick="signInWithGoogle()" style="background:white; border:1.5px solid #dadce0; border-radius:999px; padding:0.4rem 1.1rem; font-size:0.82rem; font-weight:600; font-family:'Poppins',sans-serif; color:#3c4043; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:16px;height:16px;" alt="">
+            Sign in with Google
+          </button>
+        </div>`;
+        return;
+      }
+
+      const vidvans = mandalAllData
+        .filter(p => p.testPassed === true)
+        .sort((a, b) => new Date(b.testDate || 0) - new Date(a.testDate || 0));
+
+      const fmt = d => d ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "—";
+
+      const stars = [
+        { top: "20px", left: "50px", size: "1.1rem", delay: "0.2s" },
+        { top: "55px", left: "150px", size: "0.55rem", delay: "1.1s" },
+        { top: "15px", right: "100px", size: "1.3rem", delay: "0.6s" },
+        { top: "90px", right: "50px", size: "0.7rem", delay: "1.8s" },
+        { top: "160px", left: "20px", size: "0.8rem", delay: "0.4s" },
+        { top: "250px", right: "30px", size: "1rem", delay: "1.4s" },
+        { top: "130px", left: "220px", size: "0.5rem", delay: "2.1s" },
+        { top: "340px", left: "70px", size: "0.65rem", delay: "0.9s" },
+        { bottom: "70px", left: "120px", size: "0.6rem", delay: "0.3s" },
+        { bottom: "110px", right: "180px", size: "1rem", delay: "1.2s" },
+        { bottom: "40px", right: "60px", size: "0.75rem", delay: "2.3s" },
+      ];
+      const starsHtml = stars.map((s, i) => {
+        const pos = Object.entries(s).filter(([k]) => k !== 'size' && k !== 'delay').map(([k, v]) => `${k}:${v};`).join('');
+        const colour = i % 2 === 0 ? '#F4C95D' : '#fff';
+        const symbol = i % 3 === 0 ? '✧' : '✦';
+        return `<div class="vw-star" style="${pos} font-size:${s.size}; color:${colour}; animation-delay:${s.delay};">${symbol}</div>`;
+      }).join('');
+
+      const beamsHtml = `
+        <div class="vw-beam" style="left:8%; transform:rotate(-14deg); animation-delay:0s;"></div>
+        <div class="vw-beam" style="left:32%; transform:rotate(-5deg); animation-delay:1s;"></div>
+        <div class="vw-beam" style="right:32%; transform:rotate(5deg); animation-delay:2s;"></div>
+        <div class="vw-beam" style="right:8%; transform:rotate(14deg); animation-delay:0.5s;"></div>
+      `;
+      const orbsHtml = `
+        <div class="vw-orb" style="top:40px; left:10%; width:120px; height:120px;"></div>
+        <div class="vw-orb" style="top:200px; right:8%; width:160px; height:160px;"></div>
+        <div class="vw-orb" style="bottom:40px; left:15%; width:100px; height:100px;"></div>
+      `;
+
+      if (!vidvans.length) {
+        container.innerHTML = `
+          <div class="vw-bg">
+            ${orbsHtml}${starsHtml}${beamsHtml}
+            <div class="vw-header">
+              <div class="vw-eyebrow">✦ ✧ &nbsp; MISSION RAJIPO COMPLETE &nbsp; ✧ ✦</div>
+              <div class="vw-title">✨ 🏆 Vidvan Wall 🏆 ✨</div>
+              <div style="font-size:1.15rem;font-weight:800;color:#F4C95D;margin-top:0.9rem;text-shadow:0 0 16px rgba(244,201,93,0.5);">No Vidvans yet - be the one to start the wall!</div>
+              <div class="vw-subtitle">Once you've learnt all 315 shloks and passed your final mukhpath test, you'll be featured here! ✨</div>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const plaquesHtml = vidvans.map(p => `
+        <div class="vw-plaque">
+          <div style="position:absolute; top:8px; left:14px; font-size:0.7rem; color:rgba(244,201,93,0.6);">✦</div>
+          <div style="position:absolute; top:8px; right:14px; font-size:0.7rem; color:rgba(244,201,93,0.6);">✦</div>
+          <div class="vw-crown">👑</div>
+          <div class="vw-name">${mandalEscapeHtml(p.name || "")}</div>
+          <div class="vw-divider"></div>
+          <div class="vw-label">Started Mukhpath</div>
+          <div class="vw-value">${fmt(p.startDate)}</div>
+          <div class="vw-label">Passed Test</div>
+          <div class="vw-value" style="${p.advice ? '' : 'margin-bottom:0;'}">${fmt(p.testDate)}</div>
+          ${p.advice ? `<div class="vw-advice">&ldquo;${mandalEscapeHtml(p.advice)}&rdquo;</div>` : ''}
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="vw-bg">
+          ${orbsHtml}${starsHtml}${beamsHtml}
+          <div class="vw-header">
+            <div class="vw-eyebrow">✦ ✧ &nbsp; MISSION RAJIPO COMPLETE &nbsp; ✧ ✦</div>
+            <div class="vw-title">✨ 🏆 Vidvan Wall 🏆 ✨</div>
+            <div class="vw-subtitle">Celebrating those who've learnt all 315 shloks and passed their Satsang Diksha test</div>
+          </div>
+          <div class="vw-grid">${plaquesHtml}</div>
+          <div class="vw-footer">✦ ✧ &nbsp; ${vidvans.length} Vidvan${vidvans.length !== 1 ? 's' : ''} and counting &nbsp; ✧ ✦</div>
+        </div>`;
     }
 
     /* ------------------------------
@@ -10285,6 +11071,7 @@
     let lnsPhase = 0;     // 0 = understand, 1-3 = retrieval rounds, 4 = complete
     let lnsShlok = null;
     let lnsSuggestedId = null;
+    let learnFolderQueueId = null; // set while working through "Learn shloks from this folder"
 
     function initLearnPage() {
       const pickerCard = document.getElementById("learnPickerCard");
@@ -10323,6 +11110,9 @@
       }
 
       const suggested = allShloks.find(s => s.id === lnsSuggestedId);
+      const foldersWithUntracked = shlokCollections
+        .map(c => ({ col: c, count: getUntrackedNumbersInCollection(c.id).length }))
+        .filter(x => x.count > 0);
       card.innerHTML = `
         <div class="learn-next-header">
           <div class="learn-next-title">📚 Choose a Shlok to Learn</div>
@@ -10339,6 +11129,16 @@
             <div id="learnSearchResults" style="margin-top:0.6rem;"></div>
           </div>
         </div>
+        ${foldersWithUntracked.length ? `
+        <div style="margin-top:0.8rem;">
+          <button class="learn-btn-ghost" style="margin-left:0;" onclick="toggleLearnFolderList()">📁 Or learn from a folder</button>
+          <div id="learnFolderListBox" style="display:none; margin-top:0.8rem;">
+            ${foldersWithUntracked.map(x => `
+              <div class="learn-search-result" onclick="startLearnFolder('${x.col.id}')">
+                <strong>${collectionEscapeHtml(x.col.name)}</strong> - ${x.count} shlok${x.count !== 1 ? 's' : ''} to learn
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
       `;
     }
 
@@ -10350,6 +11150,12 @@
         document.getElementById("learnSearchInput").focus();
         renderLearnSearchResults();
       }
+    }
+
+    function toggleLearnFolderList() {
+      const box = document.getElementById("learnFolderListBox");
+      if (!box) return;
+      box.style.display = box.style.display === "none" ? "block" : "none";
     }
 
     function renderLearnSearchResults() {
@@ -10388,6 +11194,7 @@
     }
 
     function backToLearnPicker() {
+      learnFolderQueueId = null; // backing out manually cancels any active folder queue
       document.getElementById("learnNextCard").style.display = "none";
       document.getElementById("learnPickerCard").style.display = "block";
       renderLearnPicker();
@@ -10519,6 +11326,20 @@
       });
       save(); render(); updateDashboard(); updateHomePage();
       showToast(`🎉 Shlok ${lnsShlok.id} added as Learnt!`);
+
+      // If we're working through "Learn shloks from this folder", automatically
+      // continue to the next not-yet-added shlok in that folder instead of
+      // dropping back to the generic picker.
+      if (learnFolderQueueId) {
+        const col = shlokCollections.find(c => c.id === learnFolderQueueId);
+        const remaining = getUntrackedNumbersInCollection(learnFolderQueueId);
+        if (col && remaining.length) {
+          startLearnShlok(remaining[0]);
+          return;
+        }
+        showToast(col ? `🎉 You've added every shlok from "${col.name}"!` : "Folder queue finished!");
+        learnFolderQueueId = null;
+      }
       initLearnPage();
     }
 
@@ -10743,9 +11564,12 @@
       const shlok = myShloks.find(x => x.number === s.number);
       document.getElementById("rmCurrent").textContent = rmIndex + 1;
       const firstTwo = s.line1.split(" ").slice(0, 2).join(" ") + "...";
-      document.getElementById("rmPrompt").textContent = firstTwo;
+      document.getElementById("rmPrompt").textContent = `Shlok ${s.number} - ${firstTwo}`;
       document.getElementById("rmRevealSection").style.display = "none";
       document.getElementById("rmRevealBtn").style.display = "inline-block";
+      document.getElementById("rmMeaningBtn").style.display = "inline-block";
+      document.getElementById("rmMeaning").style.display = "none";
+      document.getElementById("rmMeaning").textContent = "";
       document.getElementById("rmFeedback").textContent = "";
       document.getElementById("rmFeedback").className = "game-feedback";
       document.getElementById("rmHintPanel").style.display = "none";
@@ -10765,6 +11589,15 @@
       } else {
         hintEl.style.display = "none";
       }
+    }
+
+    function rmShowMeaning() {
+      const s = rmPool[rmIndex];
+      const master = allShloks.find(a => a.id === s.number);
+      const meaning = master && master.meaning ? master.meaning : "No meaning available for this shlok.";
+      document.getElementById("rmMeaning").textContent = "💭 " + meaning;
+      document.getElementById("rmMeaning").style.display = "block";
+      document.getElementById("rmMeaningBtn").style.display = "none";
     }
 
     function rmReveal() {
@@ -10923,6 +11756,31 @@
       frShowCollectionPicker(col.id);
     }
 
+    // Ascending list of shlok numbers in a folder that aren't in myShloks
+    // yet - the queue "Learn shloks from this folder" works through.
+    function getUntrackedNumbersInCollection(colId) {
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return [];
+      const added = new Set(myShloks.map(s => s.number));
+      return col.shloks
+        .filter(num => !added.has(num) && allShloks.some(a => a.id === num))
+        .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    }
+
+    // Jumps to the Learn page and steps through every not-yet-added shlok in
+    // a folder, in ascending order - lnsComplete() picks up learnFolderQueueId
+    // and automatically continues to the next one after each shlok is added.
+    function startLearnFolder(colId) {
+      const col = shlokCollections.find(c => c.id === colId);
+      if (!col) return;
+      const queue = getUntrackedNumbersInCollection(colId);
+      if (!queue.length) { showToast(`Every shlok in "${col.name}" is already added!`); return; }
+      switchTab(document.querySelectorAll('.nav-item')[2], 'learn');
+      initLearnPage();
+      learnFolderQueueId = colId;
+      startLearnShlok(queue[0]);
+    }
+
     // ── FULL REVIEW ──
     function loadFullReview() { frShowModeSelector(); }
 
@@ -11013,8 +11871,20 @@
       document.getElementById("frClueBtn").style.display = "inline-block";
       document.getElementById("frClue").style.display = "none";
       document.getElementById("frClue").textContent = "";
+      document.getElementById("frMeaningBtn").style.display = "inline-block";
+      document.getElementById("frMeaning").style.display = "none";
+      document.getElementById("frMeaning").textContent = "";
       document.getElementById("frFeedback").textContent = "";
       document.getElementById("frFeedback").className = "game-feedback";
+    }
+
+    function frShowMeaning() {
+      const s = frPool[frIndex];
+      const master = allShloks.find(a => a.id === s.number);
+      const meaning = master && master.meaning ? master.meaning : "No meaning available for this shlok.";
+      document.getElementById("frMeaning").textContent = "💭 " + meaning;
+      document.getElementById("frMeaning").style.display = "block";
+      document.getElementById("frMeaningBtn").style.display = "none";
     }
 
     function frShowClue() {
@@ -11074,6 +11944,188 @@
           : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}
       `;
       document.getElementById("frDone").style.display = "block";
+    }
+
+    /* ------------------------------
+       MOCK TEST
+       - Milestones reuse the existing MILESTONES array (50, 100, 150, 200,
+         250, 300, 315). Each mock test is cumulative: the "100" test pulls
+         2 random shloks from every 10-block from 1-10 up through 91-100.
+       - Unlocking a milestone requires shlok numbers 1 through that
+         milestone to ALL be tracked (any status - learnt, memorised, or
+         revise all count) with no gaps. A user who happens to have 50
+         shloks tracked scattered elsewhere in the 315 (say 200-250) does
+         NOT unlock the "50" test - they specifically need 1-50, in order,
+         since the real Satsang Diksha test itself is done in shlok order.
+       ------------------------------ */
+    let mtPool = [], mtIndex = 0, mtKnown = 0, mtNotYet = 0;
+
+    function loadMockTest() { mtShowModeSelector(); }
+
+    // True if every shlok number from 1 to m has been added to myShloks,
+    // regardless of its mastery (learnt/memorised/revise all count as
+    // "tracked" for the purposes of unlocking a mock test milestone).
+    function mtRangeFullyTracked(m) {
+      const byNumber = new Set(myShloks.map(s => s.number));
+      for (let n = 1; n <= m; n++) {
+        if (!byNumber.has(String(n))) return false;
+      }
+      return true;
+    }
+
+    function mtShowModeSelector() {
+      document.getElementById("mtModeSelector").style.display = "block";
+      document.getElementById("mtPlayCard").style.display = "none";
+      document.getElementById("mtDone").style.display = "none";
+
+      const unlocked = MILESTONES.filter(mtRangeFullyTracked);
+      const nextLocked = MILESTONES.find(m => !mtRangeFullyTracked(m));
+
+      const list = document.getElementById("mtMilestoneList");
+      const lockedNote = document.getElementById("mtLockedNote");
+
+      if (!unlocked.length) {
+        list.innerHTML = `<div style="font-size:0.85rem;color:var(--text-muted);">Learn shloks 1-50, in order, to unlock your first mock test!</div>`;
+        lockedNote.textContent = "";
+        return;
+      }
+
+      list.innerHTML = unlocked.map(m => `
+          <button class="snap-mode-btn" type="button" onclick="mtStart(${m})">
+            <div class="snap-mode-icon">🎓</div>
+            <div><div class="snap-mode-title">${m} Shlok Mock Test</div>
+            <div class="snap-mode-sub">${(m / 10) * 2} questions - 2 from every 10 shloks, 1-${m}.</div></div>
+          </button>`).join("");
+
+      if (nextLocked) {
+        const byNumber = new Set(myShloks.map(s => s.number));
+        let missing = 0;
+        for (let n = 1; n <= nextLocked; n++) { if (!byNumber.has(String(n))) missing++; }
+        lockedNote.textContent = `🔒 Learn shloks 1-${nextLocked} in order (${missing} shlok${missing !== 1 ? "s" : ""} to go) to unlock the ${nextLocked} Mock Test.`;
+      } else {
+        lockedNote.textContent = `🏆 You've unlocked every Mock Test - you know all 315!`;
+      }
+    }
+
+    // First two words of line 1 - splitting on whitespace only, so a
+    // hyphenated compound word never gets split into extra "words"
+    function mtClue1(s) {
+      const words = (s.line1 || "").trim().split(/\s+/);
+      return words.slice(0, 2).join(" ");
+    }
+    // Last two words of line 2, same whitespace-only splitting rule
+    function mtClue2(s) {
+      const words = (s.line2 || "").trim().split(/\s+/);
+      return words.slice(-2).join(" ");
+    }
+
+    function mtStart(milestone) {
+      // Any tracked status counts here (learnt/memorised/revise) - the
+      // milestone unlock check already guarantees 1-through-milestone are
+      // all tracked, so this just builds the lookup, not a fresh filter.
+      const byNumber = new Map(myShloks.map(s => [parseInt(s.number), s]));
+
+      let pool = [];
+      for (let blockStart = 1; blockStart <= milestone; blockStart += 10) {
+        const blockEnd = Math.min(blockStart + 9, milestone);
+        const blockShloks = [];
+        for (let n = blockStart; n <= blockEnd; n++) {
+          if (byNumber.has(n)) blockShloks.push(byNumber.get(n));
+        }
+        pool = pool.concat(pick(blockShloks, Math.min(2, blockShloks.length)));
+      }
+      pool = shuffle(pool);
+
+      mtPool = pool;
+      mtIndex = 0; mtKnown = 0; mtNotYet = 0;
+      document.getElementById("mtKnownCount").textContent = 0;
+      document.getElementById("mtTotal").textContent = mtPool.length;
+      document.getElementById("mtModeSelector").style.display = "none";
+      document.getElementById("mtDone").style.display = "none";
+      document.getElementById("mtPlayCard").style.display = "block";
+      document.getElementById("mtFeedback").textContent = "";
+
+      if (!mtPool.length) {
+        document.getElementById("mtPrompt").textContent = "No shloks found for this range!";
+        document.getElementById("mtClues").innerHTML = "";
+        document.getElementById("mtRevealBtn").style.display = "none";
+        return;
+      }
+      document.getElementById("mtRevealBtn").style.display = "inline-block";
+      mtShowCard();
+    }
+
+    function mtShowCard() {
+      if (mtIndex >= mtPool.length) { mtFinish(); return; }
+      const s = mtPool[mtIndex];
+      document.getElementById("mtCurrent").textContent = mtIndex + 1;
+      document.getElementById("mtPrompt").textContent = `Shlok ${s.number}`;
+      // Clues are hidden by default - each has its own reveal button so
+      // shlok is only used if actually needed, rather than both being
+      // shown automatically before the person has tried to recall it.
+      document.getElementById("mtClues").innerHTML = `
+        <div style="display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center; margin-bottom:0.9rem;">
+          <button id="mtClue1Btn" class="game-submit-btn" style="background:var(--gold); color:var(--blue-dark);" onclick="mtRevealClue(1)">💡 Reveal Clue 1</button>
+          <button id="mtClue2Btn" class="game-submit-btn" style="background:var(--gold); color:var(--blue-dark);" onclick="mtRevealClue(2)">💡 Reveal Clue 2</button>
+        </div>
+        <div id="mtClue1Box" style="display:none;">
+          <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Clue 1 - start of the shlok</div>
+          <div class="fb-prompt" style="margin-bottom:0.7rem;">${mtClue1(s)}...</div>
+        </div>
+        <div id="mtClue2Box" style="display:none;">
+          <div style="font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;">Clue 2 - end of the shlok</div>
+          <div class="fb-prompt">...${mtClue2(s)}</div>
+        </div>
+      `;
+      document.getElementById("mtRevealSection").style.display = "none";
+      document.getElementById("mtRevealBtn").style.display = "inline-block";
+      document.getElementById("mtFeedback").textContent = "";
+      document.getElementById("mtFeedback").className = "game-feedback";
+    }
+
+    // Reveals just the one clue that was asked for (1 = start of shlok,
+    // 2 = end of shlok), leaving the other hidden until its own button
+    // is tapped, and hides that button once used.
+    function mtRevealClue(n) {
+      const box = document.getElementById(`mtClue${n}Box`);
+      const btn = document.getElementById(`mtClue${n}Btn`);
+      if (box) box.style.display = "block";
+      if (btn) btn.style.display = "none";
+    }
+
+    function mtReveal() {
+      const s = mtPool[mtIndex];
+      document.getElementById("mtFullShlok").innerHTML = `${s.line1}<br>${s.line2}`;
+      document.getElementById("mtRevealSection").style.display = "block";
+      document.getElementById("mtRevealBtn").style.display = "none";
+    }
+
+    function mtResult(correct) {
+      if (correct) {
+        mtKnown++;
+        document.getElementById("mtKnownCount").textContent = mtKnown;
+        document.getElementById("mtFeedback").textContent = "✅ Correct!";
+        document.getElementById("mtFeedback").className = "game-feedback correct";
+      } else {
+        mtNotYet++;
+        document.getElementById("mtFeedback").textContent = "❌ Missed it";
+        document.getElementById("mtFeedback").className = "game-feedback wrong";
+      }
+      mtIndex++;
+      setTimeout(mtShowCard, 800);
+    }
+
+    function mtFinish() {
+      document.getElementById("mtPlayCard").style.display = "none";
+      const total = mtKnown + mtNotYet;
+      document.getElementById("mtDoneMsg").innerHTML = `
+        <div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.8rem;">Mock Test Complete! 🎉</div>
+        <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You got <strong style="color:var(--text-main);">${mtKnown}</strong> out of <strong style="color:var(--text-main);">${total}</strong> correct.</div>
+        ${mtNotYet > 0
+          ? `<div style="font-size:1rem; color:var(--text-muted);">📖 Play Full Review to practise the ones you missed.</div>`
+          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 Perfect score - you're ready for the real thing!</div>`}
+      `;
+      document.getElementById("mtDone").style.display = "block";
     }
 
     /* ------------------------------
@@ -11349,6 +12401,7 @@
       } else if (wsCard) {
         wsCard.style.display = 'none';
       }
+      updateVidvanTestCard();
       updateDayPriorityWrapVisibility();
 
       // Revise Now
