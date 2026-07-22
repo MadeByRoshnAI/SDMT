@@ -4953,9 +4953,8 @@
           <div class="card game-play-card" style="text-align:center;">
             <div class="game-title-row">🎓 Mock Test</div>
             <div class="game-instruction" style="margin-bottom:1.2rem;">2 random shloks from every 10, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
-            <div id="mtOrderedStat" style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-bottom:1.2rem;padding:0.55rem 0.9rem;background:rgba(244,201,93,0.15);border-radius:10px;max-width:360px;margin-left:auto;margin-right:auto;"></div>
+            <div id="mtLockedNote" style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-bottom:1.2rem;padding:0.55rem 0.9rem;background:rgba(244,201,93,0.15);border-radius:10px;max-width:360px;margin-left:auto;margin-right:auto;"></div>
             <div id="mtMilestoneList" style="display:flex;flex-direction:column;gap:0.8rem;max-width:360px;margin:0 auto;"></div>
-            <div id="mtLockedNote" style="font-size:0.82rem;color:var(--text-muted);margin-top:1.2rem;"></div>
           </div>
         </div>
 
@@ -12104,31 +12103,31 @@
 
       const list = document.getElementById("mtMilestoneList");
       const lockedNote = document.getElementById("mtLockedNote");
-      const orderedStat = document.getElementById("mtOrderedStat");
-
       const ordered = mtOrderedCount();
-      orderedStat.textContent = ordered > 0
-        ? `📊 In order from shlok 1: ${ordered} shlok${ordered !== 1 ? "s" : ""} tracked with no gaps.`
-        : `📊 In order from shlok 1: 0 shloks yet - add shlok 1 to get started.`;
 
+      // Unlocked tests are always a contiguous prefix of MILESTONES (you
+      // can't unlock 100 without 1-50 already being fully tracked), so
+      // numbering them Test 1, Test 2... by position is always stable -
+      // Test 1 is always the 50 test, Test 2 is always the 100 test, etc.
       if (!unlocked.length) {
         list.innerHTML = `<div style="font-size:0.85rem;color:var(--text-muted);">Learn shloks 1-50, in order, to unlock your first mock test!</div>`;
-        lockedNote.textContent = "";
-        return;
+      } else {
+        list.innerHTML = unlocked.map((m, idx) => `
+            <button class="snap-mode-btn" type="button" onclick="mtStart(${m})">
+              <div class="snap-mode-icon">🎓</div>
+              <div><div class="snap-mode-title">Test ${idx + 1}: Shlok 1 to Shlok ${m}</div>
+              <div class="snap-mode-sub">${(m / 10) * 2} questions - 2 from every 10 shloks.</div></div>
+            </button>`).join("");
       }
 
-      list.innerHTML = unlocked.map(m => `
-          <button class="snap-mode-btn" type="button" onclick="mtStart(${m})">
-            <div class="snap-mode-icon">🎓</div>
-            <div><div class="snap-mode-title">${m} Shlok Mock Test</div>
-            <div class="snap-mode-sub">${(m / 10) * 2} questions - 2 from every 10 shloks, 1-${m}.</div></div>
-          </button>`).join("");
-
+      // Tells you exactly where you are and what's next, in plain terms -
+      // "you've learnt until shlok X, learn Y more (until shlok M)" - rather
+      // than a separate, more abstract "in order" stat.
       if (nextLocked) {
-        const byNumber = new Set(myShloks.map(s => s.number));
-        let missing = 0;
-        for (let n = 1; n <= nextLocked; n++) { if (!byNumber.has(String(n))) missing++; }
-        lockedNote.textContent = `🔒 Learn shloks 1-${nextLocked} in order (${missing} shlok${missing !== 1 ? "s" : ""} to go) to unlock the ${nextLocked} Mock Test.`;
+        const remaining = nextLocked - ordered;
+        lockedNote.textContent = ordered > 0
+          ? `🔒 You've learnt until shlok ${ordered}. Learn ${remaining} more shlok${remaining !== 1 ? "s" : ""} (until shlok ${nextLocked}) to unlock this test.`
+          : `🔒 Learn shlok 1 to get started, then keep going in order until shlok ${nextLocked} to unlock this test.`;
       } else {
         lockedNote.textContent = `🏆 You've unlocked every Mock Test - you know all 315!`;
       }
