@@ -4953,8 +4953,8 @@
           <div class="card game-play-card" style="text-align:center;">
             <div class="game-title-row">🎓 Mock Test</div>
             <div class="game-instruction" style="margin-bottom:1.2rem;">2 random shloks from every 10, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
-            <div id="mtLockedNote" style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-bottom:1.2rem;padding:0.55rem 0.9rem;background:rgba(244,201,93,0.15);border-radius:10px;max-width:360px;margin-left:auto;margin-right:auto;"></div>
             <div id="mtMilestoneList" style="display:flex;flex-direction:column;gap:0.8rem;max-width:360px;margin:0 auto;"></div>
+            <div id="mtLockedNote" style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-top:1.2rem;padding:0.55rem 0.9rem;background:rgba(244,201,93,0.15);border-radius:10px;max-width:360px;margin-left:auto;margin-right:auto;"></div>
           </div>
         </div>
 
@@ -12151,6 +12151,12 @@
       // all tracked, so this just builds the lookup, not a fresh filter.
       const byNumber = new Map(myShloks.map(s => [parseInt(s.number), s]));
 
+      // Blocks of 10 (1-10, then 11-20, then 21-30...) are worked through in
+      // order, just like the real test - only WHICH 2 shloks get picked out
+      // of each block of 10 is random, not the overall order of the blocks
+      // themselves. A final shuffle here would defeat that by scattering
+      // later-block questions earlier in the test, so the pool is left in
+      // the order it was built (block by block) rather than reshuffled.
       let pool = [];
       for (let blockStart = 1; blockStart <= milestone; blockStart += 10) {
         const blockEnd = Math.min(blockStart + 9, milestone);
@@ -12160,7 +12166,6 @@
         }
         pool = pool.concat(pick(blockShloks, Math.min(2, blockShloks.length)));
       }
-      pool = shuffle(pool);
 
       mtPool = pool;
       mtIndex = 0; mtKnown = 0; mtNotYet = 0;
