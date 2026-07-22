@@ -4108,6 +4108,33 @@
           <!-- MILESTONE BADGES -->
           <div class="milestones-grid" id="milestonesGrid" style="margin-top:1.2rem;"></div>
 
+          <!-- PERSONAL AIM (collapsible, closed by default - only shown at all when
+               an aim is set and it isn't 315, since at 315 the bar above already
+               shows the same thing) -->
+          <div id="homeAimWrap" style="display:none;margin-top:1.2rem;border-top:1px solid var(--border);padding-top:0.9rem;">
+            <div onclick="
+              const b=document.getElementById('homeAimBody');
+              const a=document.getElementById('homeAimArrow');
+              const t=document.getElementById('homeAimTitle');
+              const open=b.style.maxHeight&&b.style.maxHeight!=='0px';
+              b.style.maxHeight=open?'0px':b.scrollHeight+'px';
+              a.textContent=open?'↓':'↑';
+              t.textContent=open?'Click here to see your progress towards your aim':'🎯 Your Personal Aim';
+            " style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+              <div id="homeAimTitle" style="font-size:0.85rem; font-weight:600; color:var(--text-main);">Click here to see your progress towards your aim</div>
+              <span id="homeAimArrow" style="font-size:0.95rem; color:var(--text-muted); font-weight:700;">↓</span>
+            </div>
+            <div id="homeAimBody" style="max-height:0px; overflow:hidden; transition:max-height 0.35s ease;">
+              <div style="margin-top:0.8rem;">
+                <div id="homeAimText" style="font-size:1.1rem; font-weight:700; color:var(--text-main); margin-bottom:5px;"></div>
+                <div style="background:var(--border); border-radius:999px; height:6px; overflow:hidden; margin-bottom:5px;">
+                  <div id="homeAimBar" style="background:#0A2A66; height:100%; border-radius:999px; width:0%; transition:width 0.5s;"></div>
+                </div>
+                <div id="homeAimLabel" style="font-size:0.78rem; font-weight:500; color:var(--text-muted);"></div>
+              </div>
+            </div>
+          </div>
+
           <div style="margin-top:1.2rem; text-align:center;">
             <button class="motiv-shortcut-btn" onclick="switchTab(document.querySelectorAll('.nav-item')[2], 'learn'); initLearnPage();">
               📚 Click here to learn your next shlok
@@ -4640,68 +4667,84 @@
           <h2>🎮 Games</h2>
           <p style="color:var(--text-muted); font-size:0.9rem;">Choose a game - all games use your memorised shloks. You need at least 4 memorised shloks to play. You can try one game for free without signing in - after that, sign in with Google to keep playing and save your progress.</p>
         </div>
-        <div class="game-grid">
-          <div class="game-card" onclick="startGame('dailyChallenge')">
-            <div class="game-card-icon">📅</div>
-            <div class="game-card-title">Daily Challenge</div>
-            <div class="game-card-desc">Just a shlok number - can you recall both lines from memory?</div>
-            <div class="game-card-tag">Daily</div>
-          </div>
-          <div class="game-card" onclick="startGame('revisionMode')">
-            <div class="game-card-icon">📋</div>
-            <div class="game-card-title">Revision Mode</div>
-            <div class="game-card-desc">Go through all your revise shloks - tick if you know it, ✗ if not.</div>
-            <div class="game-card-tag">Revision</div>
-          </div>
-          <div class="game-card" onclick="startGame('fullReview')">
-            <div class="game-card-icon">📖</div>
-            <div class="game-card-title">Full Review</div>
-            <div class="game-card-desc">Go through every shlok you've added - learnt, memorised and revise - and test yourself on all of them.</div>
-            <div class="game-card-tag">Everything</div>
-          </div>
-          <div class="game-card" onclick="startGame('mockTest')">
-            <div class="game-card-icon">🎓</div>
-            <div class="game-card-title">Mock Test</div>
-            <div class="game-card-desc">2 random questions from every 10 shloks, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
-            <div class="game-card-tag">Milestone</div>
-          </div>
-          <div class="game-card" onclick="startGame('spotMistake')">
-            <div class="game-card-icon">🔍</div>
-            <div class="game-card-title">Spot the Mistake</div>
-            <div class="game-card-desc">A shlok with one wrong word - can you spot it?</div>
-            <div class="game-card-tag">Accuracy</div>
-          </div>
-          <div class="game-card" onclick="startGame('snap')">
-            <div class="game-card-icon">🃏</div>
-            <div class="game-card-title">Snap</div>
-            <div class="game-card-desc">Match line 1 to line 2, or match a shlok to its meaning - you choose!</div>
-            <div class="game-card-tag">Memory</div>
-          </div>
-          <div class="game-card" onclick="startGame('wordScramble')">
-            <div class="game-card-icon">🔤</div>
-            <div class="game-card-title">Word Scramble</div>
-            <div class="game-card-desc">Words of a shlok line are shuffled - tap them in the correct order.</div>
-            <div class="game-card-tag">Order</div>
-          </div>
-          <div class="game-card" onclick="startGame('kahootQuiz')">
-            <div class="game-card-icon">🤔</div>
-            <div class="game-card-title">Quiz Time</div>
-            <div class="game-card-desc">4 options, 1 correct answer - how well do you know your shloks?</div>
-            <div class="game-card-tag">Quiz</div>
-          </div>
-          <div class="game-card" onclick="startGame('shlokSequence')">
-            <div class="game-card-icon">🔢</div>
-            <div class="game-card-title">Shlok Sequence</div>
-            <div class="game-card-desc">Put the shloks in the correct order. 5 rounds  -  3, 5, 10, 15 then 20 shloks. You need to have learnt shloks consecutively (e.g. 1-10) for each round.</div>
-            <div class="game-card-tag">Order</div>
-          </div>
-          <div class="game-card" onclick="startGame('challengeFriend')">
-            <div class="game-card-icon">🤝</div>
-            <div class="game-card-title">Challenge a Friend</div>
-            <div class="game-card-desc">Pick 5 shloks to test a friend on  -  they challenge you back. 24 hours to complete!</div>
-            <div class="game-card-tag">vs Friend</div>
-          </div>
+        <!-- Split into two tabs: the 5 "core" practice/test games (Daily
+             Challenge, Revision, Full Review, Mock Test, Challenge a Friend)
+             stay front-and-centre by default, with the other 5 lighter/
+             arcade-style games one tap away instead of everything piled
+             into a single long grid. -->
+        <div style="display:flex; gap:0.6rem; margin-bottom:1.2rem;">
+          <button id="gamesMainTabBtn" class="cf-tab-btn active" onclick="switchGamesTab('main')">🎯 Main Games</button>
+          <button id="gamesMoreTabBtn" class="cf-tab-btn" onclick="switchGamesTab('more')">🎲 More Games</button>
+        </div>
 
+        <div id="gamesMainPanel">
+          <div class="game-grid">
+            <div class="game-card" onclick="startGame('dailyChallenge')">
+              <div class="game-card-icon">📅</div>
+              <div class="game-card-title">Daily Challenge</div>
+              <div class="game-card-desc">Just a shlok number - can you recall both lines from memory?</div>
+              <div class="game-card-tag">Daily</div>
+            </div>
+            <div class="game-card" onclick="startGame('revisionMode')">
+              <div class="game-card-icon">📋</div>
+              <div class="game-card-title">Revision Mode</div>
+              <div class="game-card-desc">Go through all your revise shloks - tick if you know it, ✗ if not.</div>
+              <div class="game-card-tag">Revision</div>
+            </div>
+            <div class="game-card" onclick="startGame('fullReview')">
+              <div class="game-card-icon">📖</div>
+              <div class="game-card-title">Full Review</div>
+              <div class="game-card-desc">Go through every shlok you've added - learnt, memorised and revise - and test yourself on all of them.</div>
+              <div class="game-card-tag">Everything</div>
+            </div>
+            <div class="game-card" onclick="startGame('mockTest')">
+              <div class="game-card-icon">🎓</div>
+              <div class="game-card-title">Mock Test</div>
+              <div class="game-card-desc">2 random questions from every 10 shloks, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
+              <div class="game-card-tag">Milestone</div>
+            </div>
+            <div class="game-card" onclick="startGame('challengeFriend')">
+              <div class="game-card-icon">🤝</div>
+              <div class="game-card-title">Challenge a Friend</div>
+              <div class="game-card-desc">Pick 5 shloks to test a friend on  -  they challenge you back. 24 hours to complete!</div>
+              <div class="game-card-tag">vs Friend</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="gamesMorePanel" style="display:none;">
+          <div class="game-grid">
+            <div class="game-card" onclick="startGame('spotMistake')">
+              <div class="game-card-icon">🔍</div>
+              <div class="game-card-title">Spot the Mistake</div>
+              <div class="game-card-desc">A shlok with one wrong word - can you spot it?</div>
+              <div class="game-card-tag">Accuracy</div>
+            </div>
+            <div class="game-card" onclick="startGame('snap')">
+              <div class="game-card-icon">🃏</div>
+              <div class="game-card-title">Snap</div>
+              <div class="game-card-desc">Match line 1 to line 2, or match a shlok to its meaning - you choose!</div>
+              <div class="game-card-tag">Memory</div>
+            </div>
+            <div class="game-card" onclick="startGame('wordScramble')">
+              <div class="game-card-icon">🔤</div>
+              <div class="game-card-title">Word Scramble</div>
+              <div class="game-card-desc">Words of a shlok line are shuffled - tap them in the correct order.</div>
+              <div class="game-card-tag">Order</div>
+            </div>
+            <div class="game-card" onclick="startGame('kahootQuiz')">
+              <div class="game-card-icon">🤔</div>
+              <div class="game-card-title">Quiz Time</div>
+              <div class="game-card-desc">4 options, 1 correct answer - how well do you know your shloks?</div>
+              <div class="game-card-tag">Quiz</div>
+            </div>
+            <div class="game-card" onclick="startGame('shlokSequence')">
+              <div class="game-card-icon">🔢</div>
+              <div class="game-card-title">Shlok Sequence</div>
+              <div class="game-card-desc">Put the shloks in the correct order. 5 rounds  -  3, 5, 10, 15 then 20 shloks. You need to have learnt shloks consecutively (e.g. 1-10) for each round.</div>
+              <div class="game-card-tag">Order</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -4910,6 +4953,7 @@
           <div class="card game-play-card" style="text-align:center;">
             <div class="game-title-row">🎓 Mock Test</div>
             <div class="game-instruction" style="margin-bottom:1.2rem;">2 random shloks from every 10, up to a milestone you've reached - a practice run for your real Satsang Diksha test.</div>
+            <div id="mtOrderedStat" style="font-size:0.85rem;font-weight:600;color:var(--text-main);margin-bottom:1.2rem;padding:0.55rem 0.9rem;background:rgba(244,201,93,0.15);border-radius:10px;max-width:360px;margin-left:auto;margin-right:auto;"></div>
             <div id="mtMilestoneList" style="display:flex;flex-direction:column;gap:0.8rem;max-width:360px;margin:0 auto;"></div>
             <div id="mtLockedNote" style="font-size:0.82rem;color:var(--text-muted);margin-top:1.2rem;"></div>
           </div>
@@ -5191,6 +5235,10 @@
             <div id="wnBody-games" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
                 <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Games split into two tabs <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">"Main Games" (Daily Challenge, Revision Mode, Full Review, Mock Test, Challenge a Friend) and "More Games" (Spot the Mistake, Snap, Word Scramble, Quiz Time, Shlok Sequence) so the games you'll use most aren't buried in one long list.</div>
+                </div>
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mock Test <span class="wn-new-badge">NEW</span></div>
                   <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A practice run for your tests. Learn shloks 1-50, then 1-100, then 1-150 (and so on) in order to unlock each milestone test - it takes 2 random shloks from every 10. If you get stuck, you can reveal clue 1 (the start of the shlok) or clue 2 (the end of the shlok) - only if you need them!</div>
                 </div>
@@ -5318,7 +5366,7 @@
             <div class="tutorial-card-img">📖</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Daily Cards</div>
-              <div class="tutorial-slide-text">Shlok of the Day, your Daily Challenge Streak, 'Revise Now' and your Next Milestone - all at a glance.</div>
+              <div class="tutorial-slide-text">Shlok of the Day, your Daily Challenge Streak and 'Revise Now' - all at a glance.</div>
             </div>
           </div>
           <div class="tutorial-card slide-home">
@@ -5336,10 +5384,10 @@
             </div>
           </div>
           <div class="tutorial-card slide-home">
-            <div class="tutorial-card-img">🎯</div>
+            <div class="tutorial-card-img">🎓</div>
             <div class="tutorial-card-body">
-              <div class="tutorial-slide-title">Next Milestone</div>
-              <div class="tutorial-slide-text">Open 'My Profile' on the right edge to see your next milestone and how many shloks away you are - plus your learnt, memorised and revise counts.</div>
+              <div class="tutorial-slide-title">Taken Your Test?</div>
+              <div class="tutorial-slide-text">Once you've tracked 300+ shloks, a card appears on the home page asking if you've taken your Satsang Diksha test - add your date, result and advice for others, and it unlocks the Vidvan Wall.</div>
             </div>
           </div>
           <div class="tutorial-card slide-home">
@@ -5355,7 +5403,7 @@
       <!-- SECTION 2: MY SHLOKS -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">📘 My Mukhpath</div>
-        <div class="tutorial-four-cards">
+        <div class="tutorial-five-cards">
           <div class="tutorial-card slide-myshloks">
             <div class="tutorial-card-img">🗺️</div>
             <div class="tutorial-card-body">
@@ -5381,7 +5429,14 @@
             <div class="tutorial-card-img">📁</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">My Collections</div>
-              <div class="tutorial-slide-text">Group shloks into up to 5 named collections and practise just that set from Full Review.</div>
+              <div class="tutorial-slide-text">Two folders are ready to go - 'My Favourite Shloks' and 'Shloks I Want to Learn' - plus create your own. Add any of the 315, even ones you haven't started, with an optional note on why.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-myshloks">
+            <div class="tutorial-card-img">📂</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Learn From a Folder</div>
+              <div class="tutorial-slide-text">Open a collection and tap 'Learn from this folder' or 'Review these shloks' to practise just that set. Use Add All, Add Range or the Shlok Map picker to fill a folder fast, or Remove to tidy it up.</div>
             </div>
           </div>
         </div>
@@ -5453,12 +5508,12 @@
       <!-- SECTION 5: GAMES -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🎮 Games</div>
-        <div class="tutorial-four-cards">
+        <div class="tutorial-five-cards">
           <div class="tutorial-card slide-games">
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
-              <div class="tutorial-slide-title">6 Games</div>
-              <div class="tutorial-slide-text">Spot the Mistake, Snap, Word Scramble, Daily Challenge, Revision Mode and Full Review.</div>
+              <div class="tutorial-slide-title">Main & More Games</div>
+              <div class="tutorial-slide-text">'Main Games' has Daily Challenge, Revision Mode, Full Review, Mock Test and Challenge a Friend. 'More Games' has Spot the Mistake, Snap, Word Scramble, Quiz Time and Shlok Sequence.</div>
             </div>
           </div>
           <div class="tutorial-card slide-games">
@@ -5482,13 +5537,20 @@
               <div class="tutorial-slide-text">Test your revise shloks one by one. If you get one wrong, tag which part you couldn't remember - line 1, line 2, a specific word or the whole shlok. Next time it appears, a hint will remind you where to focus.</div>
             </div>
           </div>
+          <div class="tutorial-card slide-games">
+            <div class="tutorial-card-img">🎓</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Mock Test</div>
+              <div class="tutorial-slide-text">Learn shloks 1-50, then 1-100, then 1-150 (and so on) in order to unlock each milestone test. Stuck? Reveal clue 1 (the start of the shlok) or clue 2 (the end) if you need them.</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- SECTION 6: MUKHPATH MANDAL -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🕌 Mukhpath Mandal</div>
-        <div class="tutorial-five-cards">
+        <div class="tutorial-six-cards">
           <div class="tutorial-card slide-mandal">
             <div class="tutorial-card-img">👥</div>
             <div class="tutorial-card-body">
@@ -5507,7 +5569,7 @@
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Set a Personal Aim</div>
-              <div class="tutorial-slide-text">Set a personal aim in 'My Profile' - choose a target number of shloks and label it by a name or date.</div>
+              <div class="tutorial-slide-text">Set a personal aim in 'My Profile' - choose a target number of shloks and label it by a name or date. A "click here to see your progress towards your aim" section then appears under My Mukhpath Journey on the home page - tap it any day to expand your count, progress bar and label. If your aim is 315, this won't appear, since the main tracker above it already shows that. Once you reach it, you'll be prompted to set a new one.</div>
             </div>
           </div>
           <div class="tutorial-card slide-mandal">
@@ -5515,6 +5577,13 @@
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Noticeboard</div>
               <div class="tutorial-slide-text">See everyone's milestones as sticky notes - react, leave a message, and get notified when someone replies to yours. Sign in to see it.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-mandal">
+            <div class="tutorial-card-img">📜</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Vidvan Wall</div>
+              <div class="tutorial-slide-text">A page for everyone who's passed their Satsang Diksha test - add your test date, result and a short piece of advice for others still learning, and see everyone else's.</div>
             </div>
           </div>
           <div class="tutorial-card slide-mandal">
@@ -7601,6 +7670,29 @@
       renderCollections();
     }
 
+    // Games hub tab toggle - "Main Games" (Daily Challenge, Revision, Full
+    // Review, Mock Test, Challenge a Friend) vs "More Games" (the 5 lighter
+    // arcade-style games), same active/inactive pill pattern as the Mukhpath
+    // Map/Collections tabs and the Mandal/Noticeboard/Vidvan Wall tabs.
+    function switchGamesTab(tab) {
+      const mainPanel = document.getElementById('gamesMainPanel');
+      const morePanel = document.getElementById('gamesMorePanel');
+      const mainBtn   = document.getElementById('gamesMainTabBtn');
+      const moreBtn   = document.getElementById('gamesMoreTabBtn');
+      if (!mainPanel || !morePanel || !mainBtn || !moreBtn) return;
+      if (tab === 'more') {
+        mainPanel.style.display = 'none';
+        morePanel.style.display = 'block';
+        mainBtn.classList.remove('active');
+        moreBtn.classList.add('active');
+      } else {
+        mainPanel.style.display = 'block';
+        morePanel.style.display = 'none';
+        mainBtn.classList.add('active');
+        moreBtn.classList.remove('active');
+      }
+    }
+
     function switchMukhpathTab(tab) {
       const mapPanel  = document.getElementById('mukhpathMapPanel');
       const colPanel  = document.getElementById('mukhpathCollectionsPanel');
@@ -9617,9 +9709,16 @@
     function renderMilestones() {
       const grid = document.getElementById("milestonesGrid");
       if (!grid) return;
+      // Counts revise shloks too, matching the "X / 315" progress bar above
+      // this grid - a revise shlok is one you've learnt before and are just
+      // brushing up on, not one you've never touched, so it should still
+      // count toward "X to go" for a milestone badge. Previously this only
+      // counted learnt/memorised, which could make a badge look "stuck" even
+      // though the progress bar showed you'd covered enough shloks overall.
       const memorised = myShloks.filter(s => s.mastery === "memorised").length;
       const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
-      const known = learnt + memorised;
+      const revise    = myShloks.filter(s => s.mastery === "revise").length;
+      const known = learnt + memorised + revise;
       grid.innerHTML = "";
       MILESTONES.forEach(m => {
         const achieved = known >= m;
@@ -10866,9 +10965,18 @@
     }
 
     function checkMilestone() {
+      // Uses the same "known" total as the main progress bar and milestone
+      // badges (learnt + memorised + revise) - previously this excluded
+      // revise, which meant someone who crossed a milestone via revise
+      // shloks didn't get flagged until enough of them were later marked
+      // learnt/memorised instead. That silently delayed the Noticeboard
+      // post (and the timestamp on it) well past the moment they'd actually
+      // reached the milestone by every other count on the site - which is
+      // exactly the "date isn't accurate" symptom this was causing.
       const memorised = myShloks.filter(s => s.mastery === "memorised").length;
       const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
-      const known = learnt + memorised;
+      const revise    = myShloks.filter(s => s.mastery === "revise").length;
+      const known = learnt + memorised + revise;
       const reached = MILESTONES.filter(m => m <= known);
       if (!reached.length) return;
       const highest = reached[reached.length - 1];
@@ -11973,6 +12081,19 @@
       return true;
     }
 
+    // How many shloks are tracked in an unbroken run starting at #1 - this
+    // is the number that actually matters for Mock Test, since a milestone
+    // only unlocks once every number from 1 up to it is tracked with no
+    // gaps. Distinct from the homepage's "known" count, which is any status
+    // in any order and can be higher than this if shloks were added out of
+    // sequence.
+    function mtOrderedCount() {
+      const byNumber = new Set(myShloks.map(s => s.number));
+      let n = 0;
+      while (byNumber.has(String(n + 1))) n++;
+      return n;
+    }
+
     function mtShowModeSelector() {
       document.getElementById("mtModeSelector").style.display = "block";
       document.getElementById("mtPlayCard").style.display = "none";
@@ -11983,6 +12104,12 @@
 
       const list = document.getElementById("mtMilestoneList");
       const lockedNote = document.getElementById("mtLockedNote");
+      const orderedStat = document.getElementById("mtOrderedStat");
+
+      const ordered = mtOrderedCount();
+      orderedStat.textContent = ordered > 0
+        ? `📊 In order from shlok 1: ${ordered} shlok${ordered !== 1 ? "s" : ""} tracked with no gaps.`
+        : `📊 In order from shlok 1: 0 shloks yet - add shlok 1 to get started.`;
 
       if (!unlocked.length) {
         list.innerHTML = `<div style="font-size:0.85rem;color:var(--text-muted);">Learn shloks 1-50, in order, to unlock your first mock test!</div>`;
@@ -12327,8 +12454,15 @@
       });
 
       // Next Milestone
+      // Uses the same "known" total as the progress bar above it
+      // (learnt + memorised + revise) rather than excluding revise shloks -
+      // a revise shlok is one you've learnt before and are just brushing up
+      // on, not one you've never touched, so it should count here too.
+      // Previously this only counted learnt/memorised, which silently
+      // disagreed with the progress bar and made the milestone look "stuck"
+      // for anyone with revise shloks in their range.
       const milestones = [50, 100, 150, 200, 250, 300, 315];
-      const totalKnown = learnt + memorised;
+      const totalKnown = known;
       const nextM = milestones.find(m => m > totalKnown);
       const milestoneEl = document.getElementById("nextMilestoneContent");
       if (milestoneEl) {
@@ -12346,6 +12480,40 @@
             </div>
             <div class="milestone-sub">${totalKnown} / ${nextM} - ${pct}% of the way there</div>
           `;
+        }
+      }
+
+      // ── PERSONAL AIM (collapsible, shown every day - not just Sundays like
+      // the Weekly Summary card below. Uses the same "known" total as the
+      // main progress bar/milestone badges above (learnt+memorised+revise),
+      // so it can't drift out of sync with them the way the old milestone
+      // badges once did. Hidden entirely unless an aim is actually set and
+      // it isn't 315, since the main bar above already covers that case. ──
+      const homeAimWrap = document.getElementById("homeAimWrap");
+      if (homeAimWrap) {
+        const aimProfile = JSON.parse(localStorage.getItem("profile") || "{}");
+        const aimGoal = parseInt(aimProfile.goalTarget);
+        if (aimGoal > 0 && aimGoal !== 315) {
+          homeAimWrap.style.display = "block";
+          const aimPct = Math.min(100, Math.round((known / aimGoal) * 100));
+          const aimLabelEl = document.getElementById("homeAimLabel");
+          const aimBarEl   = document.getElementById("homeAimBar");
+          const aimTextEl  = document.getElementById("homeAimText");
+          // Once the aim is actually reached, the "By X" label isn't useful
+          // any more - swap it for a congratulations + a way to set a fresh
+          // aim, rather than silently sitting at 100% forever with no next
+          // step (which is what used to happen).
+          if (aimLabelEl) {
+            if (known >= aimGoal) {
+              aimLabelEl.innerHTML = `🎉 Aim reached! <span style="text-decoration:underline;cursor:pointer;color:var(--blue);" onclick="jumpToEditProfile()">Set a new one in My Profile</span>`;
+            } else {
+              aimLabelEl.textContent = aimProfile.goalName ? `By ${aimProfile.goalName}` : aimProfile.goalDate ? `By ${new Date(aimProfile.goalDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "";
+            }
+          }
+          if (aimBarEl)   aimBarEl.style.width = aimPct + "%";
+          if (aimTextEl)  aimTextEl.textContent = `${known}/${aimGoal} shloks`;
+        } else {
+          homeAimWrap.style.display = "none";
         }
       }
 
