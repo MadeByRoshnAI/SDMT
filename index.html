@@ -8253,7 +8253,8 @@
         line1: master.line1,
         line2: master.line2,
         mastery: "learnt",
-        addedDate: localDateStr()
+        addedDate: localDateStr(),
+        statusUpdatedAt: Date.now()
       });
 
       save();
@@ -8286,7 +8287,8 @@
           line1: master.line1,
           line2: master.line2,
           mastery: "learnt",
-          addedDate: localDateStr()
+          addedDate: localDateStr(),
+          statusUpdatedAt: Date.now()
         });
       }
 
@@ -8328,6 +8330,7 @@
       if (current === -1) current = 0;
       const next = (current + 1) % states.length;
       s.mastery = states[next];
+      s.statusUpdatedAt = Date.now();
       if (s.mastery === "memorised") s.memorisedDate = localDateStr();
       save();
       render();
@@ -9537,6 +9540,7 @@
       if (!s) return;
       s.mastery = "memorised";
       s.memorisedDate = localDateStr();
+      s.statusUpdatedAt = Date.now();
       save(); render(); updateDashboard(); updateHomePage();
       showToast("🏆 Marked as Memorised!");
     }
@@ -9557,7 +9561,7 @@
       let updated = 0;
       for (let i = start; i <= end; i++) {
         const shlok = myShloks.find(s => s.number === String(i));
-        if (shlok) { shlok.mastery = status; updated++; }
+        if (shlok) { shlok.mastery = status; shlok.statusUpdatedAt = Date.now(); updated++; }
       }
 
       if (updated === 0) {
@@ -9934,17 +9938,35 @@
 
     // ── CROSS-DEVICE MERGE HELPERS ──
     // Combines two shlok lists (this device's local copy and the cloud copy)
-    // so switching between devices never silently loses progress. For any
-    // shlok tracked on both sides, "memorised" always wins since it's the
-    // clear high-water mark; otherwise we keep whichever side was touched
-    // more recently.
+    // so switching between devices never silently loses progress.
+    //
+    // This used to have a hard rule that "memorised" always wins over any
+    // other status, on the assumption that it's always the clear high-water
+    // mark. That's wrong for the very common case of deliberately moving a
+    // shlok from memorised back down to revise (e.g. tapping the status
+    // pill, or answering "need more practice" in a game) - if that change
+    // hadn't been pushed to the cloud yet (the sync is debounced by a few
+    // seconds, so closing the app right after changing something could miss
+    // it), the next merge would silently overwrite the fresh "revise" back
+    // to the stale cloud "memorised", making it look like revise shloks
+    // kept "disappearing" after reopening the app.
+    //
+    // Every mastery change now stamps a numeric statusUpdatedAt on the
+    // shlok, so whichever side was touched more recently always wins,
+    // regardless of what status it ended up at. Older shloks saved before
+    // this existed fall back to the previous memorised-wins/date-based
+    // logic so they aren't disrupted.
     function mergeShlokLists(localList, cloudList) {
       const byNumber = new Map();
       (localList || []).forEach(s => byNumber.set(s.number, s));
       (cloudList || []).forEach(cloudShlok => {
         const localShlok = byNumber.get(cloudShlok.number);
         if (!localShlok) { byNumber.set(cloudShlok.number, cloudShlok); return; }
-        if (localShlok.mastery === 'memorised' || cloudShlok.mastery === 'memorised') {
+        const localTime = parseInt(localShlok.statusUpdatedAt) || 0;
+        const cloudTime = parseInt(cloudShlok.statusUpdatedAt) || 0;
+        if (localTime || cloudTime) {
+          byNumber.set(cloudShlok.number, localTime >= cloudTime ? localShlok : cloudShlok);
+        } else if (localShlok.mastery === 'memorised' || cloudShlok.mastery === 'memorised') {
           byNumber.set(cloudShlok.number, localShlok.mastery === 'memorised' ? localShlok : cloudShlok);
         } else {
           const localDate = localShlok.memorisedDate || localShlok.addedDate || '';
@@ -11429,7 +11451,8 @@
         line1: lnsShlok.line1,
         line2: lnsShlok.line2,
         mastery: "learnt",
-        addedDate: localDateStr()
+        addedDate: localDateStr(),
+        statusUpdatedAt: Date.now()
       });
       save(); render(); updateDashboard(); updateHomePage();
       showToast(`🎉 Shlok ${lnsShlok.id} added as Learnt!`);
@@ -11721,7 +11744,7 @@
       if (correct) {
         rmKnown++;
         document.getElementById("rmKnownCount").textContent = rmKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.reviseHint = null; shlok.memorisedDate = localDateStr(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.reviseHint = null; shlok.memorisedDate = localDateStr(); shlok.statusUpdatedAt = Date.now(); }
         document.getElementById("rmFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("rmFeedback").className = "game-feedback correct";
         document.getElementById("rmHintPanel").style.display = "none";
@@ -11730,6 +11753,10 @@
         setTimeout(rmShowCard, 800);
       } else {
         rmNotYet++;
+        // Still "revise", but this reaffirms it was just looked at again -
+        // stamped so a stale cloud copy from before this session can't
+        // later overwrite it back to an old status on merge.
+        if (shlok) shlok.statusUpdatedAt = Date.now();
         document.getElementById("rmFeedback").textContent = "❌ Keeping in Revise";
         document.getElementById("rmFeedback").className = "game-feedback wrong";
         document.getElementById("rmRevealSection").style.display = "none";
@@ -12027,12 +12054,12 @@
       if (correct) {
         frKnown++;
         document.getElementById("frKnownCount").textContent = frKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.memorisedDate = localDateStr(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.memorisedDate = localDateStr(); shlok.statusUpdatedAt = Date.now(); }
         document.getElementById("frFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("frFeedback").className = "game-feedback correct";
       } else {
         frNotYet++;
-        if (shlok) { shlok.mastery = "revise"; }
+        if (shlok) { shlok.mastery = "revise"; shlok.statusUpdatedAt = Date.now(); }
         document.getElementById("frFeedback").textContent = "❌ Moved to Revise";
         document.getElementById("frFeedback").className = "game-feedback wrong";
       }
