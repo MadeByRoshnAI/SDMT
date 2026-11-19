@@ -94,8 +94,6 @@
     body.dark-mode .motiv-strip-main,
     body.dark-mode .motiv-strip-source,
     body.dark-mode .motiv-empty,
-    body.dark-mode .paris-link-title,
-    body.dark-mode .paris-link-sub,
     body.dark-mode .panel-section-label,
     body.dark-mode .stat-label,
     body.dark-mode .home-milestone,
@@ -150,9 +148,6 @@
       box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(100,130,220,0.1);
     }
 
-    /* Link cards */
-    body.dark-mode .paris-link-card { background: var(--card-bg); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-    body.dark-mode .paris-link-title { color: #ffffff; }
 
     /* Game inputs */
     body.dark-mode .fb-prompt,
@@ -511,20 +506,6 @@
     }
 
     /* ── PROGRESS PAGE ── */
-    .progress-section-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-    }
-    .progress-section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--blue);
-      margin-bottom: 1.2rem;
-    }
-    body.dark-mode .progress-section-title { color: white; }
-
     .milestones-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
@@ -567,36 +548,6 @@
     body.dark-mode .stats-summary-num { color: white; }
     .stats-summary-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
 
-    /* Donut Chart */
-    .donut-wrapper {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      margin: 0 auto;
-    }
-    .donut-chart { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .donut-segment { transition: stroke-dasharray 1s ease; }
-    .donut-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
-    .donut-center-num { font-size: 2.2rem; font-weight: 700; color: var(--blue); font-family: 'Orbitron', sans-serif; line-height:1; }
-    body.dark-mode .donut-center-num { color: white; }
-    .donut-center-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
-    .donut-legend {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      margin-top: 1.2rem;
-      font-size: 0.85rem;
-    }
-    .donut-legend-item { display: flex; align-items: center; gap: 0.5rem; }
-    .donut-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-    .donut-legend-count { font-weight: 700; color: var(--blue); }
-    body.dark-mode .donut-legend-count { color: white; }
     .shlok-map-legend {
       display: flex;
       gap: 1.2rem;
@@ -1653,9 +1604,6 @@
       /* Shlok carousel */
       .shlok-grid { grid-template-columns: 1fr; }
 
-      /* Progress breakdown donut */
-      .donut-wrap { flex-direction: column; align-items: center; }
-
       /* Game cards */
       .game-card { padding: 1rem; }
       .game-play-card { padding: 1rem; }
@@ -1842,21 +1790,6 @@
       padding: 1rem 0;
     }
 
-    /* Paris videos section */
-    .paris-section {
-      margin: 2rem 0 0;
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-      width: 100%;
-    }
-
-    .paris-section-label {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
     .snap-mode-btn {
       display: flex;
       align-items: center;
@@ -2029,44 +1962,6 @@
       .video-carousel-arrow { display: none; }
     }
 
-    .paris-link-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: white;
-      border-radius: 14px;
-      padding: 1.2rem 1.4rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.07);
-      text-decoration: none;
-      border: 2px solid transparent;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    }
-
-    .paris-link-card:hover {
-      border-color: var(--blue);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-    }
-
-    .paris-link-thumb { font-size: 2rem; flex-shrink: 0; }
-
-    .paris-link-title {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--blue);
-      line-height: 1.3;
-      margin-bottom: 0.25rem;
-    }
-
-    .paris-link-sub { font-size: 0.75rem; color: var(--text-muted); }
-
-    /* Paris homepage link */
-    .paris-mandir-img-wrap {
-      max-width: 480px;
-      margin: 0 auto 2rem;
-      display: flex;
-      justify-content: center;
-    }
     .home-hero {
       text-align: center;
       padding: 2.5rem 1rem 0;
@@ -2384,6 +2279,92 @@
     }
 
     .home-cards-grid .home-card { min-height: 220px; }
+    .revise-checkin { text-align: center; padding-top: 0.2rem; }
+    .revise-checkin-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+    .revise-checkin-text strong { color: var(--text-main); }
+    body.dark-mode .revise-checkin-text { color: #c0cce0 !important; }
+    .revise-checkin-btn {
+      margin-top: 0.7rem;
+      background: var(--gold);
+      color: var(--blue-dark);
+      border: none;
+      border-radius: 999px;
+      padding: 0.4rem 1.3rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Home page countdown card - full width under the three home cards */
+    .home-card.home-countdown-card {
+      margin-top: 1.2rem;
+      text-align: center;
+      border: 2px solid transparent;
+      background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                  linear-gradient(to right, #0A2A66, #F4C95D) border-box;
+    }
+    body.dark-mode .home-card.home-countdown-card {
+      background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                  linear-gradient(to right, #1a3f80, #F4C95D) border-box;
+    }
+    .home-countdown-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    body.dark-mode .home-countdown-title { color: #a8c0ff !important; }
+    .home-countdown-clock {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin: 1rem 0 0.9rem;
+    }
+    .home-countdown-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1;
+    }
+    body.dark-mode .home-countdown-num { color: #ffffff !important; }
+    .home-countdown-unit {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+    .home-countdown-pace { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+    .home-countdown-pace strong { color: var(--text-main); }
+    .home-countdown-done { font-size: 0.95rem; color: var(--text-main); line-height: 1.6; margin: 0.9rem 0 0.4rem; }
+    .home-countdown-setup-btn {
+      margin-top: 0.8rem;
+      background: transparent;
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 0.4rem 1.1rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    body.dark-mode .home-countdown-setup-btn { border-color: var(--gold); color: var(--gold); }
+    body.dark-mode .home-countdown-unit,
+    body.dark-mode .home-countdown-pace { color: #c0cce0 !important; }
+    @media (max-width: 600px) {
+      .home-countdown-title { font-size: 0.95rem; }
+      .home-countdown-clock { gap: 1.4rem; }
+      .home-countdown-num { font-size: 2rem; }
+    }
 
     .home-card {
       background: white;
@@ -2939,11 +2920,13 @@
       transform: translateY(0);
     }
 
-    /* Cloud save status pill - bottom-left so it never sits under the toast */
+    /* Cloud save status pill - bottom-centre, clear of the toast (right)
+       and the help icon (left) */
     .save-status {
       position: fixed;
       bottom: 20px;
-      left: 20px;
+      left: 50%;
+      margin-left: 0;
       max-width: calc(100vw - 40px);
       display: flex;
       align-items: center;
@@ -2959,11 +2942,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       opacity: 0;
       pointer-events: none;
-      transform: translateY(10px);
+      transform: translate(-50%, 10px);
       transition: opacity 0.25s ease, transform 0.25s ease;
       z-index: 100000;
     }
-    .save-status.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .save-status.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
     .save-status.saved { background: #16a34a; }
     .save-status.error { background: #dc2626; border-radius: 14px; }
     .save-status button {
@@ -3727,19 +3710,67 @@
       letter-spacing: 0.05em;
       margin: 1rem 0 0.5rem;
     }
-    .ssg-pill-row { justify-content: center; margin-bottom: 0.4rem; }
-    .ssg-pill-row .add-mode-radio span { font-size: 0.8rem; padding: 0.45rem 0.9rem; }
+    .ssg-tile-grid {
+      display: grid;
+      gap: 0.7rem;
+      max-width: 640px;
+      margin: 0 auto 0.4rem;
+    }
+    .ssg-tile-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .ssg-tile-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 316px; }
+    .ssg-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 0.9rem 0.5rem;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    }
+    .ssg-tile:hover:not(:disabled) { border-color: var(--blue); transform: translateY(-1px); }
+    .ssg-tile.selected { border-color: var(--blue); background: rgba(10,42,102,0.06); }
+    .ssg-tile:disabled { opacity: 0.4; cursor: not-allowed; }
+    .ssg-tile-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1.1;
+    }
+    .ssg-tile-icon { font-size: 1.4rem; line-height: 1.2; }
+    .ssg-tile-label { font-size: 0.82rem; font-weight: 600; }
+    .ssg-tile-sub { font-size: 0.72rem; color: var(--text-muted); }
+    body.dark-mode .ssg-tile:hover:not(:disabled),
+    body.dark-mode .ssg-tile.selected { border-color: var(--gold); }
+    body.dark-mode .ssg-tile.selected { background: rgba(244,201,93,0.08); }
+    body.dark-mode .ssg-tile-num { color: #ffffff !important; }
+    body.dark-mode .ssg-tile-sub { color: #c0cce0 !important; }
+    .ssg-start-btn { margin-top: 1.2rem; padding: 0.6rem 1.8rem; font-size: 0.95rem; }
+    .rm-mode-grid { max-width: 520px; }
+    .rm-tile-desc { font-size: 0.74rem; color: var(--text-muted); line-height: 1.45; margin-top: 0.15rem; padding: 0 0.3rem; }
+    body.dark-mode .rm-tile-desc { color: #c0cce0 !important; }
+    .rm-age { font-size: 0.8rem; color: var(--text-muted); margin: -0.6rem 0 0.4rem; }
+    body.dark-mode .rm-age { color: #c0cce0 !important; }
+    .rm-checkin-choice { margin-top: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 12px; }
+    .rm-checkin-choice-q { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.6rem; }
     .ssg-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.8rem;
       flex-wrap: wrap;
+      padding-top: 0.9rem;
       margin-bottom: 1rem;
     }
     .ssg-number {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 900;
       color: var(--blue);
       line-height: 1.1;
@@ -3768,8 +3799,9 @@
       color: var(--text-muted);
       min-width: 3.4rem;
     }
-    .ssg-line-text { flex: 1 1 auto; min-width: 0; font-size: 1.25rem; font-weight: 700; font-style: italic; overflow-wrap: anywhere; }
-    .ssg-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .ssg-line-text { flex: 1 1 auto; min-width: 0; font-size: 1.25rem; font-weight: 700; font-style: normal; overflow-wrap: anywhere; }
+    .ssg-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; }
+    .ssg-btn-row .game-next-btn, .ssg-btn-row .game-submit-btn { margin-top: 0; }
     .ssg-status-panel {
       margin-top: 1rem;
       padding: 0.9rem 1rem;
@@ -3806,10 +3838,13 @@
     body.dark-mode .countdown-done-sub { color: #c0cce0 !important; }
     body.dark-mode .countdown-done-title { color: var(--gold) !important; }
     @media (max-width: 500px) {
-      .ssg-number { font-size: 1.7rem; }
+      .ssg-tile-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ssg-tile-grid-2 { max-width: none; }
+      .ssg-number { font-size: 1.45rem; }
       .ssg-line { flex-direction: column; gap: 0.1rem; }
       .ssg-line-text { font-size: 1.05rem; }
-      .ssg-btn-row .game-next-btn { flex: 1 1 100%; }
+      .ssg-btn-row { gap: 0.5rem; }
+      .ssg-btn-row .game-next-btn, .ssg-btn-row .game-submit-btn { flex: 1 1 auto; padding: 0.5rem 0.9rem; font-size: 0.82rem; }
       .ssg-status-btn { flex: 1 1 auto; }
     }
 
@@ -4250,8 +4285,8 @@
            This wrapper is collapsed to display:none via JS whenever none of its cards are showing,
            so it doesn't leave an empty gap (e.g. when signed out, or on a day with no special card). -->
       <div id="dayPriorityCardsWrap" class="home-content-wrap" style="margin-bottom:0;display:none;">
-        <!-- SUNDAY PARIS CARD -->
-        <div id="sundayParisCard" style="display:none;margin-bottom:1rem;"></div>
+        <!-- SUNDAY DAY CARD -->
+        <div id="sundayDayCard" style="display:none;margin-bottom:1rem;"></div>
 
         <!-- WEEKLY SUMMARY (Sundays only) -->
         <div id="weeklySummaryCard" class="home-card home-progress-card" style="display:none;padding:0;overflow:hidden;min-height:0;margin-bottom:1rem;">
@@ -4303,14 +4338,14 @@
           </div>
         </div>
 
-        <!-- MONDAY PARIS CARD -->
-        <div id="mondayParisCard" style="display:none;margin-bottom:1rem;"></div>
+        <!-- MONDAY DAY CARD -->
+        <div id="mondayDayCard" style="display:none;margin-bottom:1rem;"></div>
 
-        <!-- WEDNESDAY PARIS CARD -->
-        <div id="wednesdayParisCard" style="display:none;margin-bottom:1rem;"></div>
+        <!-- WEDNESDAY DAY CARD -->
+        <div id="wednesdayDayCard" style="display:none;margin-bottom:1rem;"></div>
 
-        <!-- FRIDAY PARIS CARD -->
-        <div id="fridayParisCard" style="display:none;margin-bottom:1rem;"></div>
+        <!-- FRIDAY DAY CARD -->
+        <div id="fridayDayCard" style="display:none;margin-bottom:1rem;"></div>
 
         <!-- VIDVAN TEST STATUS CARD (300+ shloks, until they've passed) -->
         <div id="vidvanTestCard" class="home-card" style="display:none;margin-bottom:1rem;border:1.5px solid rgba(244,201,93,0.4);">
@@ -4459,20 +4494,20 @@
 
         </div>
 
-      </div><!-- end home-content-wrap -->
-
-      <!-- PROGRESS BREAKDOWN -->
-      <div class="progress-section-card" style="margin-top:1.5rem;">
-        <div class="progress-section-title">📈 Progress Breakdown</div>
-        <div class="donut-wrapper">
-          <svg class="donut-chart" id="donutChart" viewBox="0 0 200 200"></svg>
-          <div class="donut-center">
-            <div class="donut-center-num" id="donutCenterNum">0</div>
-            <div class="donut-center-label">of 315</div>
+        <!-- PERSONAL COUNTDOWN (home page version - same settings as the
+             full countdown on the Motivation page) -->
+        <div class="home-card home-countdown-card" id="homeCountdownCard">
+          <div class="home-countdown-title" id="homeCdTitle"></div>
+          <div class="home-countdown-clock" id="homeCdClock">
+            <div><div class="home-countdown-num" id="homeCdDays">00</div><div class="home-countdown-unit">DAYS</div></div>
+            <div><div class="home-countdown-num" id="homeCdHours">00</div><div class="home-countdown-unit">HOURS</div></div>
+            <div><div class="home-countdown-num" id="homeCdMins">00</div><div class="home-countdown-unit">MINUTES</div></div>
           </div>
+          <div class="home-countdown-done" id="homeCdDone" style="display:none;"></div>
+          <div class="home-countdown-pace" id="homeCdPace"></div>
         </div>
-        <div class="donut-legend" id="donutLegend"></div>
-      </div>
+
+      </div><!-- end home-content-wrap -->
 
     </section>
 
@@ -4547,7 +4582,7 @@
         </div>
         <div class="shlok-map-grid" id="shlokMapGrid"></div>
 
-        <!-- PARIS MAHOTSAV MOTIVATION -->
+        <!-- DAILY PACE MESSAGE (shloks a day to meet your aim by your countdown date) -->
         <div id="mukhpathMotivationMsg" style="display:none;border-radius:12px;padding:0.7rem 1rem;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);"></div>
 
         <hr class="mukhpath-divider">
@@ -4898,7 +4933,7 @@
 
         </div>
 
-        <!-- PERSONAL COUNTDOWN (replaces the Paris Mandir Mahotsav countdown) -->
+        <!-- PERSONAL COUNTDOWN -->
         <div class="countdown-container" style="margin-top:2rem;">
           <canvas id="particles-canvas"></canvas>
           <h2 class="countdown-title" id="countdownTitle">My Personal Countdown</h2>
@@ -4946,7 +4981,7 @@
               <div id="countdownTargetInfo" class="countdown-hint"></div>
               <div id="countdownCustomWrap" style="display:none;">
                 <input id="countdownCustomDate" type="date">
-                <div class="countdown-hint">This is separate from your Target Shloks and won't change them.</div>
+                <div class="countdown-hint">This is separate from your 'Target Shloks' and won't change them.</div>
               </div>
               <div id="countdownSignInNote" class="countdown-hint" style="display:none;">🔒 Sign in with Google to save your countdown to your account - otherwise it's only saved on this device.</div>
               <div class="countdown-settings-actions">
@@ -4989,7 +5024,7 @@
             <div class="game-card" onclick="startGame('revisionMode')">
               <div class="game-card-icon">📋</div>
               <div class="game-card-title">Revision Mode</div>
-              <div class="game-card-desc">Go through all your revise shloks - tick if you know it, ✗ if not.</div>
+              <div class="game-card-desc">Go through your revise shloks, or check in on memorised shloks you haven't practised in a while.</div>
               <div class="game-card-tag">Revision</div>
             </div>
             <div class="game-card" onclick="startGame('shlokStarters')">
@@ -5127,17 +5162,28 @@
             <button class="game-back-btn" onclick="backToHub()">← Games</button>
             <div class="game-score-label">📋 <span id="rmCurrent">1</span> / <span id="rmTotal">0</span> &nbsp; ✅ <span id="rmKnownCount">0</span></div>
           </div>
+        <!-- Choice: revise shloks, or a check-in on memorised shloks -->
+        <div id="rmSelector" style="display:none;">
+          <div class="card game-play-card" style="text-align:center;">
+            <div class="game-title-row">📋 Revision Mode</div>
+            <div class="game-instruction">What would you like to revise?</div>
+            <div class="ssg-tile-grid ssg-tile-grid-2 rm-mode-grid" id="rmModeRow"></div>
+            <button class="game-next-btn ssg-start-btn" id="rmStartBtn" type="button" onclick="rmStartMode(rmMode)">Start →</button>
+            <div id="rmSelectorNote" style="font-size:0.82rem;color:var(--text-muted);margin-top:0.8rem;"></div>
+          </div>
+        </div>
         <div class="card game-play-card" id="rmPlayCard">
-          <div class="game-title-row">📋 Revision Mode</div>
-          <div class="game-instruction">Say the full shlok aloud, then reveal to check. ✅ moves it to Memorised, ✗ keeps it in Revise.</div>
+          <div class="game-title-row" id="rmTitle">📋 Revision Mode</div>
+          <div class="game-instruction" id="rmInstruction">Say the full shlok aloud, then reveal to check. ✅ moves it to Memorised, ✗ keeps it in Revise.</div>
           <div id="rmCurrentHint" class="rm-current-hint"></div>
           <div id="rmPrompt" class="sr-prompt" style="font-size:1.4rem; font-weight:700;"></div>
+          <div id="rmAge" class="rm-age" style="display:none;"></div>
           <div id="rmMeaning" style="display:none; font-size:0.88rem; font-style:italic; color:var(--text-muted); margin-top:0.6rem;"></div>
           <div id="rmRevealSection" style="display:none;">
             <div id="rmFullShlok" class="fb-prompt" style="font-style:italic; margin-top:0.8rem;"></div>
             <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
-              <button class="game-next-btn" style="background:var(--green-text);" onclick="rmResult(true)">✅ I know it - memorised</button>
-              <button class="game-next-btn" style="background:#dc2626;" onclick="rmResult(false)">✗ Not yet - keep in revise</button>
+              <button class="game-next-btn" id="rmYesBtn" style="background:var(--green-text);" onclick="rmResult(true)">✅ I know it - memorised</button>
+              <button class="game-next-btn" id="rmNoBtn" style="background:#dc2626;" onclick="rmResult(false)">✗ Not yet - keep in revise</button>
             </div>
           </div>
           <div style="display:flex; gap:0.8rem; margin-top:1.5rem; flex-wrap:wrap;">
@@ -5158,10 +5204,19 @@
               <div id="rmWordPicker"></div>
             </div>
           </div>
+          <!-- Check-in only: nothing changes status unless they choose to -->
+          <div id="rmCheckinChoice" class="rm-checkin-choice" style="display:none;">
+            <div class="rm-checkin-choice-q">Keep it as memorised, or move it to revise to practise it more?</div>
+            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+              <button type="button" class="ssg-status-btn" data-status="memorised" onclick="rmCheckinDecide(false)">🏆 Keep as memorised</button>
+              <button type="button" class="ssg-status-btn" data-status="revise" onclick="rmCheckinDecide(true)">🔁 Move to revise</button>
+            </div>
+          </div>
         </div>
         <div id="rmDone" style="display:none; text-align:center; padding:2rem;">
           <div id="rmDoneMsg"></div>
           <button class="game-next-btn" onclick="loadRevisionMode()" style="margin-top:1.2rem;">🔄 Try Again</button>
+          <button class="game-next-btn" onclick="rmShowSelector()" style="margin-top:1.2rem;background:transparent;color:var(--text-main);border:1.5px solid var(--border);">← Revision options</button>
         </div>
         </div>
       </div>
@@ -5178,13 +5233,10 @@
             <div class="game-title-row">🗣️ Shlok Starters</div>
             <div class="game-instruction">You'll see the shlok number and the first two words of each line. Recite the whole shlok out loud from memory, then mark how it went - you can update its status as you go.</div>
             <div class="ssg-setup-label">Which shloks?</div>
-            <div class="add-mode-radio-group ssg-pill-row" id="ssgFilterRow"></div>
+            <div class="ssg-tile-grid ssg-tile-grid-4" id="ssgFilterRow"></div>
             <div class="ssg-setup-label">Order</div>
-            <div class="add-mode-radio-group ssg-pill-row">
-              <label class="add-mode-radio"><input type="radio" name="ssgOrder" value="order" checked><span>🔢 In order</span></label>
-              <label class="add-mode-radio"><input type="radio" name="ssgOrder" value="random"><span>🔀 Random</span></label>
-            </div>
-            <button class="game-next-btn" type="button" onclick="ssgStart()">Start →</button>
+            <div class="ssg-tile-grid ssg-tile-grid-2" id="ssgOrderRow"></div>
+            <button class="game-next-btn ssg-start-btn" id="ssgStartBtn" type="button" onclick="ssgStart()">Start →</button>
             <div id="ssgSetupError" style="font-size:0.82rem;color:#dc2626;margin-top:0.5rem;"></div>
           </div>
         </div>
@@ -5207,9 +5259,25 @@
           <div id="ssgMarkRow" class="ssg-btn-row">
             <button class="game-next-btn" type="button" style="background:var(--green-text);" onclick="ssgMark(true)">✅ I Know It</button>
             <button class="game-next-btn" type="button" style="background:#dc2626;" onclick="ssgMark(false)">✗ I Don't Know It</button>
+            <button id="ssgRevealBtn" class="game-submit-btn" type="button" onclick="ssgReveal()">👁️ Reveal Full Shlok</button>
           </div>
-          <button id="ssgRevealBtn" class="game-submit-btn" type="button" onclick="ssgReveal()">👁️ Reveal Full Shlok</button>
           <div id="ssgFeedback" class="game-feedback"></div>
+          <!-- Same "which part?" question as Revision Mode - saved as the
+               shlok's reviseHint, so Revision Mode and the Learn page's
+               Revise tab show it next time -->
+          <div id="ssgHintPanel" class="rm-hint-panel">
+            <div class="rm-hint-question">Which part of the shlok couldn't you remember?</div>
+            <div class="rm-hint-options">
+              <button type="button" class="rm-hint-btn" onclick="ssgSetHint('line1')">Line 1</button>
+              <button type="button" class="rm-hint-btn" onclick="ssgSetHint('line2')">Line 2</button>
+              <button type="button" class="rm-hint-btn" onclick="ssgSetHint('word')">A specific word/part</button>
+              <button type="button" class="rm-hint-btn" onclick="ssgSetHint('whole')">The whole thing</button>
+              <button type="button" class="rm-hint-btn" onclick="ssgSetHint('skip')" style="color:var(--text-muted);">Skip</button>
+            </div>
+            <div id="ssgWordRow" style="display:none; margin-top:0.7rem;">
+              <div id="ssgWordPicker"></div>
+            </div>
+          </div>
           <div id="ssgStatusPanel" class="ssg-status-panel" style="display:none;">
             <div class="ssg-setup-label" style="margin-top:0;">Update this shlok's status <span style="font-weight:500;text-transform:none;letter-spacing:0;">(optional)</span></div>
             <div class="ssg-status-options" id="ssgStatusOptions"></div>
@@ -5545,6 +5613,22 @@
 
         <div style="display:flex;flex-direction:column;gap:0.6rem;">
 
+          <!-- HOME -->
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div onclick="toggleWhatsNewSection('home')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🏠 Home</div>
+              <span id="wnArrow-home" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            </div>
+            <div id="wnBody-home" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Your countdown on the home page <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Your personal countdown now sits under the home page cards, with how many shloks a day to learn to meet your aim by your countdown date.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- GAMES -->
           <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
             <div onclick="toggleWhatsNewSection('games')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
@@ -5553,9 +5637,13 @@
             </div>
             <div id="wnBody-games" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;">
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Starters <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new revision game in Main Games - see just the first two words of each line, recite the whole shlok out loud, then mark whether you knew it and update its status (Learnt, Revise or Memorised) as you go.</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new revision game in 'Main Games' - see just the first two words of each line, recite the whole shlok out loud, then mark whether you knew it and update its status (learnt, revise or memorised) as you go. At the end, you can go straight back through the ones you missed.</div>
+                </div>
+                <div style="padding:0.5rem 0;">
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Memorised check-in <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">'Revision Mode' now has a 'Memorised check-in' for memorised shloks you haven't practised in 3+ weeks, so you can make sure you still know them. On Sundays, 'Revise Now' will remind you if any are waiting.</div>
                 </div>
               </div>
             </div>
@@ -5571,7 +5659,7 @@
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
                 <div style="padding:0.5rem 0;">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Personal countdown <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">The countdown on the Motivation page is now yours - count down to your Target Shloks date or any date you choose, with your own title.</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">The countdown on the 'Motivation' page is now yours - count down to your 'Target Shloks' date or any date you choose, with your own title.</div>
                 </div>
               </div>
             </div>
@@ -5587,7 +5675,7 @@
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
                 <div style="padding:0.5rem 0;">
                   <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">More reliable saving <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">When signed in, you'll see "Saving…" then "✓ Saved" once a change has reached your account. If something can't be saved, you'll be told and can tap Retry - nothing is lost.</div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">When signed in, you'll see 'Saving…' then '✓ Saved' once a change has reached your account. If something can't be saved, you'll be told and can tap 'Retry' - nothing is lost.</div>
                 </div>
               </div>
             </div>
@@ -5637,10 +5725,10 @@
             </div>
           </div>
           <div class="tutorial-card slide-home">
-            <div class="tutorial-card-img">📈</div>
+            <div class="tutorial-card-img">⏳</div>
             <div class="tutorial-card-body">
-              <div class="tutorial-slide-title">Progress Breakdown</div>
-              <div class="tutorial-slide-text">A chart showing how many shloks are <span style="color:#3b82f6;font-weight:600;">learnt</span>, <span style="color:#166534;font-weight:600;">memorised</span>, <span style="color:#92400e;font-weight:600;">revise</span> or not started.</div>
+              <div class="tutorial-slide-title">Your Countdown</div>
+              <div class="tutorial-slide-text">See how long is left until your countdown date, and how many shloks a day to learn to meet your aim. Set it up in 'Personalise my countdown' on the 'Motivation' page.</div>
             </div>
           </div>
           <div class="tutorial-card slide-home">
@@ -5766,7 +5854,7 @@
             <div class="tutorial-card-img">⏳</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Personal Countdown</div>
-              <div class="tutorial-slide-text">Your own countdown - to your Target Shloks date or any date you choose, with your own title (e.g. "Countdown to Surat Akshardham"). Tap 'Personalise my countdown' to set it up.</div>
+              <div class="tutorial-slide-text">Your own countdown - to your 'Target Shloks' date or any date you choose, with your own title (e.g. "Countdown to Surat Akshardham"). Tap 'Personalise my countdown' to set it up.</div>
             </div>
           </div>
         </div>
@@ -5775,7 +5863,7 @@
       <!-- SECTION 5: GAMES -->
       <div class="tutorial-slide">
         <div class="tutorial-section-label">🎮 Games</div>
-        <div class="tutorial-five-cards">
+        <div class="tutorial-six-cards">
           <div class="tutorial-card slide-games">
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
@@ -5801,7 +5889,14 @@
             <div class="tutorial-card-img">📋</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Revision Mode</div>
-              <div class="tutorial-slide-text">Test your revise shloks one by one. If you get one wrong, tag which part you couldn't remember - line 1, line 2, a specific word or the whole shlok. Next time it appears, a hint will remind you where to focus.</div>
+              <div class="tutorial-slide-text">Test your revise shloks one by one. If you get one wrong, tag which part you couldn't remember - line 1, line 2, a specific word or the whole shlok. Next time it appears, a hint will remind you where to focus. There's also a 'Memorised check-in' for memorised shloks you haven't practised in 3+ weeks.</div>
+            </div>
+          </div>
+          <div class="tutorial-card slide-games">
+            <div class="tutorial-card-img">🗣️</div>
+            <div class="tutorial-card-body">
+              <div class="tutorial-slide-title">Shlok Starters</div>
+              <div class="tutorial-slide-text">See the first two words of each line, recite the whole shlok out loud, then mark whether you knew it. If you didn't, tag which part was tricky - it shows as a hint in 'Revision Mode'. Update the shlok's status as you go.</div>
             </div>
           </div>
           <div class="tutorial-card slide-games">
@@ -5932,7 +6027,7 @@
             Date
           </button>
         </div>
-        <input id="editGoalName" class="edit-input" type="text" placeholder="e.g. Paris Mandir Mahotsav, Diwali" oninput="this.classList.remove('edit-input-error');">
+        <input id="editGoalName" class="edit-input" type="text" placeholder="e.g. Hari Jayanti, your birthday" oninput="this.classList.remove('edit-input-error');">
         <input id="editGoalDate" class="edit-input" type="date" style="display:none;" oninput="this.classList.remove('edit-input-error');">
       </div>
     </div>
@@ -8853,7 +8948,7 @@
     function updateDayPriorityWrapVisibility() {
       const wrap = document.getElementById('dayPriorityCardsWrap');
       if (!wrap) return;
-      const anyVisible = ['sundayParisCard', 'weeklySummaryCard', 'mondayParisCard', 'wednesdayParisCard', 'fridayParisCard', 'vidvanTestCard']
+      const anyVisible = ['sundayDayCard', 'weeklySummaryCard', 'mondayDayCard', 'wednesdayDayCard', 'fridayDayCard', 'vidvanTestCard']
         .some(id => {
           const el = document.getElementById(id);
           return el && el.style.display === 'block';
@@ -8861,12 +8956,12 @@
       wrap.style.display = anyVisible ? 'flex' : 'none';
     }
 
-    function updateParisCards() {
+    function updateDayCards() {
       const day = new Date().getDay(); // 0=Sun, 1=Mon, 3=Wed, 5=Fri
-      const mondayEl = document.getElementById('mondayParisCard');
-      const sundayEl = document.getElementById('sundayParisCard');
-      const wednesdayEl = document.getElementById('wednesdayParisCard');
-      const fridayEl = document.getElementById('fridayParisCard');
+      const mondayEl = document.getElementById('mondayDayCard');
+      const sundayEl = document.getElementById('sundayDayCard');
+      const wednesdayEl = document.getElementById('wednesdayDayCard');
+      const fridayEl = document.getElementById('fridayDayCard');
       if (!mondayEl || !sundayEl || !wednesdayEl || !fridayEl) return;
 
       // These day-specific cards are a signed-in perk - signed-out visitors
@@ -8884,7 +8979,7 @@
       const bg = dark ? '#1e2130' : '#ffffff';
       const textCol = dark ? 'var(--text-muted)' : 'var(--text-main)';
 
-      function parisCard(text, linkFn, dayLabel) {
+      function dayCard(text, linkFn, dayLabel) {
         return `<div onclick="${linkFn}" style="
           cursor:pointer;
           border-radius:12px;
@@ -8893,7 +8988,7 @@
           overflow:hidden;
           border:3px solid transparent;
           background:linear-gradient(${bg},${bg}) padding-box,
-                      linear-gradient(to right,#003189 0%,#003189 20%,#b0b0b0 38%,#b0b0b0 62%,#C1001F 80%,#C1001F 100%) border-box;
+                      linear-gradient(to right,${dark ? '#1a3f80' : '#0A2A66'},#F4C95D) border-box;
           color:${textCol};
           line-height:1.5;
         ">
@@ -8904,7 +8999,7 @@
 
       if (day === 1) {
         mondayEl.style.display = 'block';
-        mondayEl.innerHTML = parisCard(
+        mondayEl.innerHTML = dayCard(
           "It's Mukhpath Monday - time to learn some shloks!",
           "switchTab(document.querySelector('[data-page=learn]'),'learn')",
           "📖 Mukhpath Monday"
@@ -8914,7 +9009,7 @@
         fridayEl.style.display = 'none';
       } else if (day === 0) {
         sundayEl.style.display = 'block';
-        sundayEl.innerHTML = parisCard(
+        sundayEl.innerHTML = dayCard(
           "It's Summary Sunday! Take some time today to review all the shloks you've learnt so far.",
           "switchTab(document.querySelector('[data-page=games]'),'games');setTimeout(()=>startGame('fullReview'),200)",
           "🧠 Summary Sunday"
@@ -8924,7 +9019,7 @@
         fridayEl.style.display = 'none';
       } else if (day === 3) {
         wednesdayEl.style.display = 'block';
-        wednesdayEl.innerHTML = parisCard(
+        wednesdayEl.innerHTML = dayCard(
           "Swamishri says, “By doing mukhpath while understanding its meaning, the mukhpath is easily completed.” Take some time today to reflect on the meanings behind the shloks you've learnt!",
           "switchTab(document.querySelector('[data-page=myshloks]'),'myshloks')",
           "💡 Wisdom Wednesday"
@@ -8934,7 +9029,7 @@
         fridayEl.style.display = 'none';
       } else if (day === 5) {
         fridayEl.style.display = 'block';
-        fridayEl.innerHTML = parisCard(
+        fridayEl.innerHTML = dayCard(
           "Time to lock in! 🔒 Set a 10-minute timer and challenge yourself to learn as many shloks as you can before it ends!",
           "switchTab(document.querySelector('[data-page=learn]'),'learn')",
           "🎯 Focus Friday"
@@ -9099,46 +9194,51 @@
       }, 10000);
     }
 
+    // "Try to learn X shloks a day…" message on the Learn and My Mukhpath
+    // pages. Counts towards the user's personal countdown date (their Target
+    // Shloks date, or the custom date they chose), and their Target Shloks
+    // number (or all 315 if no smaller aim is set). Hidden when there's no
+    // date, the date has passed, or the aim is already reached.
+    function getPaceMessage() {
+      const t = getCountdownTarget();
+      const today = new Date(); today.setHours(0,0,0,0);
+      const daysLeft = t.date ? Math.ceil((t.date - today) / 86400000) : 0;
+
+      const learned = myShloks.filter(s => ['learnt','memorised','revise'].includes(s.mastery)).length;
+      const aimNum = parseInt(t.profile.goalTarget);
+      const hasAim = aimNum > 0 && aimNum < 315;
+      const target = hasAim ? aimNum : 315;
+      const remaining = target - learned;
+      const byDate = formatNiceDate(t.dateStr);
+
+      if (!(daysLeft > 0 && remaining > 0)) return '';
+      const perDay = remaining / daysLeft;
+      if (perDay < 1) {
+        return `🎉 You're nearly there - just <strong>${remaining} more shlok${remaining!==1?'s':''}</strong> to go to ${hasAim?`meet your aim of ${aimNum} shloks`:'learn all 315 shloks'} by ${byDate}!`;
+      }
+      const perDayRounded = Math.ceil(perDay);
+      return `Try to learn <strong>${perDayRounded} shlok${perDayRounded!==1?'s':''} a day</strong> to ${hasAim?`meet your aim of ${aimNum} shloks`:'learn all 315 shloks'} by ${byDate}!`;
+    }
+
     function updateMotivationMsg() {
       const learnEl = document.getElementById('learnMotivationMsg');
       const mukhpathEl = document.getElementById('mukhpathMotivationMsg');
       if (!learnEl && !mukhpathEl) return;
 
-      const MAHOTSAV_DATE = new Date('2026-09-02');
-      const today = new Date(); today.setHours(0,0,0,0);
-      const daysLeft = Math.ceil((MAHOTSAV_DATE - today) / 86400000);
-      if (daysLeft <= 0) return;
-
-      const learned = myShloks.filter(s => ['learnt','memorised','revise'].includes(s.mastery)).length;
-      const prof = JSON.parse(localStorage.getItem('profile') || '{}');
-      const aimNum = parseInt(prof.goalTarget);
-      const hasAim = aimNum > 0 && aimNum < 315;
-      const target = hasAim ? aimNum : 315;
-      const remaining = target - learned;
-
-      let msg = '';
-      if (remaining > 0) {
-        const perDay = remaining / daysLeft;
-        if (perDay < 1) {
-          msg = `🎉 You're nearly there - just <strong>${remaining} more shlok${remaining!==1?'s':''}</strong> to go to ${hasAim?`reach your aim of ${aimNum}`:'learn all 315'}!`;
-        } else {
-          const perDayRounded = Math.ceil(perDay);
-          msg = `Try to learn <strong>${perDayRounded} shlok${perDayRounded!==1?'s':''} a day</strong> to ${hasAim?`meet your aim of ${aimNum} shloks`:'learn all 315 shloks'} by Paris Mandir Mahotsav!`;
-        }
-      }
+      const msg = getPaceMessage();
 
       [learnEl, mukhpathEl].forEach(el => {
         if (!el) return;
         if (msg) {
           el.innerHTML = msg;
           el.style.display = 'block';
-          // Apply glow based on mode (only for mukhpath box, not learn plain text)
+          // Navy-to-gold border on the My Mukhpath box only (Learn shows plain text)
           if (el.id === 'mukhpathMotivationMsg') {
             const dark = document.body.classList.contains('dark-mode');
             const bg = dark ? '#1e2130' : '#ffffff';
             el.style.background = '';
             el.style.border = '2px solid transparent';
-            el.style.backgroundImage = `linear-gradient(${bg}, ${bg}), linear-gradient(to right, #003189 0%, #003189 20%, #b0b0b0 38%, #b0b0b0 62%, #C1001F 80%, #C1001F 100%)`;
+            el.style.backgroundImage = `linear-gradient(${bg}, ${bg}), linear-gradient(to right, ${dark ? '#1a3f80' : '#0A2A66'}, #F4C95D)`;
             el.style.backgroundOrigin = 'padding-box, border-box';
             el.style.backgroundClip = 'padding-box, border-box';
             el.style.color = dark ? '' : '#000000';
@@ -9186,7 +9286,7 @@
         }
       } else if (game === "shlokStarters") {
         if (!myShloks.length) {
-          showToast("Add some shloks in My Mukhpath first to play Shlok Starters!");
+          showToast("Add some shloks in 'My Mukhpath' first to play 'Shlok Starters'!");
           return;
         }
       } else if (game === "mockTest") {
@@ -9205,7 +9305,7 @@
       if (game === "snap")         { document.getElementById("gameSnapMode").style.display = "block"; }
       if (game === "wordScramble")  { document.getElementById("gameWordScramble").style.display = "block"; loadWordScramble(); }
       if (game === "dailyChallenge"){ document.getElementById("gameDailyChallenge").style.display = "block"; loadDailyChallenge(); }
-      if (game === "revisionMode")  { document.getElementById("gameRevisionMode").style.display = "block";  loadRevisionMode(); }
+      if (game === "revisionMode")  { document.getElementById("gameRevisionMode").style.display = "block";  rmShowSelector(); }
       if (game === "shlokStarters") { document.getElementById("gameShlokStarters").style.display = "block"; ssgShowSetup(); }
       if (game === "fullReview")    { document.getElementById("gameFullReview").style.display = "block";    loadFullReview(); }
       if (game === "mockTest")      { document.getElementById("gameMockTest").style.display = "block";      loadMockTest(); }
@@ -9741,7 +9841,7 @@
       if (page) page.classList.add("active");
       if (id === "myshloks") { render(); renderCollections(); }
       if (id === "learn")    { initLearnPage(); initLearnReviseSection(); }
-      if (id === "home")     { renderProgressPage(); updateHomePage(); }
+      if (id === "home")     { renderProgressPage(); updateHomePage(); updateHomeCountdown(); requestAnimationFrame(() => fitTextToOneLine(document.getElementById("homeCdTitle"))); }
       if (id === "mandal")   { renderMandal(); }
       if (id === "motivation") { updateFlipClock(); requestAnimationFrame(fitCountdownTitle); }
 
@@ -9813,10 +9913,53 @@
       if (activeTab) requestAnimationFrame(() => positionNavIndicator(activeTab));
     });
 
+    // ── DUE FOR REVISION ──
+    // A memorised shlok is "due" once it hasn't been practised in a game for
+    // DUE_AFTER_DAYS days (counting from when it was last practised, or when
+    // it was memorised if it hasn't been practised since). Practising it in
+    // Shlok Starters, Revision Mode, Full Review, Mock Test or the Daily
+    // Challenge resets the clock.
+    const DUE_AFTER_DAYS = 21;
+    function markPractised(shlok) {
+      if (!shlok) return;
+      shlok.lastPractised = localDateStr();
+      shlok.statusUpdatedAt = Date.now();
+    }
+    function getDueShloks() {
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      return myShloks.filter(s => {
+        if (s.mastery !== "memorised") return false;
+        const d = parseLocalDate(s.lastPractised || s.memorisedDate || s.addedDate || "");
+        return d && Math.floor((today - d) / 86400000) >= DUE_AFTER_DAYS;
+      });
+    }
+    // Opens Revision Mode with "Memorised check-in" selected
+    function startDuePractice() {
+      switchTab(document.querySelector('[data-page=games]'), 'games');
+      startGame('revisionMode');
+      if (document.getElementById("rmSelector").style.display !== "none") {
+        rmMode = "checkin";
+        rmRenderSelector();
+      }
+    }
+
     function loadReviseNow() {
       const reviseList = myShloks.filter(s => s.mastery === "revise");
       const el = document.getElementById("reviseNowContent");
       if (!el) return;
+
+      // Sundays (Summary Sunday): if any memorised shloks haven't been
+      // practised in 3+ weeks, this card becomes a check-in prompt instead -
+      // it replaces the usual content, so the card stays the same size.
+      const dueCount = getDueShloks().length;
+      if (new Date().getDay() === 0 && dueCount > 0) {
+        el.innerHTML = `
+          <div class="revise-checkin">
+            <div class="revise-checkin-text">📆 Want to check you still remember your memorised shloks? You haven't practised <strong>${dueCount} of them</strong> in 3+ weeks.</div>
+            <button type="button" class="revise-checkin-btn" onclick="startDuePractice()">Check them</button>
+          </div>`;
+        return;
+      }
 
       if (reviseList.length === 0) {
         el.innerHTML = `<div class="daily-shlok-empty">No shloks marked as Revise yet!</div>`;
@@ -10092,63 +10235,8 @@
       }, 100);
     }
 
-    function renderDonutChart() {
-      const svg = document.getElementById("donutChart");
-      const legend = document.getElementById("donutLegend");
-      const centerNum = document.getElementById("donutCenterNum");
-      if (!svg) return;
-
-      const learnt    = myShloks.filter(s => s.mastery === "learnt").length;
-      const memorised = myShloks.filter(s => s.mastery === "memorised").length;
-      const revise    = myShloks.filter(s => s.mastery === "revise").length;
-      const notStarted = 315 - (learnt + memorised + revise);
-
-      const segments = [
-        { label: "Memorised",  value: memorised,  color: "#22c55e" },
-        { label: "Learnt",     value: learnt,      color: "#3b82f6" },
-        { label: "Revise",     value: revise,      color: "#f59e0b" },
-        { label: "Not started", value: notStarted, color: "var(--border)" },
-      ];
-
-      const total = 315;
-      const radius = 80;
-      const circumference = 2 * Math.PI * radius;
-      let offset = 0;
-
-      svg.innerHTML = "";
-      segments.forEach(seg => {
-        if (seg.value === 0) return;
-        const fraction = seg.value / total;
-        const dash = fraction * circumference;
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", "100");
-        circle.setAttribute("cy", "100");
-        circle.setAttribute("r", radius);
-        circle.setAttribute("fill", "none");
-        circle.setAttribute("stroke", seg.color);
-        circle.setAttribute("stroke-width", "28");
-        circle.setAttribute("stroke-dasharray", `${dash} ${circumference - dash}`);
-        circle.setAttribute("stroke-dashoffset", -offset);
-        circle.classList.add("donut-segment");
-        svg.appendChild(circle);
-        offset += dash;
-      });
-
-      if (centerNum) centerNum.textContent = learnt + memorised;
-
-      if (legend) {
-        legend.innerHTML = segments.filter(s => s.value > 0).map(s => `
-          <div class="donut-legend-item">
-            <span class="donut-legend-swatch" style="background:${s.color};"></span>
-            <span>${s.label}: <span class="donut-legend-count">${s.value}</span></span>
-          </div>
-        `).join("");
-      }
-    }
-
     function renderProgressPage() {
       renderMilestones();
-      renderDonutChart();
     }
 
     /* ------------------------------
@@ -12124,6 +12212,9 @@
         }
         updateHomePage();
       }
+      // Counts as practising that shlok (resets its "due for revision" clock)
+      const dcShlok = myShloks.find(s => s.number === saved.number);
+      if (dcShlok) { markPractised(dcShlok); save(); }
       // Previously the daily challenge result only reached the cloud the
       // next time something else happened to trigger a sync.
       scheduleUserSync();
@@ -12139,23 +12230,83 @@
        REVISION MODE
        ------------------------------ */
     let rmPool = [], rmIndex = 0, rmKnown = 0, rmNotYet = 0;
+    // "revise" = the usual Revision Mode (revise shloks); "checkin" = memorised
+    // shloks that haven't been practised in 3+ weeks (see getDueShloks)
+    let rmMode = "revise", rmMoved = 0, rmAwaitingChoice = false;
 
-    // ── REVISION MODE ──
-    function loadRevisionMode() {
-      rmPool = myShloks.filter(s => s.mastery === "revise");
-      rmIndex = 0; rmKnown = 0; rmNotYet = 0;
+    function rmCounts() {
+      return { revise: myShloks.filter(s => s.mastery === "revise").length, checkin: getDueShloks().length };
+    }
+
+    function rmShowSelector() {
+      document.getElementById("rmSelector").style.display = "block";
+      document.getElementById("rmPlayCard").style.display = "none";
+      document.getElementById("rmDone").style.display = "none";
+      document.getElementById("rmCurrent").textContent = 0;
+      document.getElementById("rmTotal").textContent = 0;
+      document.getElementById("rmKnownCount").textContent = 0;
+      rmRenderSelector();
+    }
+
+    function rmRenderSelector() {
+      const counts = rmCounts();
+      if (!counts[rmMode]) rmMode = counts.revise ? "revise" : counts.checkin ? "checkin" : rmMode;
+      const modes = [
+        ["revise", "🔁 Revise shloks", "Shloks you've marked as revise. Get one right and it moves to memorised."],
+        ["checkin", "🏆 Memorised check-in", "Haven't practised these in 3+ weeks? Make sure you still know them."]
+      ];
+      document.getElementById("rmModeRow").innerHTML = modes.map(([val, label, desc]) => `
+        <button type="button" class="ssg-tile ${rmMode === val ? "selected" : ""}" ${counts[val] ? "" : "disabled"}
+          aria-pressed="${rmMode === val}" onclick="rmMode='${val}'; rmRenderSelector();">
+          <span class="ssg-tile-num">${counts[val]}</span>
+          <span class="ssg-tile-label">${label}</span>
+          <span class="rm-tile-desc">${desc}</span>
+        </button>`).join("");
+      const n = counts[rmMode];
+      const startBtn = document.getElementById("rmStartBtn");
+      const note = document.getElementById("rmSelectorNote");
+      startBtn.style.display = n ? "inline-block" : "none";
+      startBtn.textContent = `Start ${n} shlok${n !== 1 ? "s" : ""} →`;
+      note.textContent = (!counts.revise && !counts.checkin)
+        ? "Nothing to revise right now - mark shloks as revise to practise them here, and memorised shloks will appear for a check-in once you haven't practised them for 3 weeks."
+        : "";
+    }
+
+    // "Try Again" on the end screen - same mode again
+    function loadRevisionMode() { rmStartMode(rmMode); }
+
+    function shlokDaysSince(dateStr) {
+      const d = parseLocalDate(dateStr || "");
+      if (!d) return null;
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      return Math.floor((today - d) / 86400000);
+    }
+
+    function rmStartMode(mode) {
+      rmMode = mode;
+      if (mode === "checkin") {
+        // Longest-unpractised first
+        rmPool = getDueShloks().sort((a, b) =>
+          (a.lastPractised || a.memorisedDate || a.addedDate || "").localeCompare(b.lastPractised || b.memorisedDate || b.addedDate || ""));
+      } else {
+        rmPool = shuffle(myShloks.filter(s => s.mastery === "revise"));
+      }
+      if (!rmPool.length) { rmShowSelector(); return; }
+      rmIndex = 0; rmKnown = 0; rmNotYet = 0; rmMoved = 0; rmAwaitingChoice = false;
       document.getElementById("rmKnownCount").textContent = 0;
       document.getElementById("rmTotal").textContent = rmPool.length;
+      document.getElementById("rmSelector").style.display = "none";
       document.getElementById("rmDone").style.display = "none";
       document.getElementById("rmPlayCard").style.display = "block";
       document.getElementById("rmFeedback").textContent = "";
-      if (!rmPool.length) {
-        document.getElementById("rmPrompt").textContent = "No shloks marked as Revise!";
-        document.getElementById("rmRevealBtn").style.display = "none";
-        return;
-      }
-      rmPool = shuffle(rmPool);
       document.getElementById("rmRevealBtn").style.display = "inline-block";
+      const checkin = mode === "checkin";
+      document.getElementById("rmTitle").textContent = checkin ? "🏆 Memorised check-in" : "📋 Revision Mode";
+      document.getElementById("rmInstruction").textContent = checkin
+        ? "Say the full shlok aloud, then reveal to check. Nothing changes unless you choose to move it to revise."
+        : "Say the full shlok aloud, then reveal to check. ✅ moves it to Memorised, ✗ keeps it in Revise.";
+      document.getElementById("rmYesBtn").textContent = checkin ? "✅ Still know it" : "✅ I know it - memorised";
+      document.getElementById("rmNoBtn").textContent = checkin ? "✗ A bit rusty" : "✗ Not yet - keep in revise";
       rmShowCard();
     }
 
@@ -12301,9 +12452,19 @@
       document.getElementById("rmFeedback").className = "game-feedback";
       document.getElementById("rmHintPanel").style.display = "none";
       document.getElementById("rmWordRow").style.display = "none";
+      document.getElementById("rmCheckinChoice").style.display = "none";
+      rmAwaitingChoice = false;
+      const ageEl = document.getElementById("rmAge");
+      if (rmMode === "checkin" && shlok) {
+        const days = shlokDaysSince(shlok.lastPractised || shlok.memorisedDate || shlok.addedDate);
+        ageEl.textContent = days === null ? "" : `${shlok.lastPractised ? "Last practised" : "Memorised"} ${days} day${days !== 1 ? "s" : ""} ago`;
+        ageEl.style.display = days === null ? "none" : "block";
+      } else {
+        ageEl.style.display = "none";
+      }
       // Show existing hint if there is one
       const hintEl = document.getElementById("rmCurrentHint");
-      if (shlok && shlok.reviseHint) {
+      if (rmMode === "revise" && shlok && shlok.reviseHint) {
         const h = shlok.reviseHint;
         let hintMsg = "";
         if (h.type === "line1")  hintMsg = "💡 Last time you found line 1 tricky - see if you can recall it now!";
@@ -12338,10 +12499,33 @@
     function rmResult(correct) {
       const s = rmPool[rmIndex];
       const shlok = myShloks.find(x => x.number === s.number);
+      if (rmMode === "checkin") {
+        // Practising it resets its 3-week clock either way; the status only
+        // changes if they choose "Move to revise" afterwards
+        markPractised(shlok);
+        if (correct) {
+          rmKnown++;
+          document.getElementById("rmKnownCount").textContent = rmKnown;
+          document.getElementById("rmFeedback").textContent = "✅ Still memorised - well done!";
+          document.getElementById("rmFeedback").className = "game-feedback correct";
+          save(); render(); updateDashboard(); updateHomePage();
+          rmIndex++;
+          setTimeout(rmShowCard, 800);
+        } else {
+          rmNotYet++;
+          save();
+          document.getElementById("rmFeedback").textContent = "❌ No worries - which part did you get stuck on?";
+          document.getElementById("rmFeedback").className = "game-feedback wrong";
+          document.getElementById("rmRevealSection").style.display = "none";
+          document.getElementById("rmHintPanel").style.display = "block";
+          document.getElementById("rmWordRow").style.display = "none";
+        }
+        return;
+      }
       if (correct) {
         rmKnown++;
         document.getElementById("rmKnownCount").textContent = rmKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.reviseHint = null; shlok.memorisedDate = localDateStr(); shlok.statusUpdatedAt = Date.now(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.reviseHint = null; shlok.memorisedDate = localDateStr(); markPractised(shlok); }
         document.getElementById("rmFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("rmFeedback").className = "game-feedback correct";
         document.getElementById("rmHintPanel").style.display = "none";
@@ -12353,7 +12537,7 @@
         // Still "revise", but this reaffirms it was just looked at again -
         // stamped so a stale cloud copy from before this session can't
         // later overwrite it back to an old status on merge.
-        if (shlok) shlok.statusUpdatedAt = Date.now();
+        markPractised(shlok);
         document.getElementById("rmFeedback").textContent = "❌ Keeping in Revise";
         document.getElementById("rmFeedback").className = "game-feedback wrong";
         document.getElementById("rmRevealSection").style.display = "none";
@@ -12448,13 +12632,46 @@
 
     function rmNextAfterHint() {
       document.getElementById("rmHintPanel").style.display = "none";
+      if (rmMode === "checkin" && !rmAwaitingChoice) {
+        rmAwaitingChoice = true;
+        save();
+        document.getElementById("rmFeedback").textContent = "";
+        document.getElementById("rmCheckinChoice").style.display = "block";
+        return;
+      }
       save(); render(); updateDashboard(); updateHomePage();
+      rmIndex++;
+      setTimeout(rmShowCard, 300);
+    }
+
+    function rmCheckinDecide(moveToRevise) {
+      const s = rmPool[rmIndex];
+      const shlok = s && myShloks.find(x => x.number === s.number);
+      document.getElementById("rmCheckinChoice").style.display = "none";
+      if (moveToRevise && shlok) {
+        shlok.mastery = "revise";
+        shlok.statusUpdatedAt = Date.now();
+        rmMoved++;
+        save(`Shlok ${shlok.number} moved to revise`);
+      }
+      render(); updateDashboard(); updateHomePage();
       rmIndex++;
       setTimeout(rmShowCard, 300);
     }
 
     function rmFinish() {
       document.getElementById("rmPlayCard").style.display = "none";
+      if (rmMode === "checkin") {
+        document.getElementById("rmDoneMsg").innerHTML =
+          `<div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.8rem;">Check-in Complete! 🎉</div>
+          <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You still knew <strong style="color:var(--text-main);">${rmKnown}</strong> of ${rmPool.length} shlok${rmPool.length !== 1 ? "s" : ""}.</div>
+          ${rmMoved > 0
+            ? `<div style="font-size:1rem; color:var(--text-muted);">🔁 <strong style="color:var(--text-main);">${rmMoved}</strong> moved to revise.</div>
+               <button class="game-next-btn" type="button" onclick="rmStartMode('revise')" style="margin-top:1rem;background:var(--gold);color:var(--blue-dark);">🔁 Practise them in 'Revise shloks'</button>`
+            : (rmNotYet === 0 ? `<div style="font-size:1rem; color:var(--text-muted);">🏆 You still knew every one - outstanding!</div>` : "")}`;
+        document.getElementById("rmDone").style.display = "block";
+        return;
+      }
       const reviewBtn = rmNotYet > 0
         ? `<div style="margin-top:1rem;">
             <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">Want to review the shloks you couldn't remember?</p>
@@ -12483,7 +12700,7 @@
     // recites the whole shlok aloud, self-marks it, and can optionally change
     // its status. Marking "I Know It"/"I Don't Know It" never changes the
     // status on its own - only tapping a status button does.
-    let ssgPool = [], ssgIndex = 0, ssgKnown = 0, ssgNotYet = 0, ssgFilter = "all", ssgMarked = false;
+    let ssgPool = [], ssgIndex = 0, ssgKnown = 0, ssgNotYet = 0, ssgFilter = "all", ssgMarked = false, ssgMissed = [];
 
     const SSG_STATUS_LABELS = { learnt: "Learnt", revise: "Revise", memorised: "Memorised" };
 
@@ -12508,21 +12725,38 @@
       return out.join(" ");
     }
 
-    function ssgShowSetup() {
+    let ssgOrder = "order";
+
+    function ssgFilterCounts() {
       const counts = { all: myShloks.length, learnt: 0, revise: 0, memorised: 0 };
       myShloks.forEach(s => { if (counts[s.mastery] !== undefined) counts[s.mastery]++; });
+      return counts;
+    }
+
+    // Draws the "Which shloks?" and "Order" tiles and the Start button label
+    function ssgRenderSetup() {
+      const counts = ssgFilterCounts();
       if (!counts[ssgFilter]) ssgFilter = "all";
-      const opts = [
-        ["all", "🌟 All my shloks"],
-        ["learnt", "📘 Learnt"],
-        ["revise", "🔁 Revise"],
-        ["memorised", "🏆 Memorised"]
-      ];
-      document.getElementById("ssgFilterRow").innerHTML = opts.map(([val, label]) => `
-        <label class="add-mode-radio">
-          <input type="radio" name="ssgFilter" value="${val}" ${ssgFilter === val ? "checked" : ""} ${counts[val] ? "" : "disabled"} onchange="ssgFilter=this.value">
-          <span style="${counts[val] ? "" : "opacity:0.45;cursor:not-allowed;"}">${label} (${counts[val]})</span>
-        </label>`).join("");
+      const filters = [["all", "All my shloks"], ["learnt", "Learnt"], ["revise", "Revise"], ["memorised", "Memorised"]];
+      document.getElementById("ssgFilterRow").innerHTML = filters.map(([val, label]) => `
+        <button type="button" class="ssg-tile ${ssgFilter === val ? "selected" : ""}" ${counts[val] ? "" : "disabled"}
+          aria-pressed="${ssgFilter === val}" onclick="ssgFilter='${val}'; ssgRenderSetup();">
+          <span class="ssg-tile-num">${counts[val]}</span>
+          <span class="ssg-tile-label">${label}</span>
+        </button>`).join("");
+      const orders = [["order", "🔢", "In order"], ["random", "🔀", "Random"]];
+      document.getElementById("ssgOrderRow").innerHTML = orders.map(([val, icon, label]) => `
+        <button type="button" class="ssg-tile ${ssgOrder === val ? "selected" : ""}"
+          aria-pressed="${ssgOrder === val}" onclick="ssgOrder='${val}'; ssgRenderSetup();">
+          <span class="ssg-tile-icon">${icon}</span>
+          <span class="ssg-tile-label">${label}</span>
+        </button>`).join("");
+      const n = counts[ssgFilter];
+      document.getElementById("ssgStartBtn").textContent = `Start ${n} shlok${n !== 1 ? "s" : ""} →`;
+    }
+
+    function ssgShowSetup() {
+      ssgRenderSetup();
       document.getElementById("ssgSetupError").textContent = "";
       document.getElementById("ssgSetup").style.display = "block";
       document.getElementById("ssgPlayCard").style.display = "none";
@@ -12533,8 +12767,7 @@
     }
 
     function ssgStart() {
-      const orderEl = document.querySelector('input[name="ssgOrder"]:checked');
-      const order = orderEl ? orderEl.value : "order";
+      const order = ssgOrder;
       let pool = myShloks
         .filter(s => ssgFilter === "all" || s.mastery === ssgFilter)
         .filter(s => allShloks.some(a => a.id === s.number))
@@ -12545,8 +12778,14 @@
       }
       pool.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
       if (order === "random") pool = shuffle(pool);
+      ssgBeginRound(pool);
+    }
+
+    // Starts a round with the given shlok numbers (also used by "Practise
+    // the ones I missed")
+    function ssgBeginRound(pool) {
       ssgPool = pool;
-      ssgIndex = 0; ssgKnown = 0; ssgNotYet = 0;
+      ssgIndex = 0; ssgKnown = 0; ssgNotYet = 0; ssgMissed = [];
       document.getElementById("ssgTotal").textContent = ssgPool.length;
       document.getElementById("ssgKnownCount").textContent = 0;
       document.getElementById("ssgSetup").style.display = "none";
@@ -12598,6 +12837,8 @@
       full.innerHTML = "";
       document.getElementById("ssgRevealBtn").style.display = "inline-block";
       document.getElementById("ssgMarkRow").style.display = "flex";
+      document.getElementById("ssgHintPanel").style.display = "none";
+      document.getElementById("ssgWordRow").style.display = "none";
       document.getElementById("ssgStatusPanel").style.display = "none";
       document.getElementById("ssgNextBtn").style.display = "none";
       const fb = document.getElementById("ssgFeedback");
@@ -12618,26 +12859,115 @@
       if (ssgMarked) return;
       ssgMarked = true;
       if (knewIt) { ssgKnown++; document.getElementById("ssgKnownCount").textContent = ssgKnown; }
-      else ssgNotYet++;
+      else { ssgNotYet++; ssgMissed.push(ssgPool[ssgIndex]); }
       const { mine } = ssgCurrentShlok();
+      // Counts as practising it (resets its "due for revision" clock)
+      if (mine) { markPractised(mine); save(); }
       const fb = document.getElementById("ssgFeedback");
       if (knewIt) {
         fb.textContent = mine && mine.mastery !== "memorised"
-          ? "✅ Well done! Feeling confident? You can mark it as Memorised below."
+          ? "✅ Well done! Feeling confident? You can mark it as memorised below."
           : "✅ Well done!";
         fb.className = "game-feedback correct";
       } else {
         fb.textContent = mine && mine.mastery !== "revise"
-          ? "❌ No worries - you can move it to Revise below to practise it more."
+          ? "❌ No worries - you can move it to revise below to practise it more."
           : "❌ No worries - keep practising this one.";
         fb.className = "game-feedback wrong";
       }
       // Show the full shlok so they can check their recitation
       ssgReveal();
       document.getElementById("ssgMarkRow").style.display = "none";
+      if (!knewIt && mine) {
+        // Ask which part they missed first (like Revision Mode); the status
+        // options and Next appear once they answer or skip
+        fb.textContent = "❌ No worries - which part did you get stuck on?";
+        document.getElementById("ssgHintPanel").style.display = "block";
+        document.getElementById("ssgWordRow").style.display = "none";
+        return;
+      }
+      ssgShowAfterMark();
+    }
+
+    function ssgShowAfterMark() {
+      const { mine } = ssgCurrentShlok();
+      document.getElementById("ssgHintPanel").style.display = "none";
       document.getElementById("ssgStatusPanel").style.display = mine ? "block" : "none";
       document.getElementById("ssgNextBtn").style.display = "inline-block";
       ssgRenderStatus();
+    }
+
+    // Saves which part they couldn't remember onto the shlok, in exactly the
+    // same format Revision Mode uses (shlok.reviseHint), so the hint shows in
+    // Revision Mode and the blurred parts show on the Learn page's Revise tab
+    // while the shlok is in Revise.
+    let ssgWordOptions = [], ssgSelectedWords = new Set();
+    function ssgSetHint(type) {
+      const { num, master, mine } = ssgCurrentShlok();
+      if (!mine || !master || type === "skip") { ssgAfterHint(null); return; }
+      if (type === "word") {
+        const splitWords = line => line.split(/[\s-]+/).filter(Boolean);
+        const words1 = splitWords(master.line1);
+        const words2 = splitWords(master.line2);
+        ssgWordOptions = [...words1, ...words2];
+        ssgSelectedWords = new Set();
+        document.getElementById("ssgWordRow").style.display = "block";
+        document.getElementById("ssgWordPicker").innerHTML = `
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;">Tap the word(s) or part you couldn't remember - tap again to deselect:</div>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.35rem;">Line 1:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.5rem;">
+            ${words1.map((w, i) => `<button type="button" class="rm-word-pick-btn" id="ssgwb${i}" onclick="ssgToggleWord(${i})">${w}</button>`).join("")}
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.35rem;margin-top:0.2rem;">Line 2:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem;">
+            ${words2.map((w, i) => `<button type="button" class="rm-word-pick-btn" id="ssgwb${words1.length + i}" onclick="ssgToggleWord(${words1.length + i})">${w}</button>`).join("")}
+          </div>
+          <button type="button" class="rm-hint-save-btn" onclick="ssgSaveSelectedWords(${words1.length})">Save</button>`;
+        return;
+      }
+      let text = "";
+      if (type === "line1") text = `Last time you found line 1 tricky - it starts with '${getStarterWords(master.line1)}...'`;
+      if (type === "line2") text = `Last time you found line 2 tricky - it starts with '${getStarterWords(master.line2)}...'`;
+      if (type === "whole") text = `You couldn't remember the full shlok - line 1 starts with '${getStarterWords(master.line1)}...', line 2 starts with '${getStarterWords(master.line2)}...'`;
+      ssgAfterHint({ type, text });
+    }
+
+    function ssgToggleWord(index) {
+      const btn = document.getElementById(`ssgwb${index}`);
+      if (!btn) return;
+      const on = !ssgSelectedWords.has(index);
+      if (on) ssgSelectedWords.add(index); else ssgSelectedWords.delete(index);
+      btn.style.background  = on ? "var(--gold)" : "";
+      btn.style.borderColor = on ? "var(--gold)" : "";
+      btn.style.color       = on ? "var(--blue-dark)" : "";
+      btn.style.fontWeight  = on ? "700" : "";
+    }
+
+    function ssgSaveSelectedWords(line1count) {
+      if (!ssgSelectedWords.size) { ssgAfterHint(null); return; }
+      const line1words = [...ssgSelectedWords].filter(i => i < line1count).map(i => ssgWordOptions[i]);
+      const line2words = [...ssgSelectedWords].filter(i => i >= line1count).map(i => ssgWordOptions[i]);
+      const parts = [];
+      if (line1words.length) parts.push(`'${line1words.join(" ")}' in line 1`);
+      if (line2words.length) parts.push(`'${line2words.join(" ")}' in line 2`);
+      ssgAfterHint({ type: "word", text: `You couldn't remember ${parts.join(" and ")}`, line1words, line2words });
+    }
+
+    function ssgAfterHint(hint) {
+      const { num, mine } = ssgCurrentShlok();
+      const fb = document.getElementById("ssgFeedback");
+      if (hint && mine) {
+        mine.reviseHint = hint;
+        // Stamped so this hint wins over an older copy when devices merge
+        mine.statusUpdatedAt = Date.now();
+        const inRevise = mine.mastery === "revise";
+        save(inRevise ? `💡 Hint saved for Shlok ${num}` : undefined);
+        fb.textContent = inRevise
+          ? "💡 Saved - you'll see this hint in 'Revision Mode'."
+          : "💡 Saved - move this shlok to revise below and you'll see the hint in 'Revision Mode'.";
+        fb.className = "game-feedback wrong";
+      }
+      ssgShowAfterMark();
     }
 
     function ssgSetStatus(status) {
@@ -12646,8 +12976,8 @@
       if (mine.mastery === status) return;
       mine.mastery = status;
       mine.statusUpdatedAt = Date.now();
-      if (status === "memorised") mine.memorisedDate = localDateStr();
-      save(`Shlok ${num} marked as ${SSG_STATUS_LABELS[status]}`);
+      if (status === "memorised") { mine.memorisedDate = localDateStr(); mine.reviseHint = null; }
+      save(`Shlok ${num} marked as ${SSG_STATUS_LABELS[status].toLowerCase()}`);
       render(); updateDashboard(); updateHomePage();
       ssgRenderStatus();
     }
@@ -12664,8 +12994,16 @@
         <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You knew <strong style="color:var(--text-main);">${ssgKnown}</strong> of ${ssgPool.length} shlok${ssgPool.length !== 1 ? "s" : ""}.</div>
         ${ssgNotYet > 0
           ? `<div style="font-size:1rem; color:var(--text-muted);">📖 <strong style="color:var(--text-main);">${ssgNotYet}</strong> shlok${ssgNotYet !== 1 ? "s" : ""} to keep practising.</div>`
-          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}`;
+          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}
+        ${ssgMissed.length
+          ? `<button class="game-next-btn" type="button" onclick="ssgPractiseMissed()" style="margin-top:1.2rem;background:var(--gold);color:var(--blue-dark);">🔁 Practise the ${ssgMissed.length} I missed</button><br>`
+          : ""}`;
       document.getElementById("ssgDone").style.display = "block";
+    }
+
+    function ssgPractiseMissed() {
+      if (!ssgMissed.length) return;
+      ssgBeginRound([...ssgMissed]);
     }
 
     let frPool = [], frIndex = 0, frKnown = 0, frNotYet = 0;
@@ -12843,12 +13181,12 @@
       if (correct) {
         frKnown++;
         document.getElementById("frKnownCount").textContent = frKnown;
-        if (shlok) { shlok.mastery = "memorised"; shlok.memorisedDate = localDateStr(); shlok.statusUpdatedAt = Date.now(); }
+        if (shlok) { shlok.mastery = "memorised"; shlok.memorisedDate = localDateStr(); markPractised(shlok); }
         document.getElementById("frFeedback").textContent = "✅ Moved to Memorised!";
         document.getElementById("frFeedback").className = "game-feedback correct";
       } else {
         frNotYet++;
-        if (shlok) { shlok.mastery = "revise"; shlok.statusUpdatedAt = Date.now(); }
+        if (shlok) { shlok.mastery = "revise"; markPractised(shlok); }
         document.getElementById("frFeedback").textContent = "❌ Moved to Revise";
         document.getElementById("frFeedback").className = "game-feedback wrong";
       }
@@ -13048,6 +13386,8 @@
     }
 
     function mtResult(correct) {
+      const mtShlok = mtPool[mtIndex] && myShloks.find(s => s.number === mtPool[mtIndex].number);
+      if (mtShlok) { markPractised(mtShlok); save(); }
       if (correct) {
         mtKnown++;
         document.getElementById("mtKnownCount").textContent = mtKnown;
@@ -13085,7 +13425,7 @@
       const mobileToggle = document.getElementById("mobileDarkToggle");
       if (mobileToggle) mobileToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
       updateMotivationMsg();
-      updateParisCards();
+      updateDayCards();
     }
 
     // Apply dark mode on load - class already set on <html> early to prevent flash
@@ -13133,7 +13473,10 @@
     // Shrinks the countdown title's font until it fits on one line inside
     // the container (starting from the normal CSS size each time).
     function fitCountdownTitle() {
-      const el = document.getElementById("countdownTitle");
+      fitTextToOneLine(document.getElementById("countdownTitle"));
+      fitTextToOneLine(document.getElementById("homeCdTitle"));
+    }
+    function fitTextToOneLine(el) {
       if (!el) return;
       el.style.fontSize = "";
       if (!el.clientWidth) return; // page hidden - refitted when shown
@@ -13161,7 +13504,64 @@
       }
     }
 
+    // The home page version: title, then days/hours/minutes, then the
+    // "Try to learn X a day" message. Uses the same settings as the full
+    // countdown, so they always match.
+    let homeCdLastKey = null;
+    function updateHomeCountdown() {
+      const card = document.getElementById("homeCountdownCard");
+      if (!card) return;
+      const t = getCountdownTarget();
+      const titleEl = document.getElementById("homeCdTitle");
+      const clockEl = document.getElementById("homeCdClock");
+      const doneEl  = document.getElementById("homeCdDone");
+      const paceEl  = document.getElementById("homeCdPace");
+
+      if (titleEl.textContent !== t.title) { titleEl.textContent = t.title; titleEl.title = t.title; fitTextToOneLine(titleEl); }
+
+      const set = (id, v) => { const el = document.getElementById(id); const f = String(v).padStart(2, "0"); if (el.textContent !== f) el.textContent = f; };
+      if (!t.date) {
+        clockEl.style.display = "none";
+        doneEl.style.display = "block";
+        const key = "setup|" + t.mode;
+        if (homeCdLastKey !== key) {
+          homeCdLastKey = key;
+          doneEl.innerHTML = (t.mode === "custom" ? "Choose a date to start your countdown." : "Set a date to start your personal countdown.") +
+            `<br><button type="button" class="home-countdown-setup-btn" onclick="switchTab(document.querySelector('[data-page=motivation]'), 'motivation'); setTimeout(() => toggleCountdownSettings(true), 150);">⚙️ Set up my countdown</button>`;
+          paceEl.innerHTML = "";
+        }
+        return;
+      }
+      const diff = t.date.getTime() - Date.now();
+      if (diff <= 0) {
+        clockEl.style.display = "none";
+        doneEl.style.display = "block";
+        const known = myShloks.filter(s => ["learnt", "memorised", "revise"].includes(s.mastery)).length;
+        const goal = parseInt(t.profile.goalTarget) || 0;
+        const key = ["done", t.dateStr, known, goal].join("|");
+        if (homeCdLastKey !== key) {
+          homeCdLastKey = key;
+          let msg = "🎉 Countdown complete!";
+          if (goal > 0) msg += known >= goal
+            ? ` You reached your target of ${goal} shloks - well done! 🙏`
+            : ` You've learnt ${known} of your ${goal} target shloks - keep going, you got this!`;
+          doneEl.innerHTML = msg;
+          paceEl.innerHTML = "";
+        }
+        return;
+      }
+      clockEl.style.display = "flex";
+      doneEl.style.display = "none";
+      homeCdLastKey = null;
+      set("homeCdDays", Math.floor(diff / 86400000));
+      set("homeCdHours", Math.floor((diff / 3600000) % 24));
+      set("homeCdMins", Math.floor((diff / 60000) % 60));
+      const pace = getPaceMessage();
+      if (paceEl.innerHTML !== pace) paceEl.innerHTML = pace;
+    }
+
     function updateFlipClock() {
+      updateHomeCountdown();
       const t = getCountdownTarget();
       const titleEl = document.getElementById("countdownTitle");
       const clockEl = document.getElementById("countdownClock");
@@ -13181,8 +13581,8 @@
         doneEl.style.display = "none";
         setCountdownDigits(0, 0, 0, 0, false);
         setupEl.innerHTML = t.mode === "custom"
-          ? `Choose a date for your countdown using <a onclick="toggleCountdownSettings(true)">Personalise my countdown</a> below.`
-          : `You haven't set a Target Shloks date yet. Set one in <a onclick="jumpToEditProfile()">My Profile</a> (Target Shloks → Label it by: Date), or <a onclick="toggleCountdownSettings(true)">choose a custom date</a> instead.`;
+          ? `Choose a date for your countdown using '<a onclick="toggleCountdownSettings(true)">Personalise my countdown</a>' below.`
+          : `You haven't set a 'Target Shloks' date yet. Set one in '<a onclick="jumpToEditProfile()">My Profile</a>' ('Target Shloks' → 'Label it by: Date'), or <a onclick="toggleCountdownSettings(true)">choose a custom date</a> instead.`;
         setupEl.style.display = "block";
         return;
       }
@@ -13204,7 +13604,7 @@
               ? ` You reached your target of ${goal} shloks - well done! 🙏`
               : ` You've learnt ${known} of your ${goal} target shloks - keep going, you got this!`;
           }
-          sub += `<br>Tap "Personalise my countdown" below to set a new one.`;
+          sub += `<br>Tap 'Personalise my countdown' below to set a new one.`;
           document.getElementById("countdownDoneSub").innerHTML = sub;
         }
         doneEl.style.display = "block";
@@ -13253,8 +13653,8 @@
       if (mode === "custom") { info.style.display = "none"; return; }
       info.style.display = "block";
       info.innerHTML = profile.goalDate
-        ? `Your Target Shloks date is <strong>${formatNiceDate(profile.goalDate)}</strong>. If you change it in My Profile, your countdown will update automatically.`
-        : `You haven't set a Target Shloks date yet - <a onclick="jumpToEditProfile()">set one in My Profile</a> (Target Shloks → Label it by: Date), or choose a custom date.`;
+        ? `Your 'Target Shloks' date is <strong>${formatNiceDate(profile.goalDate)}</strong>. If you change it in 'My Profile', your countdown will update automatically.`
+        : `You haven't set a 'Target Shloks' date yet - set one in '<a onclick="jumpToEditProfile()">My Profile</a>' ('Target Shloks' → 'Label it by: Date'), or choose a custom date.`;
     }
 
     function saveCountdownSettings() {
@@ -13283,6 +13683,7 @@
       toggleCountdownSettings(false);
       updateFlipClock();
       fitCountdownTitle();
+      updateMotivationMsg();
       scheduleUserSync("Countdown saved!");
     }
 
@@ -13501,7 +13902,7 @@
       }
 
       updateMotivationMsg();
-      updateParisCards();
+      updateDayCards();
 
       // ── WEEKLY SUMMARY (Sundays only, signed-in users only) ──
       const wsDay = new Date().getDay();
