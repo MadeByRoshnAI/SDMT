@@ -2501,8 +2501,116 @@
       font-weight: 900;
       margin-bottom: 3rem;
       color: var(--blue);
-      letter-spacing: 2px;
+      /* 0.078em = the original 2px at 1.6rem, but scales down with the
+         font when a long personal title is shrunk to fit on one line */
+      letter-spacing: 0.078em;
       white-space: nowrap;
+      /* Always one line inside the container - fitCountdownTitle() shrinks
+         the font to fit; the ellipsis is only a last-resort safety net */
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+      padding: 0 0.5rem;
+    }
+    .countdown-done {
+      max-width: 640px;
+      padding: 1.5rem 1rem;
+    }
+    .countdown-done-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.6rem);
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.8rem;
+    }
+    .countdown-done-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    body.dark-mode .countdown-done-title { color: var(--gold); }
+    .countdown-setup-msg {
+      max-width: 520px;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .countdown-setup-msg a,
+    .countdown-hint a { color: var(--blue); text-decoration: underline; cursor: pointer; font-weight: 600; }
+    body.dark-mode .countdown-setup-msg a,
+    body.dark-mode .countdown-hint a { color: var(--gold); }
+    .countdown-settings-wrap {
+      margin-top: 3rem;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .countdown-edit-btn {
+      background: transparent;
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .countdown-edit-btn:hover { background: var(--blue); color: white; }
+    body.dark-mode .countdown-edit-btn { border-color: var(--gold); color: var(--gold); }
+    body.dark-mode .countdown-edit-btn:hover { background: var(--gold); color: var(--blue-dark); }
+    .countdown-settings {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: left;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+    }
+    .countdown-settings input[type="text"],
+    .countdown-settings input[type="date"] { width: 100%; box-sizing: border-box; margin: 0 0 0.4rem; }
+    .countdown-field-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0.6rem 0 0.4rem;
+    }
+    .countdown-mode-row { margin-bottom: 0.5rem; }
+    .countdown-mode-row .add-mode-radio span { font-size: 0.8rem; padding: 0.45rem 0.9rem; }
+    .countdown-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 0.4rem;
+    }
+    .countdown-settings-actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 0.8rem;
+    }
+    .countdown-settings-actions .game-next-btn { margin-top: 0; }
+    .countdown-cancel-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: underline;
     }
     .label {
       font-family: 'Orbitron', sans-serif;
@@ -2539,6 +2647,29 @@
       white-space: nowrap;
     }
     .flip { transform: rotateX(360deg); }
+    /* Scale the big clock digits down on smaller screens so all four boxes
+       stay visible (desktop size unchanged) */
+    @media (max-width: 1100px) {
+      .number { font-size: 7rem; }
+      .flipclock { gap: 2.5rem; }
+    }
+    @media (max-width: 900px) {
+      .number { font-size: 5rem; letter-spacing: 3px; }
+      .flipclock { gap: 1.8rem; }
+      .label { font-size: 1.1rem; }
+    }
+    @media (max-width: 600px) {
+      .number { font-size: 2.9rem; letter-spacing: 1px; }
+      .flipclock { gap: 1rem; }
+      .label { font-size: 0.7rem; letter-spacing: 1px; margin-top: 0.5rem; }
+      .countdown-title { margin-bottom: 2rem; padding: 0; letter-spacing: 0.03em; }
+      .countdown-container { min-height: 70vh; }
+    }
+    @media (max-width: 380px) {
+      .number { font-size: 2.3rem; }
+      .flipclock { gap: 0.7rem; }
+      .label { font-size: 0.6rem; }
+    }
 
     .counter {
       cursor: pointer;
@@ -2807,6 +2938,55 @@
       pointer-events: auto;
       transform: translateY(0);
     }
+
+    /* Cloud save status pill - bottom-left so it never sits under the toast */
+    .save-status {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      max-width: calc(100vw - 40px);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 0.55rem 1rem;
+      border-radius: 999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      background: var(--blue);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 100000;
+    }
+    .save-status.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .save-status.saved { background: #16a34a; }
+    .save-status.error { background: #dc2626; border-radius: 14px; }
+    .save-status button {
+      background: white;
+      color: #dc2626;
+      border: none;
+      border-radius: 999px;
+      padding: 0.2rem 0.8rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .save-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gold);
+      animation: saveStatusPulse 0.9s ease-in-out infinite alternate;
+    }
+    @keyframes saveStatusPulse { from { opacity: 0.3; } to { opacity: 1; } }
+    body.dark-mode .save-status { background: var(--blue-mid); }
+    body.dark-mode .save-status.saved { background: #16a34a; }
+    body.dark-mode .save-status.error { background: #b91c1c; }
+    body.dark-mode .save-status span.save-status-dot { background: var(--gold); }
 
     /* ⭐ SLIDEOUT TAB */
     .slideout-tab {
@@ -3537,6 +3717,101 @@
       transition: opacity 0.2s;
     }
     .game-next-btn:hover, .game-submit-btn:hover { opacity: 0.85; }
+
+    /* Shlok Starters */
+    .ssg-setup-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1rem 0 0.5rem;
+    }
+    .ssg-pill-row { justify-content: center; margin-bottom: 0.4rem; }
+    .ssg-pill-row .add-mode-radio span { font-size: 0.8rem; padding: 0.45rem 0.9rem; }
+    .ssg-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .ssg-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1.1;
+    }
+    body.dark-mode .ssg-number { color: #ffffff; }
+    .ssg-status-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .ssg-status-caption { font-size: 0.75rem; color: var(--text-muted); }
+    .ssg-status-pill {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      border: 2px solid currentColor;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--card-bg);
+    }
+    .ssg-prompt { margin-bottom: 0.4rem; }
+    .ssg-line { display: flex; align-items: baseline; gap: 0.8rem; }
+    .ssg-line + .ssg-line { margin-top: 0.5rem; }
+    .ssg-line-label {
+      flex: 0 0 auto;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      min-width: 3.4rem;
+    }
+    .ssg-line-text { flex: 1 1 auto; min-width: 0; font-size: 1.25rem; font-weight: 700; font-style: italic; overflow-wrap: anywhere; }
+    .ssg-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .ssg-status-panel {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .ssg-status-options { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .ssg-status-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      border: 2px solid currentColor;
+      background: var(--card-bg);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ssg-status-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+    .ssg-status-btn.current { box-shadow: inset 0 0 0 999px rgba(127,127,127,0.12); }
+    .ssg-status-btn.current::after { content: " ✓"; }
+    .ssg-status-pill[data-status="learnt"], .ssg-status-btn[data-status="learnt"] { color: #1e40af; }
+    .ssg-status-pill[data-status="memorised"], .ssg-status-btn[data-status="memorised"] { color: var(--green-map); }
+    .ssg-status-pill[data-status="revise"], .ssg-status-btn[data-status="revise"] { color: var(--orange-text); }
+    body.dark-mode .ssg-status-pill[data-status="learnt"], body.dark-mode .ssg-status-btn[data-status="learnt"] { color: #60a5fa !important; }
+    body.dark-mode .ssg-status-pill[data-status="memorised"], body.dark-mode .ssg-status-btn[data-status="memorised"] { color: var(--green-map) !important; }
+    body.dark-mode .ssg-status-pill[data-status="revise"], body.dark-mode .ssg-status-btn[data-status="revise"] { color: var(--orange-text) !important; }
+    body.dark-mode .ssg-setup-label,
+    body.dark-mode .ssg-line-label,
+    body.dark-mode .ssg-status-caption,
+    body.dark-mode .countdown-field-label,
+    body.dark-mode .countdown-hint,
+    body.dark-mode .countdown-setup-msg,
+    body.dark-mode .countdown-done-sub { color: #c0cce0 !important; }
+    body.dark-mode .countdown-done-title { color: var(--gold) !important; }
+    @media (max-width: 500px) {
+      .ssg-number { font-size: 1.7rem; }
+      .ssg-line { flex-direction: column; gap: 0.1rem; }
+      .ssg-line-text { font-size: 1.05rem; }
+      .ssg-btn-row .game-next-btn { flex: 1 1 100%; }
+      .ssg-status-btn { flex: 1 1 auto; }
+    }
 
     /* Spot the Mistake */
     .sm-shlok { font-size: 0.95rem; line-height: 2; }
@@ -4623,11 +4898,11 @@
 
         </div>
 
-        <!-- COUNTDOWN -->
+        <!-- PERSONAL COUNTDOWN (replaces the Paris Mandir Mahotsav countdown) -->
         <div class="countdown-container" style="margin-top:2rem;">
           <canvas id="particles-canvas"></canvas>
-          <h2 class="countdown-title" id="countdownTitle">Countdown to Paris Mandir Mahotsav. Countdown to Rajipo.</h2>
-          <div class="flipclock">
+          <h2 class="countdown-title" id="countdownTitle">My Personal Countdown</h2>
+          <div class="flipclock" id="countdownClock">
             <div class="time-box">
               <div class="number" id="days">00</div>
               <div class="label">DAYS</div>
@@ -4645,14 +4920,40 @@
               <div class="label">SECONDS</div>
             </div>
           </div>
-          <div class="paris-mandir-img-wrap" style="margin-top:3.5rem;">
-            <a href="https://www.youtube.com/watch?v=_7yEVFvMgnU" target="_blank" class="paris-link-card">
-              <div class="paris-link-thumb">▶️</div>
-              <div class="paris-link-info">
-                <div class="paris-link-title">Global Invite | Paris Mandir Mahotsav</div>
-                <div class="paris-link-sub">Watch on YouTube ↗</div>
+          <!-- Shown instead of the clock once it reaches zero -->
+          <div id="countdownDone" class="countdown-done" style="display:none;">
+            <div class="countdown-done-title" id="countdownDoneTitle">🎉 Countdown complete!</div>
+            <div class="countdown-done-sub" id="countdownDoneSub"></div>
+          </div>
+          <div id="countdownSetupMsg" class="countdown-setup-msg" style="display:none;"></div>
+
+          <div class="countdown-settings-wrap">
+            <button type="button" class="countdown-edit-btn" id="countdownEditBtn" onclick="toggleCountdownSettings()">⚙️ Personalise my countdown</button>
+            <div class="countdown-settings" id="countdownSettings" style="display:none;">
+              <label class="countdown-field-label" for="countdownTitleInput">Countdown title</label>
+              <input id="countdownTitleInput" type="text" maxlength="50" placeholder="e.g. Countdown to Surat Akshardham">
+              <div class="countdown-field-label">Count down to</div>
+              <div class="add-mode-radio-group countdown-mode-row">
+                <label class="add-mode-radio">
+                  <input type="radio" name="countdownMode" value="target" onchange="countdownModeChanged()">
+                  <span>🎯 My Target Shloks date</span>
+                </label>
+                <label class="add-mode-radio">
+                  <input type="radio" name="countdownMode" value="custom" onchange="countdownModeChanged()">
+                  <span>📅 A custom date</span>
+                </label>
               </div>
-            </a>
+              <div id="countdownTargetInfo" class="countdown-hint"></div>
+              <div id="countdownCustomWrap" style="display:none;">
+                <input id="countdownCustomDate" type="date">
+                <div class="countdown-hint">This is separate from your Target Shloks and won't change them.</div>
+              </div>
+              <div id="countdownSignInNote" class="countdown-hint" style="display:none;">🔒 Sign in with Google to save your countdown to your account - otherwise it's only saved on this device.</div>
+              <div class="countdown-settings-actions">
+                <button type="button" class="game-next-btn" onclick="saveCountdownSettings()">Save</button>
+                <button type="button" class="countdown-cancel-btn" onclick="toggleCountdownSettings(false)">Cancel</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -4689,6 +4990,12 @@
               <div class="game-card-icon">📋</div>
               <div class="game-card-title">Revision Mode</div>
               <div class="game-card-desc">Go through all your revise shloks - tick if you know it, ✗ if not.</div>
+              <div class="game-card-tag">Revision</div>
+            </div>
+            <div class="game-card" onclick="startGame('shlokStarters')">
+              <div class="game-card-icon">🗣️</div>
+              <div class="game-card-title">Shlok Starters</div>
+              <div class="game-card-desc">See just the first two words of each line - recite the whole shlok out loud, then mark yourself and update its status.</div>
               <div class="game-card-tag">Revision</div>
             </div>
             <div class="game-card" onclick="startGame('fullReview')">
@@ -4856,6 +5163,63 @@
           <div id="rmDoneMsg"></div>
           <button class="game-next-btn" onclick="loadRevisionMode()" style="margin-top:1.2rem;">🔄 Try Again</button>
         </div>
+        </div>
+      </div>
+
+      <!-- SHLOK STARTERS (revision: first two words of each line) -->
+      <div id="gameShlokStarters" class="game-screen" style="display:none;">
+        <div class="game-topbar">
+          <button class="game-back-btn" onclick="backToHub()">← Games</button>
+          <div class="game-score-label">🗣️ <span id="ssgCurrent">0</span> / <span id="ssgTotal">0</span> &nbsp; ✅ <span id="ssgKnownCount">0</span></div>
+        </div>
+
+        <div id="ssgSetup">
+          <div class="card game-play-card" style="text-align:center;">
+            <div class="game-title-row">🗣️ Shlok Starters</div>
+            <div class="game-instruction">You'll see the shlok number and the first two words of each line. Recite the whole shlok out loud from memory, then mark how it went - you can update its status as you go.</div>
+            <div class="ssg-setup-label">Which shloks?</div>
+            <div class="add-mode-radio-group ssg-pill-row" id="ssgFilterRow"></div>
+            <div class="ssg-setup-label">Order</div>
+            <div class="add-mode-radio-group ssg-pill-row">
+              <label class="add-mode-radio"><input type="radio" name="ssgOrder" value="order" checked><span>🔢 In order</span></label>
+              <label class="add-mode-radio"><input type="radio" name="ssgOrder" value="random"><span>🔀 Random</span></label>
+            </div>
+            <button class="game-next-btn" type="button" onclick="ssgStart()">Start →</button>
+            <div id="ssgSetupError" style="font-size:0.82rem;color:#dc2626;margin-top:0.5rem;"></div>
+          </div>
+        </div>
+
+        <div class="card game-play-card" id="ssgPlayCard" style="display:none;">
+          <div class="game-title-row">🗣️ Shlok Starters</div>
+          <div class="game-instruction">Recite the whole shlok out loud from memory, then mark how it went.</div>
+          <div class="ssg-head">
+            <div id="ssgNumber" class="ssg-number"></div>
+            <div class="ssg-status-wrap">
+              <span class="ssg-status-caption">Current status</span>
+              <span id="ssgStatus" class="ssg-status-pill"></span>
+            </div>
+          </div>
+          <div class="sr-prompt ssg-prompt">
+            <div class="ssg-line"><span class="ssg-line-label">Line 1</span><span id="ssgLine1" class="ssg-line-text"></span></div>
+            <div class="ssg-line"><span class="ssg-line-label">Line 2</span><span id="ssgLine2" class="ssg-line-text"></span></div>
+          </div>
+          <div id="ssgFull" class="fb-prompt" style="display:none; font-style:italic;"></div>
+          <div id="ssgMarkRow" class="ssg-btn-row">
+            <button class="game-next-btn" type="button" style="background:var(--green-text);" onclick="ssgMark(true)">✅ I Know It</button>
+            <button class="game-next-btn" type="button" style="background:#dc2626;" onclick="ssgMark(false)">✗ I Don't Know It</button>
+          </div>
+          <button id="ssgRevealBtn" class="game-submit-btn" type="button" onclick="ssgReveal()">👁️ Reveal Full Shlok</button>
+          <div id="ssgFeedback" class="game-feedback"></div>
+          <div id="ssgStatusPanel" class="ssg-status-panel" style="display:none;">
+            <div class="ssg-setup-label" style="margin-top:0;">Update this shlok's status <span style="font-weight:500;text-transform:none;letter-spacing:0;">(optional)</span></div>
+            <div class="ssg-status-options" id="ssgStatusOptions"></div>
+          </div>
+          <button id="ssgNextBtn" class="game-next-btn" type="button" style="display:none;" onclick="ssgNext()">Next Shlok →</button>
+        </div>
+
+        <div id="ssgDone" style="display:none; text-align:center; padding:2rem;">
+          <div id="ssgDoneMsg"></div>
+          <button class="game-next-btn" type="button" onclick="ssgShowSetup()" style="margin-top:1.2rem;">🔄 Play Again</button>
         </div>
       </div>
 
@@ -5175,55 +5539,11 @@
       <div style="padding:1.5rem;">
 
         <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--gold);background:rgba(244,201,93,0.12);border:1px solid rgba(244,201,93,0.3);border-radius:999px;padding:0.2rem 0.7rem;">July 2026</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--gold);background:rgba(244,201,93,0.12);border:1px solid rgba(244,201,93,0.3);border-radius:999px;padding:0.2rem 0.7rem;">November 2026</div>
           <div style="flex:1;height:1px;background:var(--border);"></div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:0.6rem;">
-
-          <!-- HOME PAGE -->
-          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-            <div onclick="toggleWhatsNewSection('home')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
-              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🏠 Home</div>
-              <span id="wnArrow-home" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
-            </div>
-            <div id="wnBody-home" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
-              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">A card for every day of the week</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Mukhpath Monday, Wisdom Wednesday, Focus Friday and Summary Sunday each bring their own card to the top of your home page on their day - tap to jump straight into the relevant activity.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Weekly Summary</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Every Sunday a summary card appears showing your daily challenge stats and personal aim progress for the week.</div>
-                </div>
-                <div style="padding:0.5rem 0;">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Simpler profile</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">'My Profile' is now one screen with a single save button. Sign in with Google to unlock editing - your card also only appears on 'Mukhpath Mandal' once you've added at least one shlok.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- MY MUKHPATH & LEARN -->
-          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-            <div onclick="toggleWhatsNewSection('learn')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
-              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">📘 My Mukhpath & Learn</div>
-              <span id="wnArrow-learn" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
-            </div>
-            <div id="wnBody-learn" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
-              <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">My Collections - Favourites &amp; Wishlist <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Organise your shloks into folders. Two are already there for you - "My Favourite Shloks" and "Shloks I Want to Learn" - and both let you add any of the 315, even ones you haven't started learning yet. You can also add a short note on why you've added that shlok, then use "Learn from this folder" or "Review these shloks" to practise straight from it.</div>
-                </div>
-                <div style="padding:0.5rem 0;">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Daily aim guidance</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Shows how many shloks a day you need to meet your aim!</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- GAMES -->
           <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
@@ -5233,65 +5553,25 @@
             </div>
             <div id="wnBody-games" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Games split into two tabs <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">"Main Games" (Daily Challenge, Revision Mode, Full Review, Mock Test, Challenge a Friend) and "More Games" (Spot the Mistake, Snap, Word Scramble, Quiz Time, Shlok Sequence) so the games you'll use most aren't buried in one long list.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Mock Test <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A practice run for your tests. Learn shloks 1-50, then 1-100, then 1-150 (and so on) in order to unlock each milestone test - it takes 2 random shloks from every 10. If you get stuck, you can reveal clue 1 (the start of the shlok) or clue 2 (the end of the shlok) - only if you need them!</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">See Meaning in Full Review &amp; Revision Mode <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Tap "💭 See Meaning" mid-game if you want a reminder of what a shlok means before you answer.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Quiz Time</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">4 options, 1 correct answer across 3 modes - Normal, Speed Round and No Mistakes.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Sequence</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Put consecutive shloks in order across 5 rounds (3, 5, 10, 15 and 20 shloks).</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Challenge a Friend</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Challenge a friend across 4 types - Standard, Chain, Reverse Chain and Meaning. They challenge you back. 24 hours to complete!</div>
-                </div>
                 <div style="padding:0.5rem 0;">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Full Review - 3 new modes</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Choose to review In Order, Random, or a Specific Range of shloks.</div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Shlok Starters <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new revision game in Main Games - see just the first two words of each line, recite the whole shlok out loud, then mark whether you knew it and update its status (Learnt, Revise or Memorised) as you go.</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- MUKHPATH MANDAL -->
+          <!-- MOTIVATION -->
           <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-            <div onclick="toggleWhatsNewSection('mandal')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
-              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">🏛️ Mukhpath Mandal</div>
-              <span id="wnArrow-mandal" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
+            <div onclick="toggleWhatsNewSection('motivation')" style="cursor:pointer;padding:0.7rem 0.9rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text-main);">✨ Motivation</div>
+              <span id="wnArrow-motivation" style="font-size:0.9rem;color:var(--text-muted);font-weight:700;">↓</span>
             </div>
-            <div id="wnBody-mandal" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
+            <div id="wnBody-motivation" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Vidvan Wall <span class="wn-new-badge">NEW</span></div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A page for everyone who's passed their exam - once you get to around 300 shloks, a pop-up will appear on the homepage where you can add your test date, the result and a short piece of advice for others still learning.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Celebrate milestones together</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A new noticeboard tab shows everyone's milestone achievements as sticky notes on a corkboard.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">React to milestones</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">React to someone's milestone with 👏 🎉 ❤️ 🔥 💪 🕺</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Write a message</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Write a congratulations message directly on someone's sticky note. Notes stay up for 7 days.</div>
-                </div>
                 <div style="padding:0.5rem 0;">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Comment & reaction notifications</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">A little red dot appears on 'Mukhpath Mandal' in the nav bar when someone comments on or reacts to your milestone note - it disappears once you check the noticeboard.</div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Personal countdown <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">The countdown on the Motivation page is now yours - count down to your Target Shloks date or any date you choose, with your own title.</div>
                 </div>
               </div>
             </div>
@@ -5305,21 +5585,9 @@
             </div>
             <div id="wnBody-general" style="max-height:0px;overflow:hidden;transition:max-height 0.3s ease;">
               <div style="display:flex;flex-direction:column;gap:0;padding:0 0.9rem 0.8rem;">
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Feedback & Suggestions</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Got an idea or spotted a bug? Use the link in the footer to let me know!</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Dark mode preference saved</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Dark mode now remembers your preference across visits and devices.</div>
-                </div>
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Cross-device sync</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Switching between devices now picks up your latest progress automatically.</div>
-                </div>
                 <div style="padding:0.5rem 0;">
-                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">Reset Everything</div>
-                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">Permanently erase all data.</div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">More reliable saving <span class="wn-new-badge">NEW</span></div>
+                  <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;margin-top:0.1rem;">When signed in, you'll see "Saving…" then "✓ Saved" once a change has reached your account. If something can't be saved, you'll be told and can tap Retry - nothing is lost.</div>
                 </div>
               </div>
             </div>
@@ -5497,8 +5765,8 @@
           <div class="tutorial-card slide-motiv">
             <div class="tutorial-card-img">⏳</div>
             <div class="tutorial-card-body">
-              <div class="tutorial-slide-title">Paris Countdown</div>
-              <div class="tutorial-slide-text">A live countdown to Paris Mandir Mahotsav - see how many days you have left and use it as motivation to keep learning!</div>
+              <div class="tutorial-slide-title">Personal Countdown</div>
+              <div class="tutorial-slide-text">Your own countdown - to your Target Shloks date or any date you choose, with your own title (e.g. "Countdown to Surat Akshardham"). Tap 'Personalise my countdown' to set it up.</div>
             </div>
           </div>
         </div>
@@ -5512,7 +5780,7 @@
             <div class="tutorial-card-img">🎯</div>
             <div class="tutorial-card-body">
               <div class="tutorial-slide-title">Main & More Games</div>
-              <div class="tutorial-slide-text">'Main Games' has Daily Challenge, Revision Mode, Full Review, Mock Test and Challenge a Friend. 'More Games' has Spot the Mistake, Snap, Word Scramble, Quiz Time and Shlok Sequence.</div>
+              <div class="tutorial-slide-text">'Main Games' has Daily Challenge, Revision Mode, Shlok Starters, Full Review, Mock Test and Challenge a Friend. 'More Games' has Spot the Mistake, Snap, Word Scramble, Quiz Time and Shlok Sequence.</div>
             </div>
           </div>
           <div class="tutorial-card slide-games">
@@ -5701,6 +5969,9 @@
 
   <!-- Toast -->
   <div id="toast" class="toast">Saved!</div>
+
+  <!-- Cloud save status (Saving… / ✓ Saved / not saved + Retry) -->
+  <div id="saveStatus" class="save-status" role="status" aria-live="polite"></div>
 
   <script>
     /* ── FIREBASE ── */
@@ -7713,6 +7984,8 @@
 
     function saveCollections() {
       localStorage.setItem("shlokCollections", JSON.stringify(shlokCollections));
+      // Stamped so the newest set of collections wins when devices merge
+      localStorage.setItem("collectionsUpdatedAt", String(Date.now()));
       scheduleUserSync();
     }
 
@@ -8229,10 +8502,31 @@
     }
 
     // ── SAVE & RENDER ──
-    function save() {
+    // Before writing, fold in whatever is already stored on this device -
+    // if the site is open in two tabs (or a home-screen app plus a browser
+    // tab), the other one may have saved newer changes since this tab
+    // loaded. Merging by statusUpdatedAt/deletion time means a stale tab can
+    // no longer overwrite another tab's newer progress.
+    function save(successMessage) {
+      const stored = JSON.parse(localStorage.getItem("myShloks") || "[]");
+      myShloks = mergeShlokLists(myShloks, stored, getDeletedShloks());
       localStorage.setItem("myShloks", JSON.stringify(myShloks));
       scheduleMandalSync();
-      scheduleUserSync();
+      scheduleUserSync(successMessage);
+    }
+
+    // ── DELETED SHLOK MARKERS ──
+    // Records when a shlok was removed, so the cloud copy (which still has
+    // it) can't quietly bring it back on the next refresh or sign-in.
+    function getDeletedShloks() {
+      try { return JSON.parse(localStorage.getItem("deletedShloks") || "{}") || {}; }
+      catch (e) { return {}; }
+    }
+    function markShloksDeleted(nums) {
+      const deleted = getDeletedShloks();
+      const now = Date.now();
+      nums.forEach(n => { deleted[String(n)] = now; });
+      localStorage.setItem("deletedShloks", JSON.stringify(deleted));
     }
 
     /* ------------------------------
@@ -8305,9 +8599,9 @@
        ------------------------------ */
     function removeShlok(num) {
       if (!confirm(`Remove Shlok ${num} from your list?`)) return;
+      markShloksDeleted([num]);
       myShloks = myShloks.filter(s => s.number !== num);
-      save(); render(); updateDashboard(); updateHomePage();
-      showToast(`Shlok ${num} removed.`);
+      save(`Shlok ${num} removed.`); render(); updateDashboard(); updateHomePage();
     }
 
     function removeShlokRange() {
@@ -8316,10 +8610,10 @@
       const exists = myShloks.find(s => s.number === num);
       if (!exists) { showToast(`Shlok ${num} isn't in your list.`); return; }
       if (!confirm(`Remove Shlok ${num} from your list?`)) return;
+      markShloksDeleted([num]);
       myShloks = myShloks.filter(s => s.number !== num);
-      save(); render(); updateDashboard(); updateHomePage();
+      save(`Shlok ${num} removed.`); render(); updateDashboard(); updateHomePage();
       document.getElementById("removeStart").value = "";
-      showToast(`Shlok ${num} removed.`);
     }
 
     function changeMastery(num) {
@@ -8735,15 +9029,13 @@
       if (!date) { showToast('Please select the date of your test.'); return; }
       if (vidvanSelectedResult === null) { showToast('Please select whether you passed.'); return; }
 
-      const profile = JSON.parse(localStorage.getItem('profile') || '{}') || {};
-      profile.mukhpathTestDate = date;
-      profile.mukhpathTestPassed = vidvanSelectedResult;
+      const testFields = { mukhpathTestDate: date, mukhpathTestPassed: vidvanSelectedResult };
       if (vidvanSelectedResult) {
         const adviceInput = document.getElementById('vidvanAdviceInput');
         const advice = adviceInput ? adviceInput.value.trim().slice(0, 500) : '';
-        profile.mukhpathAdvice = advice || null;
+        testFields.mukhpathAdvice = advice || null;
       }
-      localStorage.setItem('profile', JSON.stringify(profile));
+      updateProfileFields(testFields);
 
       scheduleUserSync();
       syncToMandal();
@@ -8892,6 +9184,11 @@
           showToast("You need at least 4 added shloks to play Full Review!");
           return;
         }
+      } else if (game === "shlokStarters") {
+        if (!myShloks.length) {
+          showToast("Add some shloks in My Mukhpath first to play Shlok Starters!");
+          return;
+        }
       } else if (game === "mockTest") {
         // No generic shlok-count gate here - the milestone selector screen
         // handles its own messaging based on how many shloks you know
@@ -8909,6 +9206,7 @@
       if (game === "wordScramble")  { document.getElementById("gameWordScramble").style.display = "block"; loadWordScramble(); }
       if (game === "dailyChallenge"){ document.getElementById("gameDailyChallenge").style.display = "block"; loadDailyChallenge(); }
       if (game === "revisionMode")  { document.getElementById("gameRevisionMode").style.display = "block";  loadRevisionMode(); }
+      if (game === "shlokStarters") { document.getElementById("gameShlokStarters").style.display = "block"; ssgShowSetup(); }
       if (game === "fullReview")    { document.getElementById("gameFullReview").style.display = "block";    loadFullReview(); }
       if (game === "mockTest")      { document.getElementById("gameMockTest").style.display = "block";      loadMockTest(); }
       if (game === "kahootQuiz")    { document.getElementById("gameKahootQuiz").style.display = "block";    showKahootModeSelector(); }
@@ -9364,6 +9662,7 @@
         btn.classList.remove("liked");
       }
       localStorage.setItem("motivFavourites", JSON.stringify(motivFavourites));
+      scheduleUserSync();
       renderMotivFavs();
     }
 
@@ -9444,6 +9743,7 @@
       if (id === "learn")    { initLearnPage(); initLearnReviseSection(); }
       if (id === "home")     { renderProgressPage(); updateHomePage(); }
       if (id === "mandal")   { renderMandal(); }
+      if (id === "motivation") { updateFlipClock(); requestAnimationFrame(fitCountdownTitle); }
 
       // If Quick Guide is open, update it to show the relevant section
       const tutorialBox = document.getElementById("tutorialBox");
@@ -9541,8 +9841,7 @@
       s.mastery = "memorised";
       s.memorisedDate = localDateStr();
       s.statusUpdatedAt = Date.now();
-      save(); render(); updateDashboard(); updateHomePage();
-      showToast("🏆 Marked as Memorised!");
+      save("🏆 Marked as Memorised!"); render(); updateDashboard(); updateHomePage();
     }
 
     /* ------------------------------
@@ -9569,10 +9868,9 @@
         return;
       }
 
-      save(); render(); updateDashboard(); updateHomePage();
+      save(`✅ Updated ${updated} shlok${updated > 1 ? "s" : ""} to "${status}"`); render(); updateDashboard(); updateHomePage();
       document.getElementById("bulkStatusStart").value = "";
       document.getElementById("bulkStatusEnd").value = "";
-      showToast(`✅ Updated ${updated} shlok${updated > 1 ? "s" : ""} to "${status}"`);
     }
 
     /* ------------------------------
@@ -9870,9 +10168,18 @@
       auth.signInWithPopup(provider).catch(err => console.warn("Sign-in error:", err));
     }
 
-    function signOutGoogle() {
+    async function signOutGoogle() {
       if (!auth) return;
-      auth.signOut().then(() => { updateAuthUI(null); updateHomePage(); showToast("Signed out."); });
+      // Finish saving anything still waiting before signing out - otherwise
+      // a change made just before signing out never reached the cloud.
+      if (userSyncTimer || userSyncInFlight || localStorage.getItem("unsyncedChanges") === "1") {
+        setSaveStatus("saving");
+        clearTimeout(userSyncTimer);
+        userSyncTimer = null;
+        const ok = await syncUserData();
+        if (!ok && !confirm("Some of your recent changes haven't been saved to your account yet (they're still on this device). Sign out anyway?")) return;
+      }
+      auth.signOut().then(() => { setSaveStatus("hidden"); updateAuthUI(null); updateHomePage(); showToast("Signed out."); });
     }
 
     function updateAuthUI(user) {
@@ -9911,52 +10218,168 @@
       if (saveBtnWrap) saveBtnWrap.style.display = locked ? "none" : "block";
     }
 
-    // Sync all important data to Firestore under users/{uid}
+    // ── SAVING TO THE CLOUD (users/{uid}) ──
+    // How saving works now:
+    //  1. Every change is written to this device straight away (localStorage).
+    //  2. ~0.8s later it's sent to Firestore inside a transaction that first
+    //     READS the cloud copy, merges it with this device's copy (newest
+    //     change wins, per shlok / per profile field), then writes the merged
+    //     result. Previously this was a blind overwrite of the whole cloud
+    //     document with this device's copy, so a device or tab holding older
+    //     data could wipe out newer changes made somewhere else.
+    //  3. "Saved" confirmations only appear once Firestore has confirmed the
+    //     write. If it fails, a "Not saved - Retry" message stays on screen
+    //     (nothing is lost - the change is still on this device and is sent
+    //     again on retry, when the connection returns, or on next visit).
+    const USER_SYNC_DELAY = 800;
+    const USER_SYNC_TIMEOUT = 20000;
     let userSyncTimer = null;
-    function scheduleUserSync() {
+    let userSyncInFlight = null;
+    let userSyncAgain = false;
+    let userSyncLastFailed = false;
+    let pendingSaveMessages = [];
+    let saveStatusHideTimer = null;
+
+    function scheduleUserSync(successMessage) {
+      const canSync = !!(db && currentUser);
+      if (successMessage) {
+        // Signed out: progress lives on this device only, so the local save
+        // IS the save - confirm straight away as before.
+        if (!canSync) showToast(successMessage);
+        else pendingSaveMessages.push(successMessage);
+      }
+      if (!canSync) return;
+      localStorage.setItem("unsyncedChanges", "1");
+      setSaveStatus("saving");
       clearTimeout(userSyncTimer);
-      userSyncTimer = setTimeout(syncUserData, 3000);
+      userSyncTimer = setTimeout(() => { userSyncTimer = null; syncUserData(); }, USER_SYNC_DELAY);
     }
 
-    async function syncUserData() {
+    // Send any waiting change immediately (used when the page is hidden or
+    // closed, and before signing out) instead of waiting for the timer.
+    function flushUserSync() {
+      if (userSyncTimer) {
+        clearTimeout(userSyncTimer);
+        userSyncTimer = null;
+        return syncUserData();
+      }
+      return userSyncInFlight || Promise.resolve(true);
+    }
+
+    function retryUserSync() {
       if (!db || !currentUser) return;
-      try {
-        await db.collection("users").doc(currentUser.uid).set({
-          myShloks:        JSON.parse(localStorage.getItem("myShloks") || "[]"),
-          profile:         JSON.parse(localStorage.getItem("profile") || "null"),
-          lastMilestone:   localStorage.getItem("lastMilestone") || "0",
-          lastMilestoneDate: localStorage.getItem("lastMilestoneDate") || "0",
-          dailyChallenge:  localStorage.getItem("dailyChallenge") || null,
-          dcHistory:       localStorage.getItem("dcHistory") || null,
-          motivFavourites: localStorage.getItem("motivFavourites") || null,
-          mandalOptOut:    localStorage.getItem("mandalOptOut") || null,
-          shlokCollections: localStorage.getItem("shlokCollections") || null,
-          lastUpdated:     firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } catch(e) { console.warn("User data sync failed:", e); }
+      setSaveStatus("saving");
+      clearTimeout(userSyncTimer);
+      userSyncTimer = null;
+      syncUserData();
     }
 
-    // ── CROSS-DEVICE MERGE HELPERS ──
-    // Combines two shlok lists (this device's local copy and the cloud copy)
-    // so switching between devices never silently loses progress.
+    function setSaveStatus(state) {
+      const el = document.getElementById("saveStatus");
+      if (!el) return;
+      clearTimeout(saveStatusHideTimer);
+      el.classList.remove("saving", "saved", "error", "show");
+      if (state === "hidden") { el.innerHTML = ""; return; }
+      if (state === "saving") {
+        el.innerHTML = `<span class="save-status-dot"></span>Saving…`;
+      } else if (state === "saved") {
+        el.innerHTML = `✓ Saved`;
+        saveStatusHideTimer = setTimeout(() => setSaveStatus("hidden"), 1800);
+      } else if (state === "error") {
+        el.innerHTML = `⚠️ Your changes haven't been saved yet. <button type="button" onclick="retryUserSync()">Retry</button>`;
+      }
+      el.classList.add(state, "show");
+    }
+
+    function safeJsonParse(str, fallback) {
+      if (str === null || str === undefined || str === "") return fallback;
+      try { const v = JSON.parse(str); return v === null || v === undefined ? fallback : v; }
+      catch (e) { return fallback; }
+    }
+
+    // Everything that's synced, read from this device
+    function readLocalUserState() {
+      return {
+        myShloks:             safeJsonParse(localStorage.getItem("myShloks"), []),
+        deletedShloks:        safeJsonParse(localStorage.getItem("deletedShloks"), {}),
+        profile:              safeJsonParse(localStorage.getItem("profile"), null),
+        lastMilestone:        localStorage.getItem("lastMilestone") || "0",
+        lastMilestoneDate:    localStorage.getItem("lastMilestoneDate") || "0",
+        dailyChallenge:       localStorage.getItem("dailyChallenge") || null,
+        dcHistory:            localStorage.getItem("dcHistory") || null,
+        motivFavourites:      localStorage.getItem("motivFavourites") || null,
+        mandalOptOut:         localStorage.getItem("mandalOptOut"),
+        shlokCollections:     localStorage.getItem("shlokCollections") || null,
+        collectionsUpdatedAt: parseInt(localStorage.getItem("collectionsUpdatedAt") || "0", 10) || 0,
+        countdown:            safeJsonParse(localStorage.getItem("countdownPrefs"), null)
+      };
+    }
+
+    // The same shape, from the Firestore document
+    function cloudDocToState(cloud) {
+      cloud = cloud || {};
+      return {
+        myShloks:             Array.isArray(cloud.myShloks) ? cloud.myShloks : [],
+        deletedShloks:        (cloud.deletedShloks && typeof cloud.deletedShloks === "object") ? cloud.deletedShloks : {},
+        profile:              cloud.profile || null,
+        lastMilestone:        cloud.lastMilestone != null ? String(cloud.lastMilestone) : "0",
+        lastMilestoneDate:    cloud.lastMilestoneDate != null ? String(cloud.lastMilestoneDate) : "0",
+        dailyChallenge:       cloud.dailyChallenge || null,
+        dcHistory:            cloud.dcHistory || null,
+        motivFavourites:      cloud.motivFavourites || null,
+        mandalOptOut:         cloud.mandalOptOut != null ? cloud.mandalOptOut : null,
+        shlokCollections:     cloud.shlokCollections || null,
+        collectionsUpdatedAt: parseInt(cloud.collectionsUpdatedAt, 10) || 0,
+        countdown:            cloud.countdown || null
+      };
+    }
+
+    function userStateToCloudDoc(m) {
+      // JSON round-trip strips any `undefined` values, which Firestore rejects
+      const clean = v => (v === undefined ? null : JSON.parse(JSON.stringify(v)));
+      return {
+        myShloks:             clean(m.myShloks) || [],
+        deletedShloks:        clean(m.deletedShloks) || {},
+        profile:              clean(m.profile),
+        lastMilestone:        m.lastMilestone || "0",
+        lastMilestoneDate:    m.lastMilestoneDate || "0",
+        dailyChallenge:       m.dailyChallenge || null,
+        dcHistory:            m.dcHistory || null,
+        motivFavourites:      m.motivFavourites || null,
+        mandalOptOut:         m.mandalOptOut || null,
+        shlokCollections:     m.shlokCollections || null,
+        collectionsUpdatedAt: m.collectionsUpdatedAt || 0,
+        countdown:            clean(m.countdown),
+        lastUpdated:          firebase.firestore.FieldValue.serverTimestamp()
+      };
+    }
+
+    function writeLocalUserState(m) {
+      localStorage.setItem("myShloks", JSON.stringify(m.myShloks || []));
+      localStorage.setItem("deletedShloks", JSON.stringify(m.deletedShloks || {}));
+      if (m.profile) localStorage.setItem("profile", JSON.stringify(m.profile));
+      localStorage.setItem("lastMilestone", String(m.lastMilestone || "0"));
+      localStorage.setItem("lastMilestoneDate", String(m.lastMilestoneDate || "0"));
+      if (m.dailyChallenge) localStorage.setItem("dailyChallenge", m.dailyChallenge);
+      if (m.dcHistory) localStorage.setItem("dcHistory", m.dcHistory);
+      if (m.motivFavourites) localStorage.setItem("motivFavourites", m.motivFavourites);
+      if (m.mandalOptOut !== null && m.mandalOptOut !== undefined) localStorage.setItem("mandalOptOut", m.mandalOptOut);
+      if (m.shlokCollections) localStorage.setItem("shlokCollections", m.shlokCollections);
+      if (m.collectionsUpdatedAt) localStorage.setItem("collectionsUpdatedAt", String(m.collectionsUpdatedAt));
+      if (m.countdown) localStorage.setItem("countdownPrefs", JSON.stringify(m.countdown));
+    }
+
+    // ── MERGE HELPERS ──
+    // Combines two shlok lists (this device's copy and the cloud copy) so
+    // switching between devices never silently loses progress.
     //
-    // This used to have a hard rule that "memorised" always wins over any
-    // other status, on the assumption that it's always the clear high-water
-    // mark. That's wrong for the very common case of deliberately moving a
-    // shlok from memorised back down to revise (e.g. tapping the status
-    // pill, or answering "need more practice" in a game) - if that change
-    // hadn't been pushed to the cloud yet (the sync is debounced by a few
-    // seconds, so closing the app right after changing something could miss
-    // it), the next merge would silently overwrite the fresh "revise" back
-    // to the stale cloud "memorised", making it look like revise shloks
-    // kept "disappearing" after reopening the app.
-    //
-    // Every mastery change now stamps a numeric statusUpdatedAt on the
-    // shlok, so whichever side was touched more recently always wins,
-    // regardless of what status it ended up at. Older shloks saved before
-    // this existed fall back to the previous memorised-wins/date-based
-    // logic so they aren't disrupted.
-    function mergeShlokLists(localList, cloudList) {
+    // Every mastery change stamps a numeric statusUpdatedAt on the shlok, so
+    // whichever side was touched more recently wins, regardless of which
+    // status it ended up at. Older shloks saved before that existed fall back
+    // to the previous memorised-wins/date-based logic so they aren't
+    // disrupted. A shlok that was removed (see markShloksDeleted) stays
+    // removed unless it was re-added/changed after the removal.
+    function mergeShlokLists(localList, cloudList, deletedMap) {
       const byNumber = new Map();
       (localList || []).forEach(s => byNumber.set(s.number, s));
       (cloudList || []).forEach(cloudShlok => {
@@ -9974,133 +10397,267 @@
           byNumber.set(cloudShlok.number, cloudDate > localDate ? cloudShlok : localShlok);
         }
       });
-      return Array.from(byNumber.values()).sort((a, b) => a.number - b.number);
+      const deleted = deletedMap || {};
+      return Array.from(byNumber.values())
+        .filter(s => {
+          const deletedAt = parseInt(deleted[s.number]) || 0;
+          return !deletedAt || (parseInt(s.statusUpdatedAt) || 0) > deletedAt;
+        })
+        .sort((a, b) => a.number - b.number);
     }
-    // Simple set-union for history-style arrays (daily challenge dates,
-    // favourited motivational messages) - nothing to reconcile, just combine.
+
+    function mergeDeletedShloks(a, b) {
+      const out = { ...(a || {}) };
+      Object.keys(b || {}).forEach(num => {
+        out[num] = Math.max(parseInt(out[num]) || 0, parseInt(b[num]) || 0);
+      });
+      return out;
+    }
+
+    // Set-union for history-style arrays (daily challenge dates, favourited
+    // quotes). Favourites are objects, so they're matched by their text -
+    // matching by object identity (as before) added a duplicate copy of every
+    // favourite on each merge.
     function mergeArraysUnique(a, b) {
-      return Array.from(new Set([...(Array.isArray(a) ? a : []), ...(Array.isArray(b) ? b : [])]));
+      const seen = new Set();
+      const out = [];
+      [...(Array.isArray(a) ? a : []), ...(Array.isArray(b) ? b : [])].forEach(item => {
+        const key = (item && typeof item === "object") ? (item.main !== undefined ? "m:" + item.main : JSON.stringify(item)) : item;
+        if (seen.has(key)) return;
+        seen.add(key);
+        out.push(item);
+      });
+      return out;
     }
-    // Fills gaps in one profile with values from the other - local wins
-    // when both sides have a value set.
+
+    // Merges two profiles field by field. Fields edited since this update
+    // carry a timestamp in profile._ts, and the most recent edit wins. For
+    // older fields with no timestamp on either side, the previous rule still
+    // applies (this device wins unless its value is empty).
     function mergeProfiles(localProfile, cloudProfile) {
       if (!localProfile) return cloudProfile || null;
       if (!cloudProfile) return localProfile;
-      const merged = { ...cloudProfile, ...localProfile };
-      Object.keys(cloudProfile).forEach(key => {
-        if (merged[key] === undefined || merged[key] === null || merged[key] === '') merged[key] = cloudProfile[key];
+      const lts = (localProfile._ts && typeof localProfile._ts === "object") ? localProfile._ts : {};
+      const cts = (cloudProfile._ts && typeof cloudProfile._ts === "object") ? cloudProfile._ts : {};
+      const keys = new Set([...Object.keys(localProfile), ...Object.keys(cloudProfile)]);
+      keys.delete("_ts");
+      const merged = {};
+      const mergedTs = {};
+      const isEmpty = v => v === undefined || v === null || v === '';
+      keys.forEach(key => {
+        const lt = parseInt(lts[key]) || 0;
+        const ct = parseInt(cts[key]) || 0;
+        let value;
+        if (lt || ct) {
+          const winner = lt >= ct ? localProfile : cloudProfile;
+          const other  = winner === localProfile ? cloudProfile : localProfile;
+          value = (key in winner) ? winner[key] : other[key];
+          mergedTs[key] = Math.max(lt, ct);
+        } else {
+          value = isEmpty(localProfile[key]) ? cloudProfile[key] : localProfile[key];
+        }
+        if (value !== undefined) merged[key] = value;
       });
+      if (Object.keys(mergedTs).length) merged._ts = mergedTs;
       return merged;
     }
 
-    // On sign-in: merge this device's local progress with the cloud copy,
-    // rather than only pulling from the cloud when local storage happens to
-    // be empty. That old "empty-check" approach meant that once a device had
-    // any local data of its own (e.g. someone using both an iPad and a
-    // laptop), it would just push its own copy up and overwrite whatever the
-    // other device had saved - so progress from one device would randomly
-    // vanish. Merging every time means both devices' progress is always
-    // combined, and the reconciled result is written straight back to the
-    // cloud so the next device to sign in sees the full picture too.
+    function mergeDailyChallenge(localStr, cloudStr) {
+      if (!localStr || !cloudStr) return localStr || cloudStr || null;
+      const l = safeJsonParse(localStr, {}), c = safeJsonParse(cloudStr, {});
+      if ((l.date || "") !== (c.date || "")) return (c.date || "") > (l.date || "") ? cloudStr : localStr;
+      if (c.done && !l.done) return cloudStr;
+      return localStr;
+    }
+
+    // Combines this device's state with the cloud state. `restore` is used
+    // on sign-in/page load, where untimestamped data from both sides is
+    // combined (as before); for everyday saves this device's copy of those
+    // fields is used, so removing a favourite quote actually sticks.
+    function mergeUserStates(local, cloud, opts) {
+      const restore = !!(opts && opts.restore);
+      const deletedShloks = mergeDeletedShloks(local.deletedShloks, cloud.deletedShloks);
+      const lm = parseInt(local.lastMilestone) || 0;
+      const cm = parseInt(cloud.lastMilestone) || 0;
+      const milestoneFromCloud = cm > lm;
+
+      let shlokCollections;
+      let collectionsUpdatedAt = Math.max(local.collectionsUpdatedAt || 0, cloud.collectionsUpdatedAt || 0);
+      if (local.collectionsUpdatedAt || cloud.collectionsUpdatedAt) {
+        shlokCollections = (local.collectionsUpdatedAt || 0) >= (cloud.collectionsUpdatedAt || 0)
+          ? (local.shlokCollections || cloud.shlokCollections)
+          : (cloud.shlokCollections || local.shlokCollections);
+      } else if (restore) {
+        const collectionMap = new Map();
+        safeJsonParse(cloud.shlokCollections, []).forEach(c => collectionMap.set(c.id, c));
+        safeJsonParse(local.shlokCollections, []).forEach(c => collectionMap.set(c.id, c));
+        shlokCollections = collectionMap.size ? JSON.stringify(Array.from(collectionMap.values())) : (local.shlokCollections || cloud.shlokCollections);
+      } else {
+        shlokCollections = local.shlokCollections || cloud.shlokCollections;
+      }
+
+      const lc = local.countdown, cc = cloud.countdown;
+      const countdown = (lc && cc)
+        ? ((parseInt(lc.updatedAt) || 0) >= (parseInt(cc.updatedAt) || 0) ? lc : cc)
+        : (lc || cc || null);
+
+      return {
+        myShloks:          mergeShlokLists(local.myShloks, cloud.myShloks, deletedShloks),
+        deletedShloks,
+        profile:           mergeProfiles(local.profile, cloud.profile),
+        lastMilestone:     String(milestoneFromCloud ? cm : lm),
+        lastMilestoneDate: milestoneFromCloud ? (cloud.lastMilestoneDate || "0") : (local.lastMilestoneDate || "0"),
+        dailyChallenge:    mergeDailyChallenge(local.dailyChallenge, cloud.dailyChallenge),
+        dcHistory:         JSON.stringify(mergeArraysUnique(safeJsonParse(local.dcHistory, []), safeJsonParse(cloud.dcHistory, []))),
+        motivFavourites:   restore
+                             ? JSON.stringify(mergeArraysUnique(safeJsonParse(local.motivFavourites, []), safeJsonParse(cloud.motivFavourites, [])))
+                             : (local.motivFavourites || cloud.motivFavourites || null),
+        mandalOptOut:      local.mandalOptOut !== null && local.mandalOptOut !== undefined ? local.mandalOptOut : (cloud.mandalOptOut || null),
+        shlokCollections:  shlokCollections || null,
+        collectionsUpdatedAt,
+        countdown
+      };
+    }
+
+    // Puts merged data onto this device and refreshes whatever changed
+    function applyUserStateLocally(m) {
+      const before = readLocalUserState();
+      writeLocalUserState(m);
+      const after = readLocalUserState();
+      const changed = k => JSON.stringify(before[k]) !== JSON.stringify(after[k]);
+      const anyChanged = Object.keys(after).some(changed);
+      if (!anyChanged) return false;
+
+      myShloks = after.myShloks;
+      if (changed("shlokCollections")) {
+        shlokCollections = safeJsonParse(after.shlokCollections, []);
+        ensureDefaultCollections();
+        localStorage.setItem("shlokCollections", JSON.stringify(shlokCollections));
+        renderCollections();
+      }
+      if (changed("profile")) {
+        const panel = document.getElementById("slideoutPanel");
+        // Don't reset the profile form under someone who's mid-edit
+        if (!panel || !panel.classList.contains("open")) loadProfile();
+        else { window.userFirstName = (after.profile || {}).firstName; updateAvatarInitialsLive(); }
+      }
+      if (changed("lastMilestone")) {
+        const ms = parseInt(after.lastMilestone) || 0;
+        if (ms > lastMilestoneCheck) lastMilestoneCheck = ms;
+      }
+      render();
+      renderProgressPage();
+      updateHomePage();
+      updateFlipClock();
+      if (typeof ssgRefreshCurrentCard === "function") ssgRefreshCurrentCard();
+      return true;
+    }
+
+    function withTimeout(promise, ms) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Save timed out")), ms))
+      ]);
+    }
+
+    let lastUserSyncChangedLocal = false;
+
+    async function syncUserData(opts = {}) {
+      if (!db || !currentUser) return true;
+      if (userSyncInFlight) { userSyncAgain = true; return userSyncInFlight; }
+      const uid = currentUser.uid;
+      const restore = !!opts.restore;
+
+      userSyncInFlight = (async () => {
+        try {
+          const ref = db.collection("users").doc(uid);
+          const startLocal = readLocalUserState();
+          const merged = await withTimeout(db.runTransaction(async tx => {
+            const snap = await tx.get(ref);
+            const cloud = cloudDocToState(snap.exists ? snap.data() : null);
+            const m = mergeUserStates(startLocal, cloud, { restore });
+            tx.set(ref, userStateToCloudDoc(m));
+            return m;
+          }), USER_SYNC_TIMEOUT);
+
+          if (!currentUser || currentUser.uid !== uid) return false;
+
+          // Anything changed on this device while the save was in progress
+          // is kept (and sent up on the follow-up save below).
+          const nowLocal = readLocalUserState();
+          const changedDuringSave = Object.keys(nowLocal).filter(k => JSON.stringify(nowLocal[k]) !== JSON.stringify(startLocal[k]));
+          let finalState = merged;
+          if (changedDuringSave.length) {
+            const reMerged = mergeUserStates(nowLocal, merged, { restore: false });
+            finalState = { ...merged };
+            changedDuringSave.forEach(k => { finalState[k] = reMerged[k]; });
+            if (changedDuringSave.includes("lastMilestone")) finalState.lastMilestoneDate = reMerged.lastMilestoneDate;
+            userSyncAgain = true;
+          }
+          lastUserSyncChangedLocal = applyUserStateLocally(finalState);
+          lastSyncTime = Date.now();
+          return true;
+        } catch (e) {
+          console.warn("User data sync failed:", e);
+          return false;
+        }
+      })();
+
+      const ok = await userSyncInFlight;
+      userSyncInFlight = null;
+
+      if (userSyncAgain && ok && currentUser) {
+        userSyncAgain = false;
+        return syncUserData();
+      }
+      userSyncAgain = false;
+
+      if (ok) {
+        userSyncLastFailed = false;
+        if (!userSyncTimer) localStorage.removeItem("unsyncedChanges");
+        const messages = pendingSaveMessages.splice(0);
+        if (userSyncTimer) {
+          // Another change is already queued - its save will confirm
+          pendingSaveMessages.unshift(...messages);
+        } else if (messages.length) {
+          setSaveStatus("hidden");
+          showToast(messages[messages.length - 1]);
+        } else if (opts.quiet) {
+          const el = document.getElementById("saveStatus");
+          if (el && el.classList.contains("saving")) setSaveStatus("saved");
+        } else {
+          setSaveStatus("saved");
+        }
+      } else if (currentUser) {
+        userSyncLastFailed = true;
+        // On a plain page load with nothing waiting to be saved, a failed
+        // sync (e.g. offline) isn't worth alarming anyone about
+        if (!opts.quiet || localStorage.getItem("unsyncedChanges") === "1") setSaveStatus("error");
+      }
+      return ok;
+    }
+
+    // On sign-in / page load: merge this device's progress with the cloud
+    // copy (rather than only pulling from the cloud when local storage
+    // happens to be empty), and write the reconciled result back so the
+    // next device to sign in sees the full picture too.
     async function restoreOrSyncUserData(user) {
       if (!db) return;
       try {
-        const doc = await db.collection("users").doc(user.uid).get();
-        if (!doc.exists) {
-          // Nothing saved in the cloud yet for this account - just push
-          // whatever's on this device up, nothing to merge with.
-          await syncUserData();
-          return;
-        }
-        const cloud = doc.data();
-        const localShloks = JSON.parse(localStorage.getItem("myShloks") || "[]");
-        const localProfile = JSON.parse(localStorage.getItem("profile") || "null");
-        const hadAnyLocalData = localShloks.length > 0 || !!localProfile;
-
-        // Snapshot everything as it was on this device BEFORE merging, so we
-        // can tell afterwards whether the cloud actually contributed
-        // anything new - otherwise this toast would fire on every single
-        // sign-in/page refresh, even when there was nothing to reconcile.
-        const originalDcHistory = localStorage.getItem("dcHistory") || "[]";
-        const originalMotiv = localStorage.getItem("motivFavourites") || "[]";
-        const originalCollections = localStorage.getItem("shlokCollections") || "[]";
-        const originalDailyChallenge = localStorage.getItem("dailyChallenge") || null;
-        const originalMandalOptOut = localStorage.getItem("mandalOptOut");
-        const originalMilestone = localStorage.getItem("lastMilestone") || "0";
-        const sortedLocalShloks = [...localShloks].sort((a, b) => a.number - b.number);
-
-        const mergedShloks = mergeShlokLists(localShloks, cloud.myShloks || []);
-        const mergedProfile = mergeProfiles(localProfile, cloud.profile || null);
-
-        const localMilestone = parseInt(originalMilestone || "0");
-        const cloudMilestone = parseInt(cloud.lastMilestone || "0");
-        const milestoneFromCloud = cloudMilestone > localMilestone;
-        const mergedMilestone = milestoneFromCloud ? cloudMilestone : localMilestone;
-        const mergedMilestoneDate = milestoneFromCloud
-          ? (cloud.lastMilestoneDate || "0")
-          : (localStorage.getItem("lastMilestoneDate") || "0");
-
-        const mergedDcHistory = mergeArraysUnique(
-          JSON.parse(originalDcHistory),
-          JSON.parse(cloud.dcHistory || "[]")
-        );
-        const mergedMotiv = mergeArraysUnique(
-          JSON.parse(originalMotiv),
-          JSON.parse(cloud.motivFavourites || "[]")
-        );
-
-        const collectionMap = new Map();
-        (cloud.shlokCollections ? JSON.parse(cloud.shlokCollections) : []).forEach(c => collectionMap.set(c.id, c));
-        JSON.parse(originalCollections).forEach(c => collectionMap.set(c.id, c));
-        const mergedCollections = Array.from(collectionMap.values());
-
-        const mergedDailyChallenge = originalDailyChallenge || cloud.dailyChallenge || null;
-        const mergedMandalOptOut = originalMandalOptOut !== null ? originalMandalOptOut : (cloud.mandalOptOut || null);
-
-        // Did the merge actually change anything on this device? Compare
-        // each merged value back against its pre-merge snapshot above.
-        const somethingChanged =
-          JSON.stringify(mergedShloks) !== JSON.stringify(sortedLocalShloks) ||
-          JSON.stringify(mergedProfile) !== JSON.stringify(localProfile) ||
-          String(mergedMilestone) !== originalMilestone ||
-          JSON.stringify(mergedDcHistory.slice().sort()) !== JSON.stringify(JSON.parse(originalDcHistory).slice().sort()) ||
-          JSON.stringify(mergedMotiv.slice().sort()) !== JSON.stringify(JSON.parse(originalMotiv).slice().sort()) ||
-          mergedCollections.length !== JSON.parse(originalCollections).length ||
-          mergedDailyChallenge !== originalDailyChallenge ||
-          mergedMandalOptOut !== originalMandalOptOut;
-
-        localStorage.setItem("myShloks", JSON.stringify(mergedShloks));
-        if (mergedProfile) localStorage.setItem("profile", JSON.stringify(mergedProfile));
-        localStorage.setItem("lastMilestone", String(mergedMilestone));
-        localStorage.setItem("lastMilestoneDate", mergedMilestoneDate);
-        localStorage.setItem("dcHistory", JSON.stringify(mergedDcHistory));
-        localStorage.setItem("motivFavourites", JSON.stringify(mergedMotiv));
-        localStorage.setItem("shlokCollections", JSON.stringify(mergedCollections));
-        if (mergedDailyChallenge) localStorage.setItem("dailyChallenge", mergedDailyChallenge);
-        if (mergedMandalOptOut !== null) localStorage.setItem("mandalOptOut", mergedMandalOptOut);
-
-        myShloks = mergedShloks;
-        shlokCollections = mergedCollections;
-        ensureDefaultCollections();
-        localStorage.setItem("shlokCollections", JSON.stringify(shlokCollections));
-        loadProfile();
-        render();
-        renderProgressPage();
-        updateHomePage();
-        renderCollections();
-
-        // Push the reconciled result back up so the next device to sign in
-        // sees everything that's been merged here too.
-        await syncUserData();
+        const before = readLocalUserState();
+        const hadAnyLocalData = before.myShloks.length > 0 || !!before.profile;
+        const ok = await syncUserData({ restore: true, quiet: true });
+        if (!ok) return;
+        const after = readLocalUserState();
+        const somethingChanged = lastUserSyncChangedLocal;
 
         // If this merge brought in a milestone that hasn't reached the
         // Noticeboard yet - whether it came from another device, or was hit
         // on this device but the tab closed before the live post finished -
         // post it now, right away, instead of relying solely on the 3-second
-        // "backfill" check on next load. That backfill only runs once per
-        // page load and only within a 7-day window, so anyone who doesn't
-        // reopen the app again soon after hitting a milestone was seeing
-        // their Noticeboard post show up days late.
+        // "backfill" check on next load.
+        const mergedMilestone = parseInt(after.lastMilestone) || 0;
+        const mergedMilestoneDate = after.lastMilestoneDate;
         if (mergedMilestone > lastMilestoneCheck) lastMilestoneCheck = mergedMilestone;
         if (db && mergedMilestone > 0 && NOTICEBOARD_MILESTONES.includes(mergedMilestone)) {
           const alreadyHandled = localStorage.getItem("noticeboardHandledMilestone") === String(mergedMilestone);
@@ -10113,13 +10670,51 @@
         // Only toast when the cloud actually contributed something new to
         // this device - a plain sign-in/refresh with nothing to reconcile
         // stays silent instead of showing this every time.
-        if (!hadAnyLocalData && (mergedShloks.length > 0 || mergedProfile)) {
+        if (!hadAnyLocalData && (after.myShloks.length > 0 || after.profile)) {
           showToast("Your progress has been restored! 🎉");
         } else if (hadAnyLocalData && somethingChanged) {
           showToast("Your progress has been synced across devices! 🎉");
         }
       } catch(e) { console.warn("Data restore/merge failed:", e); }
     }
+
+    // Keep tabs in step: if the site is open in more than one tab, a change
+    // saved in one is picked up by the others straight away, so a tab that
+    // was left open can't later save its older copy over the newer one.
+    window.addEventListener("storage", (e) => {
+      const watched = ["myShloks", "deletedShloks", "profile", "shlokCollections", "countdownPrefs", "dcHistory", "lastMilestone"];
+      if (!e.key || !watched.includes(e.key)) return;
+      if (e.key === "myShloks" || e.key === "deletedShloks") {
+        myShloks = mergeShlokLists(myShloks, safeJsonParse(localStorage.getItem("myShloks"), []), getDeletedShloks());
+      }
+      if (e.key === "shlokCollections") {
+        shlokCollections = safeJsonParse(localStorage.getItem("shlokCollections"), []);
+        ensureDefaultCollections();
+        renderCollections();
+      }
+      if (e.key === "profile") {
+        const panel = document.getElementById("slideoutPanel");
+        if (!panel || !panel.classList.contains("open")) loadProfile();
+      }
+      if (e.key === "lastMilestone") {
+        const ms = parseInt(localStorage.getItem("lastMilestone") || "0");
+        if (ms > lastMilestoneCheck) lastMilestoneCheck = ms;
+      }
+      render();
+      renderProgressPage();
+      updateHomePage();
+      updateFlipClock();
+      if (typeof ssgRefreshCurrentCard === "function") ssgRefreshCurrentCard();
+    });
+
+    // Send any waiting change as soon as the page is hidden or closed,
+    // rather than relying on the timer (which never fires if the tab closes)
+    window.addEventListener("pagehide", () => { flushUserSync(); });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") flushUserSync();
+    });
+    // Automatically retry a failed save once the connection comes back
+    window.addEventListener("online", () => { if (userSyncLastFailed) retryUserSync(); });
 
     // Listen for auth state changes
     function initAuth() {
@@ -11454,8 +12049,7 @@
         addedDate: localDateStr(),
         statusUpdatedAt: Date.now()
       });
-      save(); render(); updateDashboard(); updateHomePage();
-      showToast(`🎉 Shlok ${lnsShlok.id} added as Learnt!`);
+      save(`🎉 Shlok ${lnsShlok.id} added as Learnt!`); render(); updateDashboard(); updateHomePage();
 
       // If we're working through "Learn shloks from this folder", automatically
       // continue to the next not-yet-added shlok in that folder instead of
@@ -11530,6 +12124,9 @@
         }
         updateHomePage();
       }
+      // Previously the daily challenge result only reached the cloud the
+      // next time something else happened to trigger a sync.
+      scheduleUserSync();
 
       const fb = document.getElementById("dcFeedback");
       fb.textContent = correct ? "✅ Amazing - come back tomorrow!" : "❌ No worries - practice makes perfect!";
@@ -11877,6 +12474,198 @@
           : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}
         ${reviewBtn}`;
       document.getElementById("rmDone").style.display = "block";
+    }
+
+    /* ------------------------------
+       SHLOK STARTERS
+       ------------------------------ */
+    // Shows the shlok number plus the first two words of each line; the user
+    // recites the whole shlok aloud, self-marks it, and can optionally change
+    // its status. Marking "I Know It"/"I Don't Know It" never changes the
+    // status on its own - only tapping a status button does.
+    let ssgPool = [], ssgIndex = 0, ssgKnown = 0, ssgNotYet = 0, ssgFilter = "all", ssgMarked = false;
+
+    const SSG_STATUS_LABELS = { learnt: "Learnt", revise: "Revise", memorised: "Memorised" };
+
+    // First two words of a line, where each part of a hyphenated word counts
+    // as its own word: "Sarva-varṇa-gatāh sarvā..." -> "Sarva-varṇa".
+    function getStarterWords(line) {
+      const tokens = String(line || "").trim().split(/\s+/).filter(Boolean);
+      const out = [];
+      let count = 0;
+      for (const token of tokens) {
+        const parts = token.split(/[-\u2010\u2011\u2013\u2014]/);
+        const seps = token.match(/[-\u2010\u2011\u2013\u2014]/g) || [];
+        let piece = "";
+        for (let i = 0; i < parts.length && count < 2; i++) {
+          if (!parts[i]) continue;
+          piece += (piece ? (seps[i - 1] || "-") : "") + parts[i];
+          count++;
+        }
+        if (piece) out.push(piece);
+        if (count >= 2) break;
+      }
+      return out.join(" ");
+    }
+
+    function ssgShowSetup() {
+      const counts = { all: myShloks.length, learnt: 0, revise: 0, memorised: 0 };
+      myShloks.forEach(s => { if (counts[s.mastery] !== undefined) counts[s.mastery]++; });
+      if (!counts[ssgFilter]) ssgFilter = "all";
+      const opts = [
+        ["all", "🌟 All my shloks"],
+        ["learnt", "📘 Learnt"],
+        ["revise", "🔁 Revise"],
+        ["memorised", "🏆 Memorised"]
+      ];
+      document.getElementById("ssgFilterRow").innerHTML = opts.map(([val, label]) => `
+        <label class="add-mode-radio">
+          <input type="radio" name="ssgFilter" value="${val}" ${ssgFilter === val ? "checked" : ""} ${counts[val] ? "" : "disabled"} onchange="ssgFilter=this.value">
+          <span style="${counts[val] ? "" : "opacity:0.45;cursor:not-allowed;"}">${label} (${counts[val]})</span>
+        </label>`).join("");
+      document.getElementById("ssgSetupError").textContent = "";
+      document.getElementById("ssgSetup").style.display = "block";
+      document.getElementById("ssgPlayCard").style.display = "none";
+      document.getElementById("ssgDone").style.display = "none";
+      document.getElementById("ssgCurrent").textContent = 0;
+      document.getElementById("ssgTotal").textContent = 0;
+      document.getElementById("ssgKnownCount").textContent = 0;
+    }
+
+    function ssgStart() {
+      const orderEl = document.querySelector('input[name="ssgOrder"]:checked');
+      const order = orderEl ? orderEl.value : "order";
+      let pool = myShloks
+        .filter(s => ssgFilter === "all" || s.mastery === ssgFilter)
+        .filter(s => allShloks.some(a => a.id === s.number))
+        .map(s => s.number);
+      if (!pool.length) {
+        document.getElementById("ssgSetupError").textContent = "No shloks with that status yet - pick another option.";
+        return;
+      }
+      pool.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+      if (order === "random") pool = shuffle(pool);
+      ssgPool = pool;
+      ssgIndex = 0; ssgKnown = 0; ssgNotYet = 0;
+      document.getElementById("ssgTotal").textContent = ssgPool.length;
+      document.getElementById("ssgKnownCount").textContent = 0;
+      document.getElementById("ssgSetup").style.display = "none";
+      document.getElementById("ssgDone").style.display = "none";
+      document.getElementById("ssgPlayCard").style.display = "block";
+      ssgShowCard();
+    }
+
+    function ssgCurrentShlok() {
+      const num = ssgPool[ssgIndex];
+      return { num, master: allShloks.find(a => a.id === num), mine: myShloks.find(s => s.number === num) };
+    }
+
+    function ssgRenderStatus() {
+      const { mine } = ssgCurrentShlok();
+      const pill = document.getElementById("ssgStatus");
+      if (!pill) return;
+      if (mine) {
+        pill.dataset.status = mine.mastery;
+        pill.textContent = SSG_STATUS_LABELS[mine.mastery] || mine.mastery;
+      } else {
+        pill.dataset.status = "";
+        pill.textContent = "Not in your list";
+      }
+      const optsEl = document.getElementById("ssgStatusOptions");
+      if (optsEl) {
+        optsEl.innerHTML = ["learnt", "revise", "memorised"].map(st => `
+          <button type="button" class="ssg-status-btn ${mine && mine.mastery === st ? "current" : ""}" data-status="${st}" onclick="ssgSetStatus('${st}')">${SSG_STATUS_LABELS[st]}</button>`).join("");
+      }
+    }
+
+    // Called after a sync/other-tab update so the card never shows a stale status
+    function ssgRefreshCurrentCard() {
+      const card = document.getElementById("ssgPlayCard");
+      if (!card || card.style.display === "none" || !ssgPool.length || ssgIndex >= ssgPool.length) return;
+      ssgRenderStatus();
+    }
+
+    function ssgShowCard() {
+      if (ssgIndex >= ssgPool.length) { ssgFinish(); return; }
+      const { num, master } = ssgCurrentShlok();
+      ssgMarked = false;
+      document.getElementById("ssgCurrent").textContent = ssgIndex + 1;
+      document.getElementById("ssgNumber").textContent = `Shlok ${num}`;
+      document.getElementById("ssgLine1").textContent = getStarterWords(master.line1) + "...";
+      document.getElementById("ssgLine2").textContent = getStarterWords(master.line2) + "...";
+      const full = document.getElementById("ssgFull");
+      full.style.display = "none";
+      full.innerHTML = "";
+      document.getElementById("ssgRevealBtn").style.display = "inline-block";
+      document.getElementById("ssgMarkRow").style.display = "flex";
+      document.getElementById("ssgStatusPanel").style.display = "none";
+      document.getElementById("ssgNextBtn").style.display = "none";
+      const fb = document.getElementById("ssgFeedback");
+      fb.textContent = "";
+      fb.className = "game-feedback";
+      ssgRenderStatus();
+    }
+
+    function ssgReveal() {
+      const { num, master } = ssgCurrentShlok();
+      const full = document.getElementById("ssgFull");
+      full.innerHTML = `${master.line1}<br>${master.line2}<br><span style="font-size:0.8rem;opacity:0.6;">Shlok ${num}</span>`;
+      full.style.display = "block";
+      document.getElementById("ssgRevealBtn").style.display = "none";
+    }
+
+    function ssgMark(knewIt) {
+      if (ssgMarked) return;
+      ssgMarked = true;
+      if (knewIt) { ssgKnown++; document.getElementById("ssgKnownCount").textContent = ssgKnown; }
+      else ssgNotYet++;
+      const { mine } = ssgCurrentShlok();
+      const fb = document.getElementById("ssgFeedback");
+      if (knewIt) {
+        fb.textContent = mine && mine.mastery !== "memorised"
+          ? "✅ Well done! Feeling confident? You can mark it as Memorised below."
+          : "✅ Well done!";
+        fb.className = "game-feedback correct";
+      } else {
+        fb.textContent = mine && mine.mastery !== "revise"
+          ? "❌ No worries - you can move it to Revise below to practise it more."
+          : "❌ No worries - keep practising this one.";
+        fb.className = "game-feedback wrong";
+      }
+      // Show the full shlok so they can check their recitation
+      ssgReveal();
+      document.getElementById("ssgMarkRow").style.display = "none";
+      document.getElementById("ssgStatusPanel").style.display = mine ? "block" : "none";
+      document.getElementById("ssgNextBtn").style.display = "inline-block";
+      ssgRenderStatus();
+    }
+
+    function ssgSetStatus(status) {
+      const { num, mine } = ssgCurrentShlok();
+      if (!mine) return;
+      if (mine.mastery === status) return;
+      mine.mastery = status;
+      mine.statusUpdatedAt = Date.now();
+      if (status === "memorised") mine.memorisedDate = localDateStr();
+      save(`Shlok ${num} marked as ${SSG_STATUS_LABELS[status]}`);
+      render(); updateDashboard(); updateHomePage();
+      ssgRenderStatus();
+    }
+
+    function ssgNext() {
+      ssgIndex++;
+      ssgShowCard();
+    }
+
+    function ssgFinish() {
+      document.getElementById("ssgPlayCard").style.display = "none";
+      document.getElementById("ssgDoneMsg").innerHTML =
+        `<div style="font-size:1.6rem; font-weight:800; color:var(--text-main); margin-bottom:0.8rem;">Shlok Starters Complete! 🎉</div>
+        <div style="font-size:1rem; color:var(--text-muted); margin-bottom:0.3rem;">✅ You knew <strong style="color:var(--text-main);">${ssgKnown}</strong> of ${ssgPool.length} shlok${ssgPool.length !== 1 ? "s" : ""}.</div>
+        ${ssgNotYet > 0
+          ? `<div style="font-size:1rem; color:var(--text-muted);">📖 <strong style="color:var(--text-main);">${ssgNotYet}</strong> shlok${ssgNotYet !== 1 ? "s" : ""} to keep practising.</div>`
+          : `<div style="font-size:1rem; color:var(--text-muted);">🏆 You knew every shlok - outstanding!</div>`}`;
+      document.getElementById("ssgDone").style.display = "block";
     }
 
     let frPool = [], frIndex = 0, frKnown = 0, frNotYet = 0;
@@ -12312,26 +13101,189 @@
       // Fade in once everything is ready
       requestAnimationFrame(() => document.body.classList.add("loaded"));
     });
-    function updateFlipClock() {
-      const target = new Date("September 2, 2026 00:00:00").getTime();
-      const now = new Date().getTime();
-      const diff = target - now;
-      if (diff <= 0) return;
+    // ── PERSONAL COUNTDOWN ──
+    // Each user counts down to either the date on their Target Shloks
+    // (profile.goalDate - so it follows any change made in My Profile) or a
+    // separate custom date, with their own title. Settings are stored in
+    // localStorage "countdownPrefs" and synced to their account with the
+    // rest of their data (users/{uid}.countdown).
+    function getCountdownPrefs() {
+      return safeJsonParse(localStorage.getItem("countdownPrefs"), null);
+    }
+    function parseLocalDate(str) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(str || "")) return null;
+      const [y, m, d] = str.split("-").map(Number);
+      const date = new Date(y, m - 1, d, 0, 0, 0, 0);
+      return isNaN(date.getTime()) ? null : date;
+    }
+    function formatNiceDate(str) {
+      const d = parseLocalDate(str);
+      return d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "";
+    }
+    function getCountdownTarget() {
+      const prefs = getCountdownPrefs() || {};
+      const profile = safeJsonParse(localStorage.getItem("profile"), {}) || {};
+      const mode = prefs.mode === "custom" ? "custom" : "target";
+      const dateStr = mode === "custom" ? (prefs.customDate || "") : (profile.goalDate || "");
+      const title = (prefs.title || "").trim() ||
+        (mode === "custom" ? "My Personal Countdown" : "Countdown to my Target Shloks date");
+      return { mode, dateStr, date: parseLocalDate(dateStr), title, profile };
+    }
 
+    // Shrinks the countdown title's font until it fits on one line inside
+    // the container (starting from the normal CSS size each time).
+    function fitCountdownTitle() {
+      const el = document.getElementById("countdownTitle");
+      if (!el) return;
+      el.style.fontSize = "";
+      if (!el.clientWidth) return; // page hidden - refitted when shown
+      if (el.scrollWidth <= el.clientWidth) return;
+      const maxPx = parseFloat(getComputedStyle(el).fontSize) || 25.6;
+      let lo = 7, hi = maxPx;
+      for (let i = 0; i < 14; i++) {
+        const mid = (lo + hi) / 2;
+        el.style.fontSize = mid + "px";
+        if (el.scrollWidth <= el.clientWidth) lo = mid; else hi = mid;
+      }
+      el.style.fontSize = Math.floor(lo * 10) / 10 + "px";
+    }
+    window.addEventListener("resize", fitCountdownTitle);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCountdownTitle);
+
+    function setCountdownDigits(d, h, m, s, animate) {
+      if (animate) {
+        flipNumber("days", d); flipNumber("hours", h); flipNumber("minutes", m); flipNumber("seconds", s);
+      } else {
+        [["days", d], ["hours", h], ["minutes", m], ["seconds", s]].forEach(([id, v]) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = String(v).padStart(2, "0");
+        });
+      }
+    }
+
+    function updateFlipClock() {
+      const t = getCountdownTarget();
+      const titleEl = document.getElementById("countdownTitle");
+      const clockEl = document.getElementById("countdownClock");
+      const doneEl  = document.getElementById("countdownDone");
+      const setupEl = document.getElementById("countdownSetupMsg");
+      if (!titleEl || !clockEl || !doneEl || !setupEl) return;
+
+      if (titleEl.textContent !== t.title) {
+        titleEl.textContent = t.title;
+        titleEl.title = t.title;
+        fitCountdownTitle();
+      }
+
+      // Nothing to count down to yet
+      if (!t.date) {
+        clockEl.style.display = "flex";
+        doneEl.style.display = "none";
+        setCountdownDigits(0, 0, 0, 0, false);
+        setupEl.innerHTML = t.mode === "custom"
+          ? `Choose a date for your countdown using <a onclick="toggleCountdownSettings(true)">Personalise my countdown</a> below.`
+          : `You haven't set a Target Shloks date yet. Set one in <a onclick="jumpToEditProfile()">My Profile</a> (Target Shloks → Label it by: Date), or <a onclick="toggleCountdownSettings(true)">choose a custom date</a> instead.`;
+        setupEl.style.display = "block";
+        return;
+      }
+      setupEl.style.display = "none";
+
+      const diff = t.date.getTime() - Date.now();
+      if (diff <= 0) {
+        // Finished - show a completion message instead of going negative
+        clockEl.style.display = "none";
+        setCountdownDigits(0, 0, 0, 0, false);
+        const known = myShloks.filter(s => ["learnt", "memorised", "revise"].includes(s.mastery)).length;
+        const goal = parseInt(t.profile.goalTarget) || 0;
+        const doneKey = [t.mode, t.dateStr, known, goal].join("|");
+        if (doneEl.dataset.key !== doneKey) {
+          doneEl.dataset.key = doneKey;
+          let sub = `Your countdown reached ${formatNiceDate(t.dateStr)}.`;
+          if (t.mode === "target" && goal > 0) {
+            sub += known >= goal
+              ? ` You reached your target of ${goal} shloks - well done! 🙏`
+              : ` You've learnt ${known} of your ${goal} target shloks - keep going, you got this!`;
+          }
+          sub += `<br>Tap "Personalise my countdown" below to set a new one.`;
+          document.getElementById("countdownDoneSub").innerHTML = sub;
+        }
+        doneEl.style.display = "block";
+        return;
+      }
+
+      clockEl.style.display = "flex";
+      doneEl.style.display = "none";
       const d = Math.floor(diff / (1000 * 60 * 60 * 24));
       const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const m = Math.floor((diff / (1000 * 60)) % 60);
       const s = Math.floor((diff / 1000) % 60);
+      setCountdownDigits(d, h, m, s, true);
+    }
 
-      flipNumber("days", d);
-      flipNumber("hours", h);
-      flipNumber("minutes", m);
-      flipNumber("seconds", s);
+    function toggleCountdownSettings(forceOpen) {
+      const panel = document.getElementById("countdownSettings");
+      const btn = document.getElementById("countdownEditBtn");
+      if (!panel) return;
+      const open = typeof forceOpen === "boolean" ? forceOpen : panel.style.display === "none";
+      panel.style.display = open ? "block" : "none";
+      if (btn) btn.style.display = open ? "none" : "inline-block";
+      if (!open) return;
+      const prefs = getCountdownPrefs() || {};
+      const mode = prefs.mode === "custom" ? "custom" : "target";
+      document.getElementById("countdownTitleInput").value = prefs.title || "";
+      document.querySelectorAll('input[name="countdownMode"]').forEach(r => { r.checked = r.value === mode; });
+      const dateInput = document.getElementById("countdownCustomDate");
+      dateInput.value = prefs.customDate || "";
+      const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.min = localDateStr(tomorrow);
+      const note = document.getElementById("countdownSignInNote");
+      if (note) note.style.display = currentUser ? "none" : "block";
+      countdownModeChanged();
+      requestAnimationFrame(() => panel.scrollIntoView({ behavior: "smooth", block: "nearest" }));
+    }
 
-      const titleEl = document.getElementById("countdownTitle");
-      if (titleEl) {
-        titleEl.textContent = `${d} days to Paris Mandir Mahotsav. You can learn ${d} shloks by then!`;
+    function countdownModeChanged() {
+      const checked = document.querySelector('input[name="countdownMode"]:checked');
+      const mode = checked ? checked.value : "target";
+      const info = document.getElementById("countdownTargetInfo");
+      const customWrap = document.getElementById("countdownCustomWrap");
+      const profile = safeJsonParse(localStorage.getItem("profile"), {}) || {};
+      if (customWrap) customWrap.style.display = mode === "custom" ? "block" : "none";
+      if (!info) return;
+      if (mode === "custom") { info.style.display = "none"; return; }
+      info.style.display = "block";
+      info.innerHTML = profile.goalDate
+        ? `Your Target Shloks date is <strong>${formatNiceDate(profile.goalDate)}</strong>. If you change it in My Profile, your countdown will update automatically.`
+        : `You haven't set a Target Shloks date yet - <a onclick="jumpToEditProfile()">set one in My Profile</a> (Target Shloks → Label it by: Date), or choose a custom date.`;
+    }
+
+    function saveCountdownSettings() {
+      const title = document.getElementById("countdownTitleInput").value.trim().slice(0, 50);
+      const checked = document.querySelector('input[name="countdownMode"]:checked');
+      const mode = checked ? checked.value : "target";
+      const customDate = document.getElementById("countdownCustomDate").value;
+      const prev = getCountdownPrefs() || {};
+
+      if (mode === "custom") {
+        const d = parseLocalDate(customDate);
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        if (!d) { showToast("Please choose a date for your countdown."); return; }
+        if (d <= today) { showToast("Please choose a date in the future."); return; }
       }
+
+      const prefs = {
+        mode,
+        title,
+        // Kept even while using the Target Shloks date, so switching back
+        // to "custom" later remembers the last custom date
+        customDate: mode === "custom" ? customDate : (prev.customDate || ""),
+        updatedAt: Date.now()
+      };
+      localStorage.setItem("countdownPrefs", JSON.stringify(prefs));
+      toggleCountdownSettings(false);
+      updateFlipClock();
+      fitCountdownTitle();
+      scheduleUserSync("Countdown saved!");
     }
 
     function flipNumber(id, newValue) {
@@ -12755,6 +13707,7 @@
       });
 
       setTimeout(() => {
+        markShloksDeleted(myShloks.map(s => s.number));
         myShloks = [];
         save();
         render();
@@ -12832,6 +13785,9 @@
 
       const btn = document.getElementById('resetEverythingBtn');
       if (btn) { btn.disabled = true; btn.textContent = 'Resetting…'; }
+      // Stop any queued save so it can't re-create the cloud copy after it's deleted
+      clearTimeout(userSyncTimer);
+      userSyncTimer = null;
 
       // Delete public-facing Firestore data first, while we still know who the user is
       try {
@@ -12866,7 +13822,8 @@
       // Wipe every piece of local data the app stores
       ['myShloks','profile','lastMilestone','lastMilestoneDate','tutorialSeen','motivFavourites',
        'mandalUserId','dailyChallenge','dcHistory','mandalOptOut','darkMode','kqBestStreak','hasVisited',
-       'noticeboardHandledMilestone','noteMsgsSeenUntil','noteMsgsToastedFor','shlokCollections','gamesFreePlayUsed']
+       'noticeboardHandledMilestone','noteMsgsSeenUntil','noteMsgsToastedFor','shlokCollections','gamesFreePlayUsed',
+       'deletedShloks','countdownPrefs','collectionsUpdatedAt','unsyncedChanges']
         .forEach(k => localStorage.removeItem(k));
       // Also clear the session-only flag that skips the shlok map's reveal animation,
       // so it plays again fresh (a page reload alone doesn't clear sessionStorage)
@@ -12896,6 +13853,24 @@
     /* ------------------------------
        PROFILE STORAGE
        ------------------------------ */
+    // Updates only the given profile fields, keeping everything else that's
+    // already saved (e.g. the Vidvan test details). Each changed field gets
+    // its own timestamp in profile._ts so that, when devices are merged, the
+    // most recent edit of each field wins - rather than whichever device
+    // happened to sync last.
+    function updateProfileFields(fields) {
+      const profile = JSON.parse(localStorage.getItem("profile") || "null") || {};
+      const ts = (profile._ts && typeof profile._ts === "object") ? { ...profile._ts } : {};
+      const now = Date.now();
+      Object.keys(fields).forEach(key => {
+        if (JSON.stringify(profile[key]) !== JSON.stringify(fields[key])) ts[key] = now;
+        profile[key] = fields[key];
+      });
+      profile._ts = ts;
+      localStorage.setItem("profile", JSON.stringify(profile));
+      return profile;
+    }
+
     function saveProfile(name, mandalName, startDate, favShlokId) {
       const firstName = name.split(" ")[0];
       let favText = "";
@@ -12903,8 +13878,9 @@
         const shlok = allShloks.find(s => s.id === favShlokId);
         if (shlok) favText = `${shlok.line1}`;
       }
-      const profile = { name, firstName, mandalName: mandalName || "", startDate, favShlok: favShlokId || "", favText };
-      localStorage.setItem("profile", JSON.stringify(profile));
+      // Previously this replaced the whole saved profile with just these
+      // six fields, which silently wiped anything else stored on it.
+      updateProfileFields({ name, firstName, mandalName: mandalName || "", startDate, favShlok: favShlokId || "", favText });
       loadProfile();
     }
 
@@ -13096,17 +14072,24 @@
         return;
       }
 
-      saveProfile(name, mandalName, start, fav);
-      // Save custom goal into profile
-      const profile = JSON.parse(localStorage.getItem("profile")) || {};
-      profile.goalName   = goalName;
-      profile.goalTarget = goalTargetValue;
-      profile.goalDate   = goalDate;
-      localStorage.setItem("profile", JSON.stringify(profile));
+      // Write every field in one go, then refresh the form. (Before, the
+      // form was reloaded half-way through saving, which blanked the Target
+      // Shloks fields on screen and flipped "Label it by" back to Name - so
+      // it looked as if the target hadn't saved.)
+      const firstName = name.split(" ")[0];
+      const favShlok = allShloks.find(s => s.id === fav);
+      updateProfileFields({
+        name, firstName, mandalName, startDate: start,
+        favShlok: fav, favText: favShlok ? favShlok.line1 : "",
+        goalName: goalByDate ? "" : goalName,
+        goalTarget: goalTargetValue,
+        goalDate: goalByDate ? goalDate : ""
+      });
+      loadProfile();
       syncToMandal();
-      scheduleUserSync();
+      scheduleUserSync("Profile saved!");
       updateHomePage();
-      showToast("Profile saved!");
+      updateFlipClock();
     }
     // ── SHLOK QUIZ (KAHOOT STYLE) ──
     let kqPool = [], kqIndex = 0, kqCorrectCount = 0;
@@ -14249,6 +15232,3 @@
   </script>
 </body>
 </html>
-
-
-
